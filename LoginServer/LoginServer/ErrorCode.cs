@@ -6,7 +6,8 @@ namespace LoginServer
 	{
 		None = 0,
 		
-		ReqLoginInvalidPw = 10,
-		ReqLoginNewId = 11,
+		ReqLoginIdAlreadyExist = 10,
+		ReqLoginInvalidId = 11,
+		ReqLoginInvalidPw = 12,
 	}
 }

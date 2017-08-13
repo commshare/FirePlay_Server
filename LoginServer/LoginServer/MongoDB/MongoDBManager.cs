@@ -8,13 +8,13 @@ using MongoDB.Driver.Core.Configuration;
 
 namespace LoginServer.MongoDB
 {
-	public class MongoDBManager
+	public class MongoDbManager
 	{
-		private const string _connectionString = "mongodb://localhost:27017/?maxPoolSize=200";
+		private const string ConnectionString = "mongodb://localhost:27017/?maxPoolSize=200";
 
-		private const string _userDbName = "UserDB";
+		private const string UserDbName = "UserDB";
 
-		private const string _collectionName = "UserLoginInfo";
+		private const string CollectionName = "UserLoginInfo";
 
 		public static IMongoCollection<T> GetCollection<T>(string dbName, string collectionName)
 		{
@@ -25,7 +25,7 @@ namespace LoginServer.MongoDB
 
 		public static IMongoDatabase GetMongoDatabase(string dbName)
 		{
-			MongoClient mongoClient = new MongoClient(_connectionString);
+			MongoClient mongoClient = new MongoClient(ConnectionString);
 			return mongoClient.GetDatabase(dbName);
 		}
 
@@ -36,7 +36,7 @@ namespace LoginServer.MongoDB
 			userValidate.Id = reqUserInfo.Id;
 
 			// MongoDB에서 해당하는 유저의 정보를 찾아본다.
-			var collection = GetCollection<DbUser>(_userDbName, _collectionName);
+			var collection = GetCollection<DbUser>(UserDbName, CollectionName);
 			DbUser data;
 
 			try
@@ -45,30 +45,47 @@ namespace LoginServer.MongoDB
 			}
 			catch (ArgumentNullException e)
 			{
-				// 유저 정보가 없다면, 새로 만들어준다.
-				await collection.InsertOneAsync(reqUserInfo);
-
-				// 새로 만들었다는 사실을 구조체에 적어놓고 반환한다..
-				userValidate.Result = ErrorCode.ReqLoginNewId;
+				// 유저 정보가 없다면, 에러를 적고 반환해준다.
+				userValidate.Result = ErrorCode.ReqLoginInvalidId;
 				return userValidate;
 			}
 
-			// 유저 정보가 있는데 INVALID한지 검사한다.
-			if (data.Pw != reqUserInfo.Pw)
-			{
-				// INVALID하다면 오류를 적어놓는다.				
-				userValidate.Result = ErrorCode.ReqLoginInvalidPw;
-			}
-			else
-			{
-				// 정상적인 경우라면 정상 값을 적어놓는다.
-				userValidate.Result = ErrorCode.None;
-			}
+			// 패스워드가 일치한다면 정상값을, 일치하지 않는다면 에러 값을 적어준다.
+			userValidate.Result = (data.Pw != reqUserInfo.Pw) ? ErrorCode.ReqLoginInvalidPw : ErrorCode.None;
 
 			// 해당 구조체를 리턴해준다.
 			return userValidate;
 		}
+
+		public static async Task<UserVaildation> JoinUser(DbUser joinUserInfo)
+		{
+			// 리턴할 구조체를 생성한다.
+			var userValidate = new UserVaildation();
+			userValidate.Id = joinUserInfo.Id;
+
+			// MongoDB에서 아이디가 일치하는 유저가 있는지 찾아본다.
+			var collection = GetCollection<DbUser>(UserDbName, CollectionName);
+
+			try
+			{
+				var data = await collection.Find(x => x.Id == joinUserInfo.Id).FirstOrDefaultAsync();
+
+				// 유저 정보가 있다면, 이미 유저정보가 있다고 적어놓고 반환한다.
+				userValidate.Result = ErrorCode.ReqLoginIdAlreadyExist;
+				return userValidate;
+			}
+			catch (ArgumentNullException e)
+			{
+				// 유저 정보가 없다면, 새로 만들어준다.
+				await collection.InsertOneAsync(joinUserInfo);
+
+				// 성공적이라고 적어놓고 반환한다.
+				userValidate.Result = ErrorCode.None;
+				return userValidate;
+			}
+		}
 	}
+
 
 	public struct DbUser
 	{

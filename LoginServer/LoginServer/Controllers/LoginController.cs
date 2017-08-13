@@ -21,10 +21,36 @@ namespace LoginServer.Controllers
 			reqDbUser.Id = reqPacket.UserId;
 			reqDbUser.Pw = reqPacket.UserPw;
 
-			var userValidation = await MongoDBManager.GetUserVaildtion(reqDbUser);
+			var userValidation = await MongoDbManager.GetUserVaildtion(reqDbUser);
+
+
 
 			return resPacket;
 		}
 
+		[Route("Request/SignIn")]
+		public async Task<LoginRes> SignInRequest(LoginReq signPacket)
+		{
+			var resPacket = new LoginRes();
+			
+			DbUser joinDbUser = new DbUser();
+			joinDbUser.Id = signPacket.UserId;
+			joinDbUser.Pw = signPacket.UserPw;
+
+			var userValidation = await MongoDbManager.JoinUser(joinDbUser);
+
+			if (userValidation.Result == ErrorCode.None)
+			{
+				resPacket.Result = (short)ErrorCode.None;
+				// 토큰을 생성하여 기록한다.
+				// 토큰값을 레디스에 기록한다.
+			}
+			else
+			{
+				resPacket.Result = (short) userValidation.Result;
+			}
+
+			return resPacket;
+		}
 	}
 }
