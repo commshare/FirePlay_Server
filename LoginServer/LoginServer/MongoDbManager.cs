@@ -6,7 +6,7 @@ using System.Web;
 using MongoDB.Driver;
 using MongoDB.Driver.Core.Configuration;
 
-namespace LoginServer.MongoDB
+namespace LoginServer
 {
 	public class MongoDbManager
 	{
@@ -65,24 +65,27 @@ namespace LoginServer.MongoDB
 
 			// MongoDB에서 아이디가 일치하는 유저가 있는지 찾아본다.
 			var collection = GetCollection<DbUser>(UserDbName, CollectionName);
+			var data = await collection.Find(x => x.Id == joinUserInfo.Id).FirstOrDefaultAsync();
 
-			try
+			// 유저 정보가 있다면, 이미 유저정보가 있다고 적어놓고 반환한다.
+			if (data.Id != null)
 			{
-				var data = await collection.Find(x => x.Id == joinUserInfo.Id).FirstOrDefaultAsync();
-
-				// 유저 정보가 있다면, 이미 유저정보가 있다고 적어놓고 반환한다.
+				String debugLabel = "Join Request " + joinUserInfo.Id + "/" + joinUserInfo.Pw + "Failed";
+				Console.WriteLine(debugLabel);
 				userValidate.Result = ErrorCode.ReqLoginIdAlreadyExist;
-				return userValidate;
+				return userValidate;		
 			}
-			catch (ArgumentNullException e)
-			{
-				// 유저 정보가 없다면, 새로 만들어준다.
-				await collection.InsertOneAsync(joinUserInfo);
 
-				// 성공적이라고 적어놓고 반환한다.
-				userValidate.Result = ErrorCode.None;
-				return userValidate;
-			}
+			// 유저 정보가 없다면, 새로 만들어준다.
+			await collection.InsertOneAsync(joinUserInfo);
+
+			// 성공적이라고 적어놓고 반환한다.
+			userValidate.Result = ErrorCode.None;
+
+			String successLabel = "Join Request " + joinUserInfo.Id + "/" + joinUserInfo.Pw + "Success";
+			Console.WriteLine(successLabel);
+
+			return userValidate;
 		}
 	}
 
