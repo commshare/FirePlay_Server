@@ -37,7 +37,19 @@ namespace LoginServer
 
 			// MongoDB에서 해당하는 유저의 정보를 찾아본다.
 			var collection = GetCollection<DbUser>(UserDbName, CollectionName);
-			DbUser data = await collection.Find(x => x.Id == reqUserInfo.Id).FirstOrDefaultAsync();
+			DbUser data;
+
+			try
+			{
+				data = await collection.Find(x => x.Id == reqUserInfo.Id).FirstOrDefaultAsync();
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine(e.Message);
+				userValidate.Result = ErrorCode.MongoDbFindError;
+
+				return userValidate;
+			}
 
 			if (data.Id == null)
 			{
@@ -61,7 +73,19 @@ namespace LoginServer
 
 			// MongoDB에서 아이디가 일치하는 유저가 있는지 찾아본다.
 			var collection = GetCollection<DbUser>(UserDbName, CollectionName);
-			var data = await collection.Find(x => x.Id == joinUserInfo.Id).FirstOrDefaultAsync();
+			DbUser data;
+
+			try
+			{
+				data = await collection.Find(x => x.Id == joinUserInfo.Id).FirstOrDefaultAsync();
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine(e.Message);
+				userValidate.Result = ErrorCode.MongoDbFindError;
+
+				return userValidate;
+			}
 
 			// 유저 정보가 있다면, 이미 유저정보가 있다고 적어놓고 반환한다.
 			if (data.Id != null)

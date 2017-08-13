@@ -9,5 +9,7 @@ namespace LoginServer
 		ReqLoginIdAlreadyExist = 10,
 		ReqLoginInvalidId = 11,
 		ReqLoginInvalidPw = 12,
+
+		MongoDbFindError = 100,
 	}
 }
