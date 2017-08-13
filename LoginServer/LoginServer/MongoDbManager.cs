@@ -37,13 +37,9 @@ namespace LoginServer
 
 			// MongoDB에서 해당하는 유저의 정보를 찾아본다.
 			var collection = GetCollection<DbUser>(UserDbName, CollectionName);
-			DbUser data;
+			DbUser data = await collection.Find(x => x.Id == reqUserInfo.Id).FirstOrDefaultAsync();
 
-			try
-			{
-				data = await collection.Find(x => x.Id == reqUserInfo.Id).FirstOrDefaultAsync();
-			}
-			catch (ArgumentNullException e)
+			if (data.Id == null)
 			{
 				// 유저 정보가 없다면, 에러를 적고 반환해준다.
 				userValidate.Result = ErrorCode.ReqLoginInvalidId;
@@ -57,7 +53,7 @@ namespace LoginServer
 			return userValidate;
 		}
 
-		public static async Task<UserVaildation> JoinUser(DbUser joinUserInfo)
+		public static async Task<UserVaildation> JoinUserValidation(DbUser joinUserInfo)
 		{
 			// 리턴할 구조체를 생성한다.
 			var userValidate = new UserVaildation();

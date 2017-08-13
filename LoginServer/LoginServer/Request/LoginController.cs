@@ -20,6 +20,16 @@ namespace LoginServer
 
 			var userValidation = await MongoDbManager.GetUserVaildtion(reqDbUser);
 
+			if (userValidation.Result == ErrorCode.None)
+			{
+				// 토큰을 생성하여 기록한다.
+				// 토큰 값을 레디스에 기록한다.
+			}
+			else
+			{
+				resPacket.Result = (short) userValidation.Result;
+			}
+
 			return resPacket;
 		}
 
@@ -36,7 +46,7 @@ namespace LoginServer
 			joinDbUser.Id = signPacket.UserId;
 			joinDbUser.Pw = signPacket.UserPw;
 
-			var userValidation = await MongoDbManager.JoinUser(joinDbUser);
+			var userValidation = await MongoDbManager.JoinUserValidation(joinDbUser);
 
 			if (userValidation.Result == ErrorCode.None)
 			{
