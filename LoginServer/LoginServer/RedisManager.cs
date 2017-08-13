@@ -1,0 +1,8 @@
+﻿
+
+namespace LoginServer
+{
+	class RedisManager
+	{
+	}
+}
