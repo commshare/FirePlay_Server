@@ -93,6 +93,21 @@ namespace LoginServer.DB
 				throw;
 			}	
 		}
+
+		public static async Task<bool> DeleteStringAsync<T>(string key)
+		{
+			try
+			{
+				var redis = new RedisString<T>(_redisGroupBasic, key);
+				var result = await redis.Delete();
+				return result;
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine(e.Message);
+				throw;
+			}
+		}
 	}
 
 	public static class AuthTokenManager
@@ -114,6 +129,12 @@ namespace LoginServer.DB
 				return false;
 			}
 			return true;
+		}
+
+		// 레디스 서버에 아이디로 등록되어 있는 토큰을 지워주는 메소드.
+		public static async Task DeleteAuthToken(string userId)
+		{
+			await DB.RedisManager.DeleteStringAsync<DbUserSession>(userId);
 		}
 	}
 

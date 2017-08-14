@@ -25,7 +25,7 @@ namespace LoginServer.DB
 			return mongoClient.GetDatabase(dbName);
 		}
 
-		public static async Task<UserVaildation> GetUserVaildtion(String userId, String userPw)
+		public static async Task<UserVaildation> GetUserVaildation(String userId, String userPw)
 		{
 			// 리턴할 구조체를 생성한다.
 			var userValidate = new UserVaildation();
@@ -50,20 +50,39 @@ namespace LoginServer.DB
 			if (string.IsNullOrEmpty(data._id))
 			{
 				// 유저 정보가 없다면, 에러를 적고 반환해준다.
-				userValidate.Result = ErrorCode.ReqLoginInvalidId;
+				userValidate.Result = ErrorCode.ValidationInvalidId;
 				return userValidate;
 			}
 
 			// 패스워드가 일치한다면 정상값을, 일치하지 않는다면 에러 값을 적어준다.
-			userValidate.Result = (data.Pw != userPw) ? ErrorCode.ReqLoginInvalidPw : ErrorCode.None;
+			userValidate.Result = (data.Pw != userPw) ? ErrorCode.ValidationInvalidPw : ErrorCode.None;
 
 			// 해당 구조체를 리턴해준다.
 			return userValidate;
 		}
 
-		public static async Task<UserVaildation> JoinUserValidation(String userId, String userPw)
+		// MongoDB에서 아이디가 일치하는 유저가 있는지 확인하는 메소드.
+		public static async Task<bool> GetIdExist(string userId)
 		{
+			var collection = GetCollection<DbUser>(UserDbName, CollectionName);
+			DbUser data;
 
+			try
+			{
+				data = await collection.Find(x => x._id == userId).FirstOrDefaultAsync();
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine(e.Message);
+
+				return false;
+			}
+
+			return data != null;
+		}
+
+		public static async Task<UserVaildation> JoinUserValidation(string userId, string userPw)
+		{
 			// 리턴할 구조체를 생성한다.
 			var userValidate = new UserVaildation();
 			userValidate.Id = userId;
@@ -89,7 +108,7 @@ namespace LoginServer.DB
 			{
 				String debugLabel = "Join Request " + userId + "/" + userPw + " Failed";
 				Console.WriteLine(debugLabel);
-				userValidate.Result = ErrorCode.ReqLoginIdAlreadyExist;
+				userValidate.Result = ErrorCode.SignInIdAlreadyExist;
 				return userValidate;		
 			}
 

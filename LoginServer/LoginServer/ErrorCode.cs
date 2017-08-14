@@ -6,14 +6,18 @@ namespace LoginServer
 	{
 		None = 0,
 
-		ReqLoginIdAlreadyExist = 10,
-		ReqLoginInvalidId = 11,
-		ReqLoginInvalidPw = 12,
+		SignInIdAlreadyExist = 100,
 
-		MongoDbFindError = 100,
+		ValidationInvalidId = 200,
+		ValidationInvalidPw = 201,
 
-		RedisStartException = 200,
-		RedisInvalidAddressString = 201,
-		RedisStartSetTestFailed = 202,
+		LogoutInvalidId = 300,
+		LogoutInvalidToken = 301,
+
+		MongoDbFindError = 400,
+
+		RedisStartException = 500,
+		RedisInvalidAddressString = 501,
+		RedisStartSetTestFailed = 502,
 	}
 }

@@ -5,7 +5,6 @@ namespace LoginServer.Util
 {
 	class Encrypter
 	{
-
 		// 출처 : http://codingcoding.tistory.com/139
 		public static string EncryptString(string message)
 		{
