@@ -2,7 +2,7 @@
 using System;
 using System.Threading.Tasks;
 
-namespace LoginServer
+namespace LoginServer.DB
 {
 	public class MongoDbManager
 	{

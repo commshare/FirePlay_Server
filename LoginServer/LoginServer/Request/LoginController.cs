@@ -1,9 +1,8 @@
-﻿
-using System;
+﻿using System;
 using System.Threading.Tasks;
 using System.Web.Http;
 
-namespace LoginServer
+namespace LoginServer.Request
 {
 	public class LoginController : ApiController
 	{
@@ -14,12 +13,13 @@ namespace LoginServer
 			var resPacket = new LoginRes();
 
 			// MongoDB에서 로그인을 요청한 유저의 정보를 찾아본다.
-			var userValidation = await MongoDbManager.GetUserVaildtion(reqPacket.UserId, reqPacket.UserPw);
+			var userValidation = await DB.MongoDbManager.GetUserVaildtion(reqPacket.UserId, reqPacket.UserPw);
 
 			if (userValidation.Result == ErrorCode.None)
 			{
 				// 토큰을 생성하여 기록한다.
 				resPacket.Token = TokenGenerator.GetInstance().CreateToken();
+
 				// 토큰 값을 레디스에 기록한다.
 			}
 			else
@@ -34,18 +34,19 @@ namespace LoginServer
 		[HttpPost]
 		public async Task<LoginRes> SignInRequest(LoginReq signInPacket)
 		{
-			String debugString = signInPacket.UserId.ToString() + "/" + signInPacket.UserPw.ToString() + " send Sign In Request";
+			var debugString = signInPacket.UserId + "/" + signInPacket.UserPw + " send Sign In Request";
 			Console.WriteLine(debugString);
 
 			var resPacket = new LoginRes();
 
-			var userValidation = await MongoDbManager.JoinUserValidation(signInPacket.UserId, signInPacket.UserPw);
+			var userValidation = await DB.MongoDbManager.JoinUserValidation(signInPacket.UserId, signInPacket.UserPw);
 
 			if (userValidation.Result == ErrorCode.None)
 			{
 				resPacket.Result = (short)ErrorCode.None;
 				// 토큰을 생성하여 기록한다.
 				resPacket.Token = TokenGenerator.GetInstance().CreateToken();
+
 				// 토큰값을 레디스에 기록한다.
 			}
 			else
