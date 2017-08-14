@@ -122,7 +122,7 @@ namespace LoginServer
 
 
 	// _id가 있어야함.
-	public struct DbUser
+	public class DbUser
 	{
 		public string _id;
 		public Int64 UId;
