@@ -119,8 +119,6 @@ namespace LoginServer
 		}
 	}
 
-
-
 	// _id가 있어야함.
 	public class DbUser
 	{
