@@ -21,6 +21,7 @@ namespace LoginServer.Request
 				resPacket.Token = TokenGenerator.GetInstance().CreateToken();
 
 				// 토큰 값을 레디스에 기록한다.
+				await DB.AuthTokenManager.RegistAuthToken(reqPacket.UserId, resPacket.Token);
 			}
 			else
 			{
@@ -48,6 +49,7 @@ namespace LoginServer.Request
 				resPacket.Token = TokenGenerator.GetInstance().CreateToken();
 
 				// 토큰값을 레디스에 기록한다.
+				await DB.AuthTokenManager.RegistAuthToken(signInPacket.UserId, resPacket.Token);
 			}
 			else
 			{

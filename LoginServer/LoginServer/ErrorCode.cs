@@ -11,5 +11,9 @@ namespace LoginServer
 		ReqLoginInvalidPw = 12,
 
 		MongoDbFindError = 100,
+
+		RedisStartException = 200,
+		RedisInvalidAddressString = 201,
+		RedisStartSetTestFailed = 202,
 	}
 }

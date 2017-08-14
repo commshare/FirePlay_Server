@@ -94,4 +94,33 @@ namespace LoginServer.DB
 			}	
 		}
 	}
+
+	public static class AuthTokenManager
+	{
+		// 레디스 서버에 토큰을 등록하는 메소드.
+		public static async Task RegistAuthToken(string userId, long token)
+		{
+			await RedisManager.SetStringAsync<DbUserSession>(userId,
+				new DbUserSession() { AuthToken = token, ClientVersion = 1, ClientDataVersion = 1 });
+		}
+
+		// 레디스 서버에 등록되어 있는 토큰과 일치하는지를 확인하는 메소드.
+		public static async Task<bool> CheckAuthToken(string userId, long token)
+		{
+			var sessionInfo = await RedisManager.GetStringAsync<DbUserSession>(userId);
+
+			if (sessionInfo.Item1 == false || sessionInfo.Item2.AuthToken != token)
+			{
+				return false;
+			}
+			return true;
+		}
+	}
+
+	public class DbUserSession
+	{
+		public long AuthToken;
+		public short ClientVersion;
+		public short ClientDataVersion;
+	}
 }
