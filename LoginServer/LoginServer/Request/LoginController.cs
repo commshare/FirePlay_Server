@@ -19,6 +19,7 @@ namespace LoginServer
 			if (userValidation.Result == ErrorCode.None)
 			{
 				// 토큰을 생성하여 기록한다.
+				resPacket.Token = TokenGenerator.GetInstance().CreateToken();
 				// 토큰 값을 레디스에 기록한다.
 			}
 			else
@@ -44,6 +45,7 @@ namespace LoginServer
 			{
 				resPacket.Result = (short)ErrorCode.None;
 				// 토큰을 생성하여 기록한다.
+				resPacket.Token = TokenGenerator.GetInstance().CreateToken();
 				// 토큰값을 레디스에 기록한다.
 			}
 			else

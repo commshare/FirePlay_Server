@@ -11,6 +11,6 @@ namespace LoginServer
 	public struct LoginRes
 	{
 		public short Result;
-		public string Token;
+		public long Token;
 	}
 }

@@ -85,7 +85,7 @@ namespace LoginServer
 			}
 
 			// 유저 정보가 있다면, 이미 유저정보가 있다고 적어놓고 반환한다.
-			if (string.IsNullOrEmpty(data._id) == false)
+			if (data != null)
 			{
 				String debugLabel = "Join Request " + userId + "/" + userPw + " Failed";
 				Console.WriteLine(debugLabel);
