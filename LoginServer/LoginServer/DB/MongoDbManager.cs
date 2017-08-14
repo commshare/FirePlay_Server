@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using MongoDB.Driver;
+using System;
 using System.Threading.Tasks;
-using System.Web;
-using MongoDB.Driver;
-using MongoDB.Driver.Core.Configuration;
 
 namespace LoginServer
 {
@@ -29,11 +25,11 @@ namespace LoginServer
 			return mongoClient.GetDatabase(dbName);
 		}
 
-		public static async Task<UserVaildation> GetUserVaildtion(DbUser reqUserInfo)
+		public static async Task<UserVaildation> GetUserVaildtion(String userId, String userPw)
 		{
 			// 리턴할 구조체를 생성한다.
 			var userValidate = new UserVaildation();
-			userValidate.Id = reqUserInfo.Id;
+			userValidate.Id = userId;
 
 			// MongoDB에서 해당하는 유저의 정보를 찾아본다.
 			var collection = GetCollection<DbUser>(UserDbName, CollectionName);
@@ -41,7 +37,7 @@ namespace LoginServer
 
 			try
 			{
-				data = await collection.Find(x => x.Id == reqUserInfo.Id).FirstOrDefaultAsync();
+				data = await collection.Find(x => x._id == userId).FirstOrDefaultAsync();
 			}
 			catch (Exception e)
 			{
@@ -51,7 +47,7 @@ namespace LoginServer
 				return userValidate;
 			}
 
-			if (data.Id == null)
+			if (string.IsNullOrEmpty(data._id))
 			{
 				// 유저 정보가 없다면, 에러를 적고 반환해준다.
 				userValidate.Result = ErrorCode.ReqLoginInvalidId;
@@ -59,17 +55,18 @@ namespace LoginServer
 			}
 
 			// 패스워드가 일치한다면 정상값을, 일치하지 않는다면 에러 값을 적어준다.
-			userValidate.Result = (data.Pw != reqUserInfo.Pw) ? ErrorCode.ReqLoginInvalidPw : ErrorCode.None;
+			userValidate.Result = (data.Pw != userPw) ? ErrorCode.ReqLoginInvalidPw : ErrorCode.None;
 
 			// 해당 구조체를 리턴해준다.
 			return userValidate;
 		}
 
-		public static async Task<UserVaildation> JoinUserValidation(DbUser joinUserInfo)
+		public static async Task<UserVaildation> JoinUserValidation(String userId, String userPw)
 		{
+
 			// 리턴할 구조체를 생성한다.
 			var userValidate = new UserVaildation();
-			userValidate.Id = joinUserInfo.Id;
+			userValidate.Id = userId;
 
 			// MongoDB에서 아이디가 일치하는 유저가 있는지 찾아본다.
 			var collection = GetCollection<DbUser>(UserDbName, CollectionName);
@@ -77,7 +74,7 @@ namespace LoginServer
 
 			try
 			{
-				data = await collection.Find(x => x.Id == joinUserInfo.Id).FirstOrDefaultAsync();
+				data = await collection.Find(x => x._id == userId).FirstOrDefaultAsync();
 			}
 			catch (Exception e)
 			{
@@ -88,31 +85,47 @@ namespace LoginServer
 			}
 
 			// 유저 정보가 있다면, 이미 유저정보가 있다고 적어놓고 반환한다.
-			if (data.Id != null)
+			if (string.IsNullOrEmpty(data._id) == false)
 			{
-				String debugLabel = "Join Request " + joinUserInfo.Id + "/" + joinUserInfo.Pw + "Failed";
+				String debugLabel = "Join Request " + userId + "/" + userPw + " Failed";
 				Console.WriteLine(debugLabel);
 				userValidate.Result = ErrorCode.ReqLoginIdAlreadyExist;
 				return userValidate;		
 			}
 
 			// 유저 정보가 없다면, 새로 만들어준다.
-			await collection.InsertOneAsync(joinUserInfo);
+			await AddUser(userId, userPw);
 
 			// 성공적이라고 적어놓고 반환한다.
 			userValidate.Result = ErrorCode.None;
 
-			String successLabel = "Join Request " + joinUserInfo.Id + "/" + joinUserInfo.Pw + "Success";
+			String successLabel = "Join Request " + userId + "/" + userPw + " Success";
 			Console.WriteLine(successLabel);
 
 			return userValidate;
 		}
+
+		public static async Task AddUser(String userId, String userPw)
+		{
+			var newUser = new DbUser()
+			{
+				_id = userId,
+				UId = DateTime.Now.Ticks,
+				Pw = userPw
+			};
+
+			var collection = GetCollection<DbUser>(UserDbName, CollectionName);
+			await collection.InsertOneAsync(newUser);
+		}
 	}
 
 
+
+	// _id가 있어야함.
 	public struct DbUser
 	{
-		public string Id;
+		public string _id;
+		public Int64 UId;
 		public string Pw;
 	}
 

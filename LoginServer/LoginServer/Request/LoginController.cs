@@ -14,11 +14,7 @@ namespace LoginServer
 			var resPacket = new LoginRes();
 
 			// MongoDB에서 로그인을 요청한 유저의 정보를 찾아본다.
-			DbUser reqDbUser = new DbUser();
-			reqDbUser.Id = reqPacket.UserId;
-			reqDbUser.Pw = reqPacket.UserPw;
-
-			var userValidation = await MongoDbManager.GetUserVaildtion(reqDbUser);
+			var userValidation = await MongoDbManager.GetUserVaildtion(reqPacket.UserId, reqPacket.UserPw);
 
 			if (userValidation.Result == ErrorCode.None)
 			{
@@ -35,18 +31,14 @@ namespace LoginServer
 
 		[Route("Request/SignIn")]
 		[HttpPost]
-		public async Task<LoginRes> SignInRequest(LoginReq signPacket)
+		public async Task<LoginRes> SignInRequest(LoginReq signInPacket)
 		{
-			String debugString = signPacket.UserId.ToString() + "/" + signPacket.UserPw.ToString() + " send Sign In Request";
+			String debugString = signInPacket.UserId.ToString() + "/" + signInPacket.UserPw.ToString() + " send Sign In Request";
 			Console.WriteLine(debugString);
 
 			var resPacket = new LoginRes();
 
-			DbUser joinDbUser = new DbUser();
-			joinDbUser.Id = signPacket.UserId;
-			joinDbUser.Pw = signPacket.UserPw;
-
-			var userValidation = await MongoDbManager.JoinUserValidation(joinDbUser);
+			var userValidation = await MongoDbManager.JoinUserValidation(signInPacket.UserId, signInPacket.UserPw);
 
 			if (userValidation.Result == ErrorCode.None)
 			{
