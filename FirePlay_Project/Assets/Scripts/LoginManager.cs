@@ -33,12 +33,12 @@ public class LoginManager : MonoBehaviour
 	{
 		if (GUI.Button(new Rect((Screen.width / 2) - 155, Screen.height * 2 / 3, 150, 50), "Login"))
 		{
-
+			TryLogin(_id, _pw);
 		}
 
 		if (GUI.Button(new Rect((Screen.width / 2) + 5, Screen.height * 2 / 3, 150, 50), "Exit"))
 		{
-
+			Application.Quit();
 		}
 	}
 
@@ -65,5 +65,88 @@ public class LoginManager : MonoBehaviour
 	private void GetPw(string arg0)
 	{
 		_pw = arg0;
+	}
+
+	void TryLogin(string id, string pw)
+	{
+		// Id, Pw 둘 중 하나라도 비어 있으면 안된다.
+		if (string.IsNullOrEmpty(id) || string.IsNullOrEmpty(pw))
+		{
+			return;
+		}
+
+		try
+		{
+			var request = new HttpPack.LoginReq()
+			{
+				UserId = id,
+				UserPw = pw
+			};
+
+			// Json으로 변환.
+			string requestJson = JsonUtility.ToJson(request);
+
+			// Header 생성.
+			Dictionary<string, string> headers = new Dictionary<string, string>();
+			headers.Add("Content-Type", "application/json");
+
+			byte[] pData = System.Text.Encoding.UTF8.GetBytes(requestJson.ToCharArray());
+			var api = new WWW(HttpPack._serverAddr, pData, headers);
+
+			StartCoroutine(WaitForResponse(api));
+		}
+		catch (UnityException e)
+		{
+			Debug.Log(e.Message);
+		}
+	}
+
+	IEnumerator WaitForResponse(WWW www)
+	{
+		yield return www;
+
+		var response = new HttpPack.LoginRes();
+		if (string.IsNullOrEmpty(www.error))
+		{
+			var content = www.bytes;
+			response = JsonUtility.FromJson<HttpPack.LoginRes>(content.ToString());
+			Debug.Log("Login Success");
+		}
+		else
+		{
+			Debug.LogAssertion(www.error);
+		}
+	}
+}
+
+public class HttpPack
+{
+	public static string _serverAddr = "http://127.0.0.1:19000/";
+
+	[System.Serializable]
+	public class LoginReq
+	{
+		public string UserId;
+		public string UserPw;
+	}
+
+	[System.Serializable]
+	public class LoginRes
+	{
+		public short Result;
+		public long Token;
+	}
+
+	[System.Serializable]
+	public class LogoutReq
+	{
+		public string UserId;
+		public long Token;
+	}
+
+	[System.Serializable]
+	public class LogoutRes
+	{
+		public short Result;
 	}
 }
