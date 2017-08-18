@@ -25,8 +25,8 @@ public class LoginManager : MonoBehaviour
 	private void SetBackground()
 	{
 		var prefab = Resources.Load("Prefabs/Background") as GameObject;
-		var instance = Instantiate(prefab).GetComponent<Background>();
+		var backgroundInstance = Instantiate(prefab).GetComponent<Background>();
 
-		instance.Init();
+		backgroundInstance.Init();
 	}
 }

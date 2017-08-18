@@ -13,5 +13,11 @@ public class Background : MonoBehaviour
 		_renderer = this.GetComponent<SpriteRenderer>();
 
 		_renderer.sprite = _backgroundSprite;
+
+		Vector2 spriteSize = _backgroundSprite.rect.size;
+		Vector3 scale = new Vector3(
+			Screen.width * 1.1f / spriteSize.x, Screen.height * 1.1f / spriteSize.y, 1f);
+
+		transform.localScale = scale;
 	}
 }
