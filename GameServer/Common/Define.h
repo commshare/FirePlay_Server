@@ -9,7 +9,7 @@ namespace FPCommon
 		{
 			if (_body != nullptr)
 			{
-				delete _body;
+				delete[] _body;
 				_body = nullptr;
 			}
 		}

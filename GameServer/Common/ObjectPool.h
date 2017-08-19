@@ -3,6 +3,7 @@
 #include <memory>
 #include <deque>
 #include <mutex>
+#include <functional>
 
 namespace FPCommon
 {
@@ -47,7 +48,7 @@ namespace FPCommon
 	{
 		_pool.reserve(poolSize);
 
-		for (int i = 0; i < poolSize; ++i)
+		for (auto i = 0; i < poolSize; ++i)
 		{
 			_pool.emplace_back(std::make_unique<T>());
 			_poolIndex.push_back(i);

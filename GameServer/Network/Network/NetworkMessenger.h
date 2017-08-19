@@ -1,17 +1,26 @@
 #pragma once
-#include <WinSock2.h>
 
-#include "../../Common/ConsoleLogger.h"
+#pragma comment(lib, "ws2_32")
+#include <WinSock2.h>
+#include <vector>
+
 #include "../../Common/PacketQueue.h"
 #include "../../Common/ObjectPool.h"
-#include "../../Common/Define.h"
 
 #include "SessionInfo.h"
+
+namespace FPCommon
+{
+	enum class LogType;
+	class ServerConfig;
+	class ConsoleLogger;
+}
 
 namespace FPNetwork
 {
 	using PacketQueue = FPCommon::PacketQueue;
 	using PacketInfo = FPCommon::PacketInfo;
+	using LogType = FPCommon::LogType;
 	using ConsoleLogger = FPCommon::ConsoleLogger;
 	using ServerConfig = FPCommon::ServerConfig;
 
@@ -29,7 +38,6 @@ namespace FPNetwork
 			ServerConfig * serverConfig,
 			PacketQueue * recvQueue,
 			PacketQueue * sendQueue);
-
 
 	private :
 
