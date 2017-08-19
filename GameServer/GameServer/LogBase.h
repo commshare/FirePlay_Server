@@ -79,12 +79,5 @@ namespace FirePlayCommon
 		virtual void trace(const char * pText) = 0;
 		virtual void info(const char * pText) = 0;
 
-		void consoleOutWithColor(const ConsoleColor color, const char* logHead, const char * logText)
-		{
-			std::lock_guard<std::mutex> _writeLock(_lock);
-
-			SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), (WORD)color);
-			std::cout << logText << std::endl;
-		}
 	};
 }

@@ -38,5 +38,12 @@ namespace FirePlayCommon
 			consoleOutWithColor(ConsoleColor::GREEN, "[INFO] ", pText);
 		}
 
+		void consoleOutWithColor(const ConsoleColor color, const char* logHead, const char * logText)
+		{
+			std::lock_guard<std::mutex> _writeLock(_lock);
+
+			SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), (WORD)color);
+			std::cout << logText << std::endl;
+		}
 	};
 }
