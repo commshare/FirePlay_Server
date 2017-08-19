@@ -147,15 +147,17 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ConsoleLogger.h" />
-    <ClInclude Include="ErrorCode.h" />
-    <ClInclude Include="LogBase.h" />
-    <ClInclude Include="ObjectPool.h" />
-    <ClInclude Include="Packet.h" />
-    <ClInclude Include="PacketID.h" />
+    <ClCompile Include="ServerMain.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ServerMain.cpp" />
+    <ClInclude Include="..\Common\ConsoleLogger.h" />
+    <ClInclude Include="..\Common\Define.h" />
+    <ClInclude Include="..\Common\ErrorCode.h" />
+    <ClInclude Include="..\Common\LogBase.h" />
+    <ClInclude Include="..\Common\ObjectPool.h" />
+    <ClInclude Include="..\Common\Packet.h" />
+    <ClInclude Include="..\Common\PacketID.h" />
+    <ClInclude Include="..\Common\PacketQueue.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
