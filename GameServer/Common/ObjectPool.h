@@ -27,6 +27,7 @@ namespace FPCommon
 		void ReleaseTag(const int tag);
 
 		int GetSize();
+		int GetActivatedObjectCount() const { return _activatedObjectCount; }
 		bool IsEmpty();
 
 		T& begin();
@@ -36,6 +37,7 @@ namespace FPCommon
 	private :
 
 		bool _isInitialized = false;
+		int _activatedObjectCount = 0;
 
 		std::mutex _poolMutex;
 		std::vector<std::unique_ptr<T>> _pool;
@@ -84,6 +86,8 @@ namespace FPCommon
 		auto returnTag = _poolIndex.front();
 		_poolIndex.pop_front();
 
+		++_activatedObjectCount;
+
 		return returnTag;
 	}
 
@@ -94,6 +98,8 @@ namespace FPCommon
 
 		std::lock_guard<std::mutex> tagLock(_poolMutex);
 		_poolIndex.push_back(tag);
+
+		--_activatedObjectCount;
 	}
 
 	template<class T>

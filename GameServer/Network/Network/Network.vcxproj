@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="NetworkMessenger.h" />
+    <ClInclude Include="ServerNetworkErrorCode.h" />
     <ClInclude Include="SessionInfo.h" />
   </ItemGroup>
   <ItemGroup>

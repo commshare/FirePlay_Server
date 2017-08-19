@@ -31,13 +31,28 @@ namespace FPNetwork
 		NetworkMessenger() {}
 		~NetworkMessenger() {}
 
+		void Stop();
+
+		void ForcingClose(const int sessionIdx);
+
+		// Getter, Setter
+		HANDLE GetIocpHandler() const { return _iocpHandle; }
+		int GetSessionPoolSize() { return _sessionPool.GetSize(); }
+
 	private :
 
-		virtual bool init(
+		bool init(
 			ConsoleLogger * logger,
 			ServerConfig * serverConfig,
 			PacketQueue * recvQueue,
 			PacketQueue * sendQueue);
+
+		void closeSession(const SessionCloseCase closeCase, const SOCKET socket, const int sessionIdx);
+		void addToPacketQueue(const int sessionIdx, const short pktId, const short bodySize, char * body);
+
+		void workerThreadFunc();
+		void listenThreadFunc();
+		void sendThreadFunc();
 
 	private :
 
