@@ -139,6 +139,23 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Logic\Logic\Logic.vcxproj">
+      <Project>{1298102f-7c9e-42e0-95ad-2092a66ffbe9}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\Network\Network\Network.vcxproj">
+      <Project>{585ed37a-e646-4544-81ce-695bacbab38c}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ConsoleLogger.h" />
+    <ClInclude Include="ErrorCode.h" />
+    <ClInclude Include="LogBase.h" />
+    <ClInclude Include="ObjectPool.h" />
+    <ClInclude Include="Packet.h" />
+    <ClInclude Include="PacketID.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="ServerMain.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
