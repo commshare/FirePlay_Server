@@ -1,6 +1,6 @@
 #pragma once
 
-namespace FirePlayCommon
+namespace FPCommon
 {
 	struct PacketInfo
 	{

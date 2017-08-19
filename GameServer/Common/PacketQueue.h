@@ -5,7 +5,7 @@
 
 #include "Define.h"
 
-namespace FirePlayCommon
+namespace FPCommon
 {
 	/*
 	 * PacketQueue

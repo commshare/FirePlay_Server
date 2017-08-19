@@ -18,6 +18,13 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="NetworkMessenger.h" />
+    <ClInclude Include="SessionInfo.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="NetworkMessenger.cpp" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{585ED37A-E646-4544-81CE-695BACBAB38C}</ProjectGuid>

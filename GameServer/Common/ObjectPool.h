@@ -4,7 +4,7 @@
 #include <deque>
 #include <mutex>
 
-namespace FirePlayCommon
+namespace FPCommon
 {
 	/*
 	 * ObjectPool

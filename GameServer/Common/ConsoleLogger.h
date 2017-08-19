@@ -2,7 +2,7 @@
 
 #include "LogBase.h"
 
-namespace FirePlayCommon
+namespace FPCommon
 {
 	class ConsoleLogger : public LogBase
 	{

@@ -14,16 +14,14 @@
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
     <Filter Include="Common">
-      <UniqueIdentifier>{d7239b7b-c825-4580-8327-97c9489c5c8e}</UniqueIdentifier>
+      <UniqueIdentifier>{5a8c63f6-7459-4af8-8c42-0fd978df4487}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ServerMain.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="..\Common\ConsoleLogger.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\Define.h">
       <Filter>Common</Filter>
     </ClInclude>
     <ClInclude Include="..\Common\ErrorCode.h">
@@ -44,8 +42,10 @@
     <ClInclude Include="..\Common\PacketQueue.h">
       <Filter>Common</Filter>
     </ClInclude>
-    <ClInclude Include="..\Common\Define.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="ServerMain.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

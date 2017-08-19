@@ -1,8 +1,12 @@
 #pragma once
+#include <WinSock2.h>
 
 #include "../../Common/ConsoleLogger.h"
 #include "../../Common/PacketQueue.h"
+#include "../../Common/ObjectPool.h"
 #include "../../Common/Define.h"
+
+#include "SessionInfo.h"
 
 namespace FPNetwork
 {
@@ -29,9 +33,15 @@ namespace FPNetwork
 
 	private :
 
-		ConsoleLogger * _logger;
-		PacketQueue * _recvQueue;
-		PacketQueue * _sendQueue;
+		SOCKET _serverSocket = INVALID_SOCKET;
+		HANDLE _iocpHandle = INVALID_HANDLE_VALUE;
+		ServerConfig _serverConfig;
+
+		using SessionPool = FPCommon::ObjectPool<SessionInfo>;
+		SessionPool _sessionPool;
+		ConsoleLogger * _logger = nullptr;
+		PacketQueue * _recvQueue = nullptr;
+		PacketQueue * _sendQueue = nullptr;
 
 	// Factory Patten
 	public :
