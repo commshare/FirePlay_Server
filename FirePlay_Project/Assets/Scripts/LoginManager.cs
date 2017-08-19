@@ -79,11 +79,18 @@ public class LoginManager : MonoBehaviour
 		}
 
 		// TODO :: 서버가 연결안되어있을 경우 다음씬으로 넘어가기 위한 임시 코드
-		var infoPrefab = Resources.Load("Prefab/PlayerInfo") as GameObject;
-		var _info = Instantiate(infoPrefab).GetComponent<PlayerInfo>();
-		_info.InfoSetting(_id, 0L);
+		var infoPrefab = Resources.Load("Prefabs/PlayerInfo") as GameObject;
+		if (infoPrefab != null)
+		{
+			var _info = Instantiate(infoPrefab).GetComponent<PlayerInfo>();
+			_info.InfoSetting(_id, 0L);
 
-		SceneManager.LoadScene("CharaceterSelect");
+			SceneManager.LoadScene("CharacterSelect");
+		}
+		else
+		{
+			Debug.LogAssertion("PlayerInfo Prefab Instantiate Failed");
+		}
 
 		try
 		{
