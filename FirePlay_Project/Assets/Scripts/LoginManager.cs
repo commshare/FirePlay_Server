@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class LoginManager : MonoBehaviour
 {
@@ -78,7 +79,11 @@ public class LoginManager : MonoBehaviour
 		}
 
 		// TODO :: 서버가 연결안되어있을 경우 다음씬으로 넘어가기 위한 임시 코드
-		
+		var infoPrefab = Resources.Load("Prefab/PlayerInfo") as GameObject;
+		var _info = Instantiate(infoPrefab).GetComponent<PlayerInfo>();
+		_info.InfoSetting(_id, 0L);
+
+		SceneManager.LoadScene("CharaceterSelect");
 
 		try
 		{
@@ -117,7 +122,12 @@ public class LoginManager : MonoBehaviour
 			response = JsonUtility.FromJson<HttpPack.LoginRes>(content.ToString());
 			Debug.Log("Login Success");
 
-			_info = new PlayerInfo(_id, response.Token);
+			// TODO : response의 결과값 확인.
+			// 결과값에 따라 메시지창 띄워주기.
+
+			var infoPrefab = Resources.Load("Prefab/PlayerInfo") as GameObject;
+			var _info = Instantiate(infoPrefab).GetComponent<PlayerInfo>();
+			_info.InfoSetting(_id, response.Token);
 		}
 		else
 		{

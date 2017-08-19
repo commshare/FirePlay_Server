@@ -10,7 +10,7 @@ public class PlayerInfo : MonoBehaviour
 		DontDestroyOnLoad(this.gameObject);
 	}
 
-	public PlayerInfo(string id, long token)
+	public void InfoSetting(string id, long token)
 	{
 		_id = id;
 		_token = token;
