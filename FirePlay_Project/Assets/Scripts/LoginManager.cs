@@ -10,6 +10,8 @@ public class LoginManager : MonoBehaviour
 	public string _id;
 	public string _pw;
 
+	public PlayerInfo _info = null;
+
 	private void OnGUI()
 	{
 		ButtonCheck();
@@ -75,6 +77,9 @@ public class LoginManager : MonoBehaviour
 			return;
 		}
 
+		// TODO :: 서버가 연결안되어있을 경우 다음씬으로 넘어가기 위한 임시 코드
+		
+
 		try
 		{
 			var request = new HttpPack.LoginReq()
@@ -111,6 +116,8 @@ public class LoginManager : MonoBehaviour
 			var content = www.bytes;
 			response = JsonUtility.FromJson<HttpPack.LoginRes>(content.ToString());
 			Debug.Log("Login Success");
+
+			_info = new PlayerInfo(_id, response.Token);
 		}
 		else
 		{
