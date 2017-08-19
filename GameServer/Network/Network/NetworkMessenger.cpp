@@ -95,12 +95,24 @@ namespace FPNetwork
 		_logger->Write(LogType::LOG_INFO, "%s | Listen Start. ServerSocketFD(%I64u), BackLog(%d)", __FUNCTION__, _serverSocket, _serverConfig._backlog);
 
 		// Listen 쓰레드를 활성화 한다.
+		auto listenThread = std::thread(std::bind(&NetworkMessenger::listenThreadFunc, this));
+		listenThread.detach();
 
 		// 시스템 정보를 알아온다.
+		SYSTEM_INFO si;
+		GetSystemInfo(&si);
+		int workerNum = si.dwNumberOfProcessors * 2;
 
 		// 코어 수의 두 배 만큼 worker 쓰레드를 활성화한다.
+		for (auto i = 0; i < workerNum; ++i)
+		{
+			auto workerThread = std::thread(std::bind(&NetworkMessenger::workerThreadFunc, this));
+			workerThread.detach();
+		}
 
 		// send 쓰레드를 활성화 한다. 
+		auto sendThread = std::thread(std::bind(&NetworkMessenger::sendThreadFunc, this));
+		sendThread.detach();
 
 		return true;
 	}
