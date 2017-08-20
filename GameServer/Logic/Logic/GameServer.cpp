@@ -26,6 +26,10 @@ namespace FPLogic
 			return ErrorCode::FailConfigLoad;
 		}
 
+		// 패킷 큐 생성.
+		_recvQueue = std::make_unique<PacketQueue>();
+		_sendQueue = std::make_unique<PacketQueue>();
+
 
 		return ErrorCode::None;
 	}
@@ -36,6 +40,7 @@ namespace FPLogic
 
 	void GameServer::Stop()
 	{
+		Release();
 	}
 
 	ErrorCode GameServer::loadConfig()

@@ -22,6 +22,7 @@ namespace FPLogic
 	class GameServer
 	{
 	public :
+
 		GameServer() {}
 		~GameServer() {}
 
