@@ -5,12 +5,16 @@
 #include "../../Common/ConsoleLogger.h"
 #include "../../Common/Define.h"
 #include "../../Common/ObjectPool.h"
+#include "../../Common/Packet.h"
 
+#include "IOInfo.h"
 #include "SessionInfo.h"
 #include "ServerNetworkErrorCode.h"
 
 namespace FPNetwork
 {
+	using PacketHeader = FPCommon::PacketHeader;
+
 	void NetworkMessenger::Stop()
 	{
 	}
@@ -158,6 +162,111 @@ namespace FPNetwork
 
 	void NetworkMessenger::workerThreadFunc()
 	{
+		DWORD transferredByte = 0;
+		IOInfo * ioInfo = nullptr;
+		// Key가 넘어 온다고 하는데, 뭔지 모르겠고 안씀. 나중에 검색해봐야징. :)
+		SessionInfo * key = nullptr;
+
+		while (true)
+		{
+			auto retval = GetQueuedCompletionStatus(_iocpHandle, &transferredByte, (PULONG_PTR)&key, (LPOVERLAPPED*)&ioInfo, INFINITE);
+			if (retval == FALSE)
+			{
+				_logger->Write(LogType::LOG_ERROR, "%s | Iocp GetQueuedCompletionStatus Failed", __FUNCTION__);
+				continue;
+			}
+
+			auto sessionTag = ioInfo->SessionTag;
+			auto& session = _sessionPool[sessionTag];
+
+			_logger->Write(LogType::LOG_DEBUG, "%s | Socket FD(%I64u), Session(%d) request complete", __FUNCTION__, session._socket, sessionTag);
+
+			if (ioInfo->Status == IOInfoStatus::READ)
+			{
+				// 종료 검사.
+				if (transferredByte == 0)
+				{
+					_logger->Write(LogType::LOG_INFO, "Socket FD(%I64u), Session(%d) connect ended", session._socket, sessionTag);
+					session.Clear();
+					_sessionPool.ReleaseTag(sessionTag);
+
+					std::shared_ptr<PacketInfo> closeSessionInfo = std::make_shared<PacketInfo>();
+					closeSessionInfo->_packetId= (short)NetworkErrorCode::NotifyCloseSession;
+					closeSessionInfo->_sessionIdx = sessionTag;
+					_recvQueue->Push(closeSessionInfo);
+
+					continue;
+				}
+
+				auto headerPosition = session._recvBuffer;
+				auto receivePosition = ioInfo->Wsabuf.buf;
+
+				// 처리안된 데이터의 총 량
+				auto totalDataSize = receivePosition + transferredByte - session._recvBuffer;
+
+				// 패킷으로 만들어지길 기다리는 데이터의 사이즈
+				auto remainDataSize = totalDataSize;
+
+				const auto packetHeaderSize = FPCommon::packetHeaderSize;
+				while (remainDataSize >= packetHeaderSize)
+				{
+					// 헤더를 들여다 보기에 충분한 데이터가 있다면 헤더를 들여다본다.
+					auto header = (PacketHeader*)headerPosition;
+					auto bodySize = header->_bodySize;
+
+					if (packetHeaderSize + bodySize >= remainDataSize)
+					{
+						// 패킷을 만들어준다.
+						std::shared_ptr<PacketInfo> newPacket = std::make_shared<PacketInfo>();
+						newPacket->_packetId = header->_id;
+						newPacket->_bodySize = bodySize;
+						newPacket->_body= headerPosition + packetHeaderSize;
+						newPacket->_sessionIdx = ioInfo->SessionTag;
+
+						_recvQueue->Push(newPacket);
+						_logger->Write(LogType::LOG_DEBUG, "%s | Making New Packet ID(%d), BodySize(%d), Session(%d)",
+							__FUNCTION__,
+							header->_id,
+							bodySize,
+							ioInfo->SessionTag);
+
+						// 패킷을 만든 후, 다음 번 헤더 자리를 지정하고, 남은 데이터 사이즈를 갱신한다.
+						headerPosition += packetHeaderSize + bodySize;
+						remainDataSize -= packetHeaderSize + bodySize;
+					}
+					else
+					{
+						break;
+					}
+				}
+
+				// 남은 데이터를 버퍼의 맨 앞으로 당겨준다.
+				memcpy_s(session._recvBuffer, _serverConfig._maxClientRecvSize, headerPosition, remainDataSize);
+
+				// 만들 수 있는 패킷은 다 만들었으므로, Recv를 건다.
+				ZeroMemory(&ioInfo->Overlapped, sizeof(OVERLAPPED));
+
+				// remainDataSize만큼은 띄고 받는다.
+				ioInfo->Wsabuf.buf = session._recvBuffer + remainDataSize;
+				ioInfo->Wsabuf.len = _serverConfig._maxClientRecvSize - remainDataSize;
+				ioInfo->Status = IOInfoStatus::READ;
+
+				DWORD recvSize = 0;
+				DWORD flags = 0;
+				auto retval = WSARecv(session._socket, &ioInfo->Wsabuf, 1, &recvSize, &flags, &ioInfo->Overlapped, nullptr);
+
+				if (SOCKET_ERROR == retval)
+				{
+					auto error = WSAGetLastError();
+					if (error != WSA_IO_PENDING)
+					{
+						_logger->Write(LogType::LOG_ERROR, "%s | WSARecv Error(%d)", __FUNCTION__, error);
+					}
+				}
+			}
+			// TODO :: IOInfoStatus::WRITE일 때 처리.
+			else {}
+		}
 	}
 
 	void NetworkMessenger::listenThreadFunc()
