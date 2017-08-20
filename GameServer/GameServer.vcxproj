@@ -104,6 +104,7 @@
     <ClInclude Include="common\ConsoleLogger.h" />
     <ClInclude Include="common\Define.h" />
     <ClInclude Include="common\ErrorCode.h" />
+    <ClInclude Include="Common\json.hpp" />
     <ClInclude Include="common\LogBase.h" />
     <ClInclude Include="common\ObjectPool.h" />
     <ClInclude Include="common\Packet.h" />
@@ -111,7 +112,6 @@
     <ClInclude Include="common\PacketQueue.h" />
     <ClInclude Include="network\network\IOInfo.h" />
     <ClInclude Include="network\network\NetworkMessenger.h" />
-    <ClInclude Include="network\network\ServerNetworkErrorCode.h" />
     <ClInclude Include="network\network\SessionInfo.h" />
   </ItemGroup>
   <ItemGroup>
@@ -121,6 +121,9 @@
     <ProjectReference Include="Network\Network\Network.vcxproj">
       <Project>{585ed37a-e646-4544-81ce-695bacbab38c}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="GameServer\ServerConfig.json" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -5,5 +5,7 @@ namespace FPCommon
 	enum class ErrorCode : short
 	{
 		None = 0,
+
+		FailConfigLoad = 10,
 	};
 }

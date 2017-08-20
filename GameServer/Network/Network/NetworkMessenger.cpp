@@ -367,7 +367,8 @@ namespace FPNetwork
 			auto sendHeader = PacketHeader{ sendPacket->_packetId, sendPacket->_bodySize };
 
 			char* sendChar = (char*)&sendHeader;
-			strcat(sendChar, sendPacket->_body);
+			// TODO :: strcat_s에 에러 있을 수도 있음. 기존에는 strcat사용.
+			strcat_s(sendChar, sizeof(sendChar), sendPacket->_body);
 
 			send(destSession._socket, sendChar, FPCommon::packetHeaderSize + sendPacket->_bodySize, 0);
 

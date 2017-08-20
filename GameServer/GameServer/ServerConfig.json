@@ -1,8 +1,8 @@
 {
-	"_port" : "23452",
-	"_backlog" : "32",
-	"_maxClientCount" : "2000",
-	"_extraClientCount" : "64",
-	"_maxClientRecvSize" : "8192",
-	"_maxClientSendSize" : "8192",
+	"_port" : 23452,
+	"_backlog" : 32,
+	"_maxClientCount" : 2000,
+	"_extraClientCount" : 64,
+	"_maxClientRecvSize" : 8192,
+	"_maxClientSendSize" : 8192
 }

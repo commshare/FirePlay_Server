@@ -132,6 +132,12 @@
       <Project>{585ed37a-e646-4544-81ce-695bacbab38c}</Project>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="GameServer.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="GameServer.cpp" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

@@ -69,7 +69,7 @@ namespace FPNetwork
 	// Factory Patten
 	public :
 
-		static class Factory
+		class Factory
 		{
 		public :
 

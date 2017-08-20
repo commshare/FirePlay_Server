@@ -53,11 +53,16 @@
     <ClInclude Include="common\PacketQueue.h">
       <Filter>Common</Filter>
     </ClInclude>
-    <ClInclude Include="network\network\ServerNetworkErrorCode.h">
-      <Filter>Common</Filter>
-    </ClInclude>
     <ClInclude Include="network\network\SessionInfo.h">
       <Filter>Common</Filter>
     </ClInclude>
+    <ClInclude Include="Common\json.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="GameServer\ServerConfig.json">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>
