@@ -17,10 +17,24 @@ namespace FPNetwork
 
 	void NetworkMessenger::Stop()
 	{
+		WSACleanup();
+
+		// 세션 풀 클래스를 초기화.
+		_sessionPool.Release();
 	}
 
 	void NetworkMessenger::ForcingClose(const int sessionIdx)
 	{
+		// 닫으려는 세션이 활성화 되어 있지 않은 상태면 그냥 리턴한다.
+		if (_sessionPool[sessionIdx].IsConnected() == false)
+		{
+			return;
+		}
+
+		closeSession(
+			SessionCloseCase::ForcingClose,
+			static_cast<SOCKET>(_sessionPool[sessionIdx]._socket),
+			sessionIdx);
 	}
 
 	bool NetworkMessenger::init(
@@ -271,10 +285,99 @@ namespace FPNetwork
 
 	void NetworkMessenger::listenThreadFunc()
 	{
+		while (true)
+		{
+			SOCKADDR_IN clientAddr;
+			int addrlen = sizeof(clientAddr);
+
+			_logger->Write(LogType::LOG_DEBUG, "%s | Waiting For Other Client...", __FUNCTION__);
+
+			// 여기서 Blocking되어 다른 클라이언트의 accept를 기다린다.
+			SOCKET newClient = accept(_serverSocket, (SOCKADDR*)&clientAddr, &addrlen);
+			if (newClient == INVALID_SOCKET)
+			{
+				_logger->Write(LogType::LOG_ERROR, "%s | Client accpet failed", __FUNCTION__);
+				continue;
+			}
+
+			// 풀에서 Session 하나를 받아 정보를 기입해준다.
+			auto newTag = _sessionPool.GetTag();
+			if (newTag < 0)
+			{
+				_logger->Write(LogType::LOG_WARN, "%s | Client Session Pool Full", __FUNCTION__);
+				// TODO :: 여기서 continue말고 동접자 최대일 경우 처리해주어야 함.
+				continue;
+			}
+
+			_logger->Write(LogType::LOG_INFO, "%s | Client Accept, Socket FD(%I64u) Session(%d)", __FUNCTION__, _serverSocket, newTag);
+
+			auto& newSession = _sessionPool[newTag];
+			newSession._tag = newTag;
+			newSession._socket = newClient;
+			newSession._socketAddress = clientAddr;
+
+			auto newIOCPInfo = new IOInfo();
+			ZeroMemory(&newIOCPInfo->Overlapped, sizeof(OVERLAPPED));
+			newIOCPInfo->Wsabuf.buf = newSession._recvBuffer;
+			newIOCPInfo->Wsabuf.len = _serverConfig._maxClientRecvSize;
+			newIOCPInfo->Status = IOInfoStatus::READ;
+			newIOCPInfo->SessionTag = newTag;
+
+			// IOCP에 새로운 세션을 등록해준다.
+			CreateIoCompletionPort((HANDLE)&newSession._socket, _iocpHandle, (ULONG_PTR)nullptr, 0);
+
+			DWORD recvSize = 0;
+			DWORD flags = 0;
+
+			// 리시브를 걸어놓는다.
+			auto retval = WSARecv(
+				newSession._socket,
+				&newIOCPInfo->Wsabuf,
+				1,
+				&recvSize, &flags, &newIOCPInfo->Overlapped, nullptr);
+			_logger->Write(LogType::LOG_DEBUG, "%s | Waiting for recv massage from socket(%I64u)", __FUNCTION__, newSession._socket);
+
+			if (SOCKET_ERROR == retval)
+			{
+				auto error = WSAGetLastError();
+				if (error != WSA_IO_PENDING)
+				{
+					_logger->Write(LogType::LOG_ERROR, "%s | WSARecv Error(%d)", __FUNCTION__, error);
+				}
+			}
+		}
 	}
 
 	void NetworkMessenger::sendThreadFunc()
 	{
+		while (true)
+		{
+			// 보낼 패킷이 없다면,
+			if (_sendQueue->IsEmpty())
+			{
+				// 양보한다.
+				std::this_thread::sleep_for(std::chrono::milliseconds(0));
+				continue;
+			}
+
+			_logger->Write(LogType::LOG_DEBUG, "%s | SendThreadFunc Entry", __FUNCTION__);
+
+			std::shared_ptr<PacketInfo> sendPacket = _sendQueue->Peek();
+			auto destSession = _sessionPool[sendPacket->_sessionIdx];
+			auto sendHeader = PacketHeader{ sendPacket->_packetId, sendPacket->_bodySize };
+
+			char* sendChar = (char*)&sendHeader;
+			strcat(sendChar, sendPacket->_body);
+
+			send(destSession._socket, sendChar, FPCommon::packetHeaderSize + sendPacket->_bodySize, 0);
+
+			//send(destSession._socket, (char*)&sendHeader, FirePlayCommon::packetHeaderSize, 0);
+			//send(destSession._socket, sendPacket->pData, sendPacket->PacketBodySize, 0);
+
+			_sendQueue->Pop();
+
+			_logger->Write(LogType::LOG_DEBUG, "%s | Send Packet, To Socket(%I64u), Session(%d), Packet ID(%d)", __FUNCTION__, destSession._socket, destSession._tag, static_cast<int>(sendPacket->_packetId));
+		}
 	}
 
 }
