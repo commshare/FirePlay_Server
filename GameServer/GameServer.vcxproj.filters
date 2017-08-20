@@ -1,0 +1,63 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav</Extensions>
+    </Filter>
+    <Filter Include="Common">
+      <UniqueIdentifier>{7424294b-69f7-4b74-bae7-fefd33ba9e2f}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="gameserver\ServerMain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="common\ConsoleLogger.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\Define.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\ErrorCode.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="network\network\IOInfo.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\LogBase.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="network\network\NetworkMessenger.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\ObjectPool.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\Packet.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\PacketID.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="common\PacketQueue.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="network\network\ServerNetworkErrorCode.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="network\network\SessionInfo.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
