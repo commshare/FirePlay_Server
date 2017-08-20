@@ -30,6 +30,9 @@ namespace FPLogic
 		_recvQueue = std::make_unique<PacketQueue>();
 		_sendQueue = std::make_unique<PacketQueue>();
 
+		// 네트워크 메신져 생성.
+		_network = std::make_unique<NetworkMessenger>();
+		_network->Init(_logger.get(), _config.get(), _recvQueue.get(), _sendQueue.get());
 
 		return ErrorCode::None;
 	}

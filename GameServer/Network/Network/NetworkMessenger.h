@@ -32,6 +32,11 @@ namespace FPNetwork
 		~NetworkMessenger() {}
 
 		void Stop();
+		bool Init(
+			ConsoleLogger * logger,
+			ServerConfig * serverConfig,
+			PacketQueue * recvQueue,
+			PacketQueue * sendQueue);
 
 		void ForcingClose(const int sessionIdx);
 
@@ -41,11 +46,6 @@ namespace FPNetwork
 
 	private :
 
-		bool init(
-			ConsoleLogger * logger,
-			ServerConfig * serverConfig,
-			PacketQueue * recvQueue,
-			PacketQueue * sendQueue);
 
 		void closeSession(const SessionCloseCase closeCase, const SOCKET socket, const int sessionIdx);
 		void addToPacketQueue(const int sessionIdx, const short pktId, const short bodySize, char * body);
@@ -66,34 +66,5 @@ namespace FPNetwork
 		PacketQueue * _recvQueue = nullptr;
 		PacketQueue * _sendQueue = nullptr;
 
-	// Factory Patten
-	public :
-
-		class Factory
-		{
-		public :
-
-			NetworkMessenger * Create(
-				ConsoleLogger * logger,
-				ServerConfig * serverConfig,
-				PacketQueue * recvQueue,
-				PacketQueue * sendQueue)
-			{
-				auto product = new NetworkMessenger();
-				if (product == nullptr)
-				{
-					return nullptr;
-				}
-
-				auto initResult = product->init(logger, serverConfig, recvQueue, sendQueue);
-				if (initResult == false)
-				{
-					return nullptr;
-				}
-				return product;
-			}
-		};
-
 	};
-
 }

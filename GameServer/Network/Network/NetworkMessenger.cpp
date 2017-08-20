@@ -37,7 +37,7 @@ namespace FPNetwork
 			sessionIdx);
 	}
 
-	bool NetworkMessenger::init(
+	bool NetworkMessenger::Init(
 		ConsoleLogger * logger,
 		ServerConfig * serverConfig,
 		PacketQueue * recvQueue,
