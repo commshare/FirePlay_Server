@@ -311,6 +311,7 @@ namespace FPNetwork
 
 			_logger->Write(LogType::LOG_INFO, "%s | Client Accept, Socket FD(%I64u) Session(%d)", __FUNCTION__, _serverSocket, newTag);
 
+			// 세션 풀에 해당 정보 기입.
 			auto& newSession = _sessionPool[newTag];
 			newSession._tag = newTag;
 			newSession._socket = newClient;
