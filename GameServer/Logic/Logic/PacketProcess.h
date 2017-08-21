@@ -11,5 +11,7 @@ namespace FPLogic
 
 	private :
 
+	private :
+
 	};
 }

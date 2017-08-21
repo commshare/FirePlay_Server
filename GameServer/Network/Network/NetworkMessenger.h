@@ -18,11 +18,11 @@ namespace FPCommon
 
 namespace FPNetwork
 {
-	using PacketQueue = FPCommon::PacketQueue;
-	using PacketInfo = FPCommon::PacketInfo;
-	using LogType = FPCommon::LogType;
+	using PacketQueue   = FPCommon::PacketQueue;
+	using PacketInfo    = FPCommon::PacketInfo;
+	using LogType       = FPCommon::LogType;
 	using ConsoleLogger = FPCommon::ConsoleLogger;
-	using ServerConfig = FPCommon::ServerConfig;
+	using ServerConfig  = FPCommon::ServerConfig;
 
 	class NetworkMessenger 
 	{
@@ -45,7 +45,6 @@ namespace FPNetwork
 		int GetSessionPoolSize() { return _sessionPool.GetSize(); }
 
 	private :
-
 
 		void closeSession(const SessionCloseCase closeCase, const SOCKET socket, const int sessionIdx);
 		void addToPacketQueue(const int sessionIdx, const short pktId, const short bodySize, char * body);

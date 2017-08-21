@@ -13,10 +13,11 @@
 
 namespace FPLogic
 {
-	using ErrorCode = FPCommon::ErrorCode;
+	using ErrorCode     = FPCommon::ErrorCode;
 	using ConsoleLogger = FPCommon::ConsoleLogger;
-	using ServerConfig = FPCommon::ServerConfig;
-	using PacketQueue = FPCommon::PacketQueue;
+	using ServerConfig  = FPCommon::ServerConfig;
+	using PacketQueue   = FPCommon::PacketQueue;
+
 	using NetworkMessenger = FPNetwork::NetworkMessenger;
 
 	class GameServer
@@ -27,7 +28,9 @@ namespace FPLogic
 		~GameServer() {}
 
 		ErrorCode Init();
+
 		void Run();
+
 		void Stop();
 
 	private :
