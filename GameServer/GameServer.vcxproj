@@ -111,7 +111,6 @@
     <ClInclude Include="common\PacketID.h" />
     <ClInclude Include="common\PacketQueue.h" />
     <ClInclude Include="network\network\IOInfo.h" />
-    <ClInclude Include="network\network\NetworkMessenger.h" />
     <ClInclude Include="network\network\SessionInfo.h" />
   </ItemGroup>
   <ItemGroup>
@@ -123,6 +122,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\README.md" />
     <None Include="GameServer\ServerConfig.json" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

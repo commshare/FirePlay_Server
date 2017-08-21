@@ -38,9 +38,6 @@
     <ClInclude Include="common\LogBase.h">
       <Filter>Common</Filter>
     </ClInclude>
-    <ClInclude Include="network\network\NetworkMessenger.h">
-      <Filter>Common</Filter>
-    </ClInclude>
     <ClInclude Include="common\ObjectPool.h">
       <Filter>Common</Filter>
     </ClInclude>
@@ -62,6 +59,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="GameServer\ServerConfig.json">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\README.md">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>
