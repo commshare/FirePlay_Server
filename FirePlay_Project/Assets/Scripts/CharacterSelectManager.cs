@@ -14,7 +14,9 @@ public class CharacterSelectManager : MonoBehaviour
 {
 	public PlayerType _selectedCharacter = PlayerType.Archer1;
 	public Sprite _pointer = null;
-	public Animator _archer1 = null; 
+	private GameObject _archer1 = null;
+	private GameObject _archer2 = null;
+	private GameObject _archer3 = null;
 
 	private void Start()
 	{
@@ -23,5 +25,8 @@ public class CharacterSelectManager : MonoBehaviour
 
 	private void LoadArchers()
 	{
+		_archer1 = Instantiate(Resources.Load("PrivateData/SpritesArchers/FantasyArcher_01") as GameObject);
+		_archer2 = Instantiate(Resources.Load("PrivateData/SpritesArchers/FantasyArcher_02") as GameObject);
+		_archer3 = Instantiate(Resources.Load("PrivateData/SpritesArchers/FantasyArcher_01") as GameObject);
 	}
 }
