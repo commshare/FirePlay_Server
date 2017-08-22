@@ -7,7 +7,7 @@ public class PlayerInfo : MonoBehaviour
 {
 	private void Awake()
 	{
-		DontDestroyOnLoad(this.gameObject);
+        DontDestroyOnLoad(gameObject);
 	}
 
 	public void InfoSetting(string id, long token)
@@ -18,4 +18,5 @@ public class PlayerInfo : MonoBehaviour
 
 	public string _id;
 	public long _token;
+    public PlayerType _selectedPlayerType = PlayerType.None;
 }

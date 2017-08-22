@@ -82,7 +82,7 @@ public class LoginManager : MonoBehaviour
 		var infoPrefab = Resources.Load("Prefabs/PlayerInfo") as GameObject;
 		if (infoPrefab != null)
 		{
-			var _info = Instantiate(infoPrefab).GetComponent<PlayerInfo>();
+			_info = Instantiate(infoPrefab).GetComponent<PlayerInfo>();
 			_info.InfoSetting(_id, 0L);
 
 			SceneManager.LoadScene("CharacterSelect");
@@ -129,12 +129,15 @@ public class LoginManager : MonoBehaviour
 			response = JsonUtility.FromJson<HttpPack.LoginRes>(content.ToString());
 			Debug.Log("Login Success");
 
-			// TODO : response의 결과값 확인.
-			// 결과값에 따라 메시지창 띄워주기.
+            // TODO : response의 결과값 확인.
+            // 결과값에 따라 메시지창 띄워주기.
 
-			var infoPrefab = Resources.Load("Prefab/PlayerInfo") as GameObject;
-			var _info = Instantiate(infoPrefab).GetComponent<PlayerInfo>();
-			_info.InfoSetting(_id, response.Token);
+            if (_info == null)
+            {
+                var infoPrefab = Resources.Load("Prefab/PlayerInfo") as GameObject;
+                var _info = Instantiate(infoPrefab).GetComponent<PlayerInfo>();
+            }
+            _info.InfoSetting(_id, response.Token);
 		}
 		else
 		{

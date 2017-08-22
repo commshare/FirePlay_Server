@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public enum PlayerType : int
 {
@@ -27,7 +28,7 @@ public class CharacterSelectManager : MonoBehaviour
 
 	private void Update()
 	{
-		GetPointerMove();		
+        ProcessKeyboardInput();
 	}
 
 	private void SetInitialArchers()
@@ -56,12 +57,17 @@ public class CharacterSelectManager : MonoBehaviour
         _archers[(int)PlayerType.Archer1].GetComponent<Animator>().enabled = true;
 	}
 
+    private void ProcessKeyboardInput()
+    {
+		GetPointerMove();
+
+        GetSelection();
+    }
+
 	private void GetPointerMove()
 	{
-        // TODO :: 키보드 움직임을 좀 끊어서 받아야 겠음.
         // TODO :: 애니메이션이 멈추면 처음 애니메이션이 시작하는 지점으로 돌아가도록.
-
-		if (Input.GetKey(KeyCode.LeftArrow))
+		if (Input.GetKeyDown(KeyCode.LeftArrow))
 		{
             // 가장 왼쪽일 때 왼쪽으로 가면 바로 리턴.
             if (_selectedCharacter == PlayerType.Archer1) return;
@@ -77,7 +83,7 @@ public class CharacterSelectManager : MonoBehaviour
             _archers[(int)_selectedCharacter].GetComponent<Animator>().enabled = true;
 		}
         // 왼쪽일 때와 마찬가지.
-		else if (Input.GetKey(KeyCode.RightArrow))
+		else if (Input.GetKeyDown(KeyCode.RightArrow))
 		{
             if (_selectedCharacter == PlayerType.Archer3) return;
 
@@ -89,4 +95,20 @@ public class CharacterSelectManager : MonoBehaviour
             _archers[(int)_selectedCharacter].GetComponent<Animator>().enabled = true;
 		}
 	}
+
+    private void GetSelection()
+    {
+        // 이상한 값일 경우 에러처리.
+        if (_selectedCharacter <= PlayerType.None || _selectedCharacter > PlayerType.Archer3) return;
+
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            // PlayerInfo에 기록.
+            var playerInfo = FindObjectOfType<PlayerInfo>();
+            playerInfo._selectedPlayerType = _selectedCharacter;
+
+            // 씬 전환.
+            SceneManager.LoadScene("Matching");
+        }
+    }
 }
