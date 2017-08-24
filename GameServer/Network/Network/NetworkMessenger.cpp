@@ -38,15 +38,15 @@ namespace FPNetwork
 	}
 
 	bool NetworkMessenger::Init(
-		ConsoleLogger * logger,
-		ServerConfig * serverConfig,
-		PacketQueue * recvQueue,
-		PacketQueue * sendQueue)
+			ConsoleLogger * logger,
+			ServerConfig * serverConfig,
+			PacketQueue * recvQueue,
+			PacketQueue * sendQueue)
 	{
 		if (logger       == nullptr ||
 			serverConfig == nullptr ||
 			recvQueue    == nullptr ||
-			sendQueue    == nullptr)
+			sendQueue    == nullptr )
 		{
 			return false;
 		}
@@ -58,7 +58,7 @@ namespace FPNetwork
 
 		// 클라이언트 세션 풀 초기화.
 		_sessionPool.Init(_serverConfig._maxClientCount);
-		for (int i = 0; i < _serverConfig._maxClientCount; ++i)
+		for (auto i = 0; i < _serverConfig._maxClientCount; ++i)
 		{
 			_sessionPool[i]._tag = i;
 			_sessionPool[i]._recvBuffer = new char[_serverConfig._maxClientRecvSize];

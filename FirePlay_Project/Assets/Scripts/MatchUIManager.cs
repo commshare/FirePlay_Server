@@ -1,12 +1,31 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class MatchUIManager : MonoBehaviour
 {
+    private void Awake()
+    {
+        MakeAnim();
+    }
+
     private void OnGUI()
     {
         MakeButton();
+    }
+
+    private void MakeAnim()
+    {
+        var selectInfo = FindObjectOfType<PlayerInfo>();
+
+        if (selectInfo == null) return;
+
+        string prefabPath = "PrivateData/SpritesArchers/FantasyArcher_0" + (int)selectInfo._selectedPlayerType;
+
+        var instance = Instantiate(Resources.Load(prefabPath) as GameObject);
+
+        instance.GetComponent<Transform>().position = new Vector3(0f, 1f, 0f);
     }
 
     private void MakeButton()
