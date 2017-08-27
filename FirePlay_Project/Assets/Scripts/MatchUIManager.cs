@@ -9,6 +9,7 @@ public class MatchUIManager : MonoBehaviour
 {
     private GameObject _curtain = null;
     private GUIStyle _textStyle = null;
+    private GameObject _modelInstance = null;
     private bool _isTryingNumberMatch = false;
     private bool _isTryingFastMatch = false;
     private float _matchingCountTime = 0.0f;
@@ -35,9 +36,9 @@ public class MatchUIManager : MonoBehaviour
 
         string prefabPath = "PrivateData/SpritesArchers/FantasyArcher_0" + (int)selectInfo._selectedPlayerType;
 
-        var instance = Instantiate(Resources.Load(prefabPath) as GameObject);
+        _modelInstance = Instantiate(Resources.Load(prefabPath) as GameObject);
 
-        instance.GetComponent<Transform>().position = new Vector3(0f, 1f, 0f);
+        _modelInstance.GetComponent<Transform>().position = new Vector3(0f, 1f, 0f);
     }
 
     private void MakeButton()
@@ -85,6 +86,7 @@ public class MatchUIManager : MonoBehaviour
 
     private void TryNumberMatch()
     {
+        _modelInstance.GetComponent<Animator>().enabled = false;
         _matchingCountTime += Time.deltaTime;
 
         if (_matchingCountTime >= 1.0f)
@@ -100,6 +102,7 @@ public class MatchUIManager : MonoBehaviour
         {
             _curtain.GetComponent<BlackCurtain>().StartFadeOut();
             _isTryingNumberMatch = false;
+        _modelInstance.GetComponent<Animator>().enabled = true;
         }
     }
 

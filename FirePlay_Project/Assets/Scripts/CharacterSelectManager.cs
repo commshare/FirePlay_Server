@@ -66,13 +66,14 @@ public class CharacterSelectManager : MonoBehaviour
 
 	private void GetPointerMove()
 	{
-        // TODO :: 애니메이션이 멈추면 처음 애니메이션이 시작하는 지점으로 돌아가도록.
 		if (Input.GetKeyDown(KeyCode.LeftArrow))
 		{
             // 가장 왼쪽일 때 왼쪽으로 가면 바로 리턴.
             if (_selectedCharacter == PlayerType.Archer1) return;
 
             // 원래 포인터가 있던 자리의 애니메이션을 멈춘다.
+            _archers[(int)_selectedCharacter].SetActive(false);
+            _archers[(int)_selectedCharacter].SetActive(true);
             _archers[(int)_selectedCharacter].GetComponent<Animator>().enabled = false;
 
             // 포인터를 이동시킨다.
@@ -87,6 +88,8 @@ public class CharacterSelectManager : MonoBehaviour
 		{
             if (_selectedCharacter == PlayerType.Archer3) return;
 
+            _archers[(int)_selectedCharacter].SetActive(false);
+            _archers[(int)_selectedCharacter].SetActive(true);
             _archers[(int)_selectedCharacter].GetComponent<Animator>().enabled = false;
 
             ++_selectedCharacter;

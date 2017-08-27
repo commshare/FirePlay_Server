@@ -1,0 +1,6 @@
+﻿namespace DBServer
+{
+    class DBController
+    {
+    }
+}
