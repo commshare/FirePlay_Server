@@ -37,6 +37,18 @@ namespace DBServer
         }
 
         // 유저의 토큰 값이 일치하는지 확인해주는 메소드.
+        [Route("DB/TokenValidation")]
+        [HttpPost]
+        public async Task<TokenValidationRes> GetTokenValidation(TokenValidationReq req)
+        {
+            var res = new TokenValidationRes();
+
+            var result = await Redis.AuthTokenManager.CheckAuthToken(req.UserId, req.Token);
+
+            res.Result = (short)result;
+
+            return res;
+        }
 
         // 유저의 토큰 값을 기록하는 메소드.
     }

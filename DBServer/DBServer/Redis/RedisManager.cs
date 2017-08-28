@@ -120,15 +120,20 @@ namespace DBServer.Redis
         }
 
         // 레디스 서버에 등록되어 있는 토큰과 일치하는지를 확인하는 메소드.
-        public static async Task<bool> CheckAuthToken(string userId, long token)
+        public static async Task<ErrorCode> CheckAuthToken(string userId, long token)
         {
             var sessionInfo = await RedisManager.GetStringAsync<DbUserSession>(userId);
 
-            if (sessionInfo.Item1 == false || sessionInfo.Item2.AuthToken != token)
+            if (sessionInfo.Item1 == false)
             {
-                return false;
+                return ErrorCode.RedisUnRegistedId;
             }
-            return true;
+            else if (sessionInfo.Item2.AuthToken != token)
+            {
+                return ErrorCode.RedisInvalidToken;
+
+            }
+            return ErrorCode.None;
         }
 
         // 레디스 서버에 아이디로 등록되어 있는 토큰을 지워주는 메소드.

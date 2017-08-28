@@ -16,5 +16,8 @@
         RedisStartException = 800,
         RedisInvalidAddressString = 801,
         RedisStartSetTestFailed = 802,
+
+        RedisUnRegistedId = 810,
+        RedisInvalidToken = 811,
     }
 }
