@@ -1,6 +1,6 @@
 ﻿namespace DBServer
 {
-    class DBController
+    enum ErrorCode
     {
     }
 }
