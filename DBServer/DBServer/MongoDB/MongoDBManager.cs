@@ -9,6 +9,8 @@ namespace DBServer.MongoDB
         public string _id;
         public string _pw;
         public Int64 UId;
+        public int _wins = 0;
+        public int _loses = 0;
     }
     
     class MongoDBManager
@@ -17,9 +19,7 @@ namespace DBServer.MongoDB
 
         private const string UserDbName = "UserDB";
 
-        public const string LoginCollectionName = "UserLoginInfo";
-
-        public const string ScoreCollectionName = "UserScoreInfo";
+        public const string collectionName = "UserInfo";
 
         public static IMongoCollection<T> GetCollection<T>(string dbName, string collectionName)
         {
@@ -37,7 +37,7 @@ namespace DBServer.MongoDB
         // 해당하는 정보의 유저가 가입되어 있는지를 확인해주는 메소드.
         public static async Task<ErrorCode> IsUserExist(string userName, string encryptedUserPw)
         {
-            var collection = GetCollection<DBUser>(UserDbName, LoginCollectionName);
+            var collection = GetCollection<DBUser>(UserDbName, collectionName);
             DBUser data;
 
             try
@@ -72,7 +72,25 @@ namespace DBServer.MongoDB
             }
 
             // 존재하지 않는다면 가입 절차 진행.
-            
+            var newUser = new DBUser
+            {
+                _id = userName,
+                _pw = encrytedUserPw,
+                UId = DateTime.Now.Ticks
+            };
+
+            var collection = GetCollection<DBUser>(UserDbName, collectionName);
+            try
+            {
+                await collection.InsertOneAsync(newUser);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                return ErrorCode.MongoDBAddError;
+            }
+
+            return ErrorCode.None;
         }
     }
 }

@@ -7,6 +7,7 @@
 
         // 700번대는 MongoDB 관련 에러 코드.
         MongoDBFindError = 700,
+        MongoDBAddError = 701,
 
         LoginUserInfoDontExist = 710,
         LoginUserInfoAlreadyExist = 711,
