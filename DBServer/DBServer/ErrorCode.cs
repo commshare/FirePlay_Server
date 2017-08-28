@@ -1,7 +1,7 @@
 ﻿namespace DBServer
 {
     // DBServer 에러 코드는 700~900번 까지 사용.
-    enum ErrorCode
+    public enum ErrorCode
     {
         None = 0,
 
@@ -13,5 +13,8 @@
         LoginUserInfoAlreadyExist = 711,
 
         // 800번대는 Redis 관련 에러 코드.
+        RedisStartException = 800,
+        RedisInvalidAddressString = 801,
+        RedisStartSetTestFailed = 802,
     }
 }

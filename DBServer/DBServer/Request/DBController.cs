@@ -29,7 +29,11 @@ namespace DBServer
         {
             var res = new UserSignInRes();
 
+            var result = await MongoDB.MongoDBManager.AddUser(req.UserId, req.EncryptedUserPw);
 
+            res.Result = (short)result;
+
+            return res;
         }
 
         // 유저의 토큰 값이 일치하는지 확인해주는 메소드.

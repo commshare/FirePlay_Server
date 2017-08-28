@@ -13,7 +13,7 @@ namespace DBServer.MongoDB
         public int _loses = 0;
     }
     
-    class MongoDBManager
+    public static class MongoDBManager
     {
         private const string ConnectionString = "mongodb://localhost:27017/?maxPoolSize=200";
 
