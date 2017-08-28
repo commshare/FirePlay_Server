@@ -19,5 +19,7 @@
 
         RedisUnRegistedId = 810,
         RedisInvalidToken = 811,
+
+        RedisRegistError =  820,
     }
 }

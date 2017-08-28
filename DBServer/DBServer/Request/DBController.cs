@@ -51,5 +51,25 @@ namespace DBServer
         }
 
         // 유저의 토큰 값을 기록하는 메소드.
+        [Route("DB/RegistToken")]
+        [HttpPost]
+        public async Task<TokenAuthRes> GetTokenAuth(TokenAuthReq req)
+        {
+            var res = new TokenAuthRes();
+
+            try
+            {
+                await Redis.AuthTokenManager.RegistAuthToken(req.UserId, req.Token);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                res.Result = (short)ErrorCode.RedisRegistError;
+                return res;
+            }
+
+            res.Result = (short)ErrorCode.None;
+            return res;
+        }
     }
 }
