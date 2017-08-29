@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
 using System.Web.Http;
+using MessagePack;
+using System.Text;
 
 namespace DBServer
 {
@@ -13,7 +15,9 @@ namespace DBServer
         {
             var res = new UserValidationRes();
 
-            var isUserExisted = await MongoDB.MongoDBManager.IsUserExist(req.UserId, req.EncryptedUserPw);
+            Console.WriteLine($"UserValidation Request. Id : {req.UserId}, Pw : {req.EncryptedUserPw}");
+
+            var isUserExisted = await DB.MongoDBManager.IsUserExist(req.UserId, req.EncryptedUserPw);
 
             res.Result = (short)isUserExisted;
 
@@ -29,7 +33,7 @@ namespace DBServer
         {
             var res = new UserSignInRes();
 
-            var result = await MongoDB.MongoDBManager.AddUser(req.UserId, req.EncryptedUserPw);
+            var result = await DB.MongoDBManager.AddUser(req.UserId, req.EncryptedUserPw);
 
             res.Result = (short)result;
 
@@ -43,7 +47,7 @@ namespace DBServer
         {
             var res = new TokenValidationRes();
 
-            var result = await Redis.AuthTokenManager.CheckAuthToken(req.UserId, req.Token);
+            var result = await DB.AuthTokenManager.CheckAuthToken(req.UserId, req.Token);
 
             res.Result = (short)result;
 
@@ -59,7 +63,7 @@ namespace DBServer
 
             try
             {
-                await Redis.AuthTokenManager.RegistAuthToken(req.UserId, req.Token);
+                await DB.AuthTokenManager.RegistAuthToken(req.UserId, req.Token);
             }
             catch (Exception e)
             {

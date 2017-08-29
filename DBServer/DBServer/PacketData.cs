@@ -2,6 +2,8 @@
 
 namespace DBServer
 {
+    // DB 서버는 게임서버(C++)과의 통신을 위해 MsgPack을 기본적으로 사용.
+    // DB 서버와 통신을 하고 싶다면 MsgPack을 사용하여야 함.
     [MessagePackObject]
     public struct UserValidationReq
     {
