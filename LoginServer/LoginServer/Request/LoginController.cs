@@ -18,9 +18,11 @@ namespace LoginServer.Request
             Console.WriteLine($"Id({reqPacket.UserId}), Pw({encryptedPassword}), Send Login Request");
 
             // DB Server에 유저가 가입되어 있는지를 조사한다.
-            var userValidationReq = new DBServer.UserValidationReq();
-            userValidationReq.UserId = reqPacket.UserId;
-            userValidationReq.EncryptedUserPw = encryptedPassword;
+            var userValidationReq = new DBServer.UserValidationReq()
+            {
+                UserId = reqPacket.UserId,
+                EncryptedUserPw = encryptedPassword
+            };
 
             var userValidationRes = await Util.HttpMessenger.RequestHttp<DBServer.UserValidationReq, DBServer.UserValidationRes>(
                 "http://localhost:20000/", "DB/UserValidation", userValidationReq);
@@ -37,9 +39,11 @@ namespace LoginServer.Request
             resPacket.Token = TokenGenerator.GetInstance().CreateToken();
 
             // DB Server에 토큰을 등록한다.
-            var tokenAuthReq = new DBServer.TokenAuthReq();
-            tokenAuthReq.UserId = reqPacket.UserId;
-            tokenAuthReq.Token = resPacket.Token;
+            var tokenAuthReq = new DBServer.TokenAuthReq()
+            {
+                UserId = reqPacket.UserId,
+                Token = resPacket.Token
+            };
 
             var tokenAuthRes = await Util.HttpMessenger.RequestHttp<DBServer.TokenAuthReq, DBServer.TokenAuthRes>(
                 "http://localhost:20000/", "DB/RegistToken", tokenAuthReq);
@@ -69,9 +73,11 @@ namespace LoginServer.Request
             Console.WriteLine($"Id({signInPacket.UserId}), Pw({encryptedPassword}), Send SignIn Request");
 
             // 회원가입이 가능한 정보인지를 DB 서버에 조회한다.
-            var userValidationReq = new DBServer.UserValidationReq();
-            userValidationReq.UserId = signInPacket.UserId;
-            userValidationReq.EncryptedUserPw = encryptedPassword;
+            var userValidationReq = new DBServer.UserValidationReq()
+            {
+                UserId = signInPacket.UserId,
+                EncryptedUserPw = encryptedPassword
+            };
 
             var userValidationRes = await Util.HttpMessenger.RequestHttp<DBServer.UserValidationReq, DBServer.UserValidationRes>(
                 "http://localhost:20000/", "DB/UserValidation", userValidationReq);
@@ -85,9 +91,12 @@ namespace LoginServer.Request
             }
 
             // 회원가입이 가능하다면 DB 서버에 회원 가입을 요청한다.
-            var userSignInReq = new DBServer.UserSignInReq();
-            userSignInReq.UserId = signInPacket.UserId;
-            userSignInReq.EncryptedUserPw = encryptedPassword;
+            var userSignInReq = new DBServer.UserSignInReq()
+            {
+                UserId = signInPacket.UserId,
+                EncryptedUserPw = encryptedPassword
+            };
+
 
             var userSignInRes = await Util.HttpMessenger.RequestHttp<DBServer.UserSignInReq, DBServer.UserSignInRes>(
                 "http://localhost:20000", "DB/AddUser", userSignInReq);
@@ -103,9 +112,11 @@ namespace LoginServer.Request
             // 토큰을 생성하고 DB 서버에 등록한다.
             resPacket.Token = TokenGenerator.GetInstance().CreateToken();
 
-            var tokenAuthReq = new DBServer.TokenAuthReq();
-            tokenAuthReq.UserId = signInPacket.UserId;
-            tokenAuthReq.Token = resPacket.Token;
+            var tokenAuthReq = new DBServer.TokenAuthReq()
+            {
+                UserId = signInPacket.UserId,
+                Token = resPacket.Token
+            };
 
             var tokenAuthRes = await Util.HttpMessenger.RequestHttp<DBServer.TokenAuthReq, DBServer.TokenAuthRes>(
                 "http://localhost:20000/", "DB/RegistToken", tokenAuthReq);
@@ -123,38 +134,33 @@ namespace LoginServer.Request
             return resPacket;
         }
 
-        //[Route("Request/Logout")]
-        //[HttpPost]
-        //public async Task<LogoutRes> LogoutRequest(LogoutReq logoutPacket)
-        //{
-        //	var resPacket = new LogoutRes();
+        [Route("Request/Logout")]
+        [HttpPost]
+        public async Task<LogoutRes> LogoutRequest(LogoutReq logoutPacket)
+        {
+            var resPacket = new LogoutRes();
 
-        //	Console.WriteLine($"Id({logoutPacket.UserId}), Send Logout Packet");
+            Console.WriteLine($"Id({logoutPacket.UserId}), Send Logout Packet");
 
-        //	// Id가 MongoDB에 없다면 입력값 에러 반환.
-        //	var isIdIsValid = await DB.MongoDbManager.GetIdExist(logoutPacket.UserId);
-        //	if (isIdIsValid == false)
-        //	{
-        //		Console.WriteLine($"Id({logoutPacket.UserId}) is Invalid Id");
-        //		resPacket.Result = (short)ErrorCode.LogoutInvalidId;
-        //		return resPacket;
-        //	}
+            // DB서버에 유저의 토큰 값을 내려달라고 요청.
+            var tokenDeleteReq = new DBServer.TokenDeleteReq()
+            {
+                UserId = logoutPacket.UserId,
+                Token = logoutPacket.Token
+            };
 
-        //	// Token이 Redis에 없다면 입력값 에러 반환.
-        //	var isTokenValid = await DB.AuthTokenManager.CheckAuthToken(logoutPacket.UserId, logoutPacket.Token);
-        //	if (isTokenValid == false)
-        //	{
-        //		Console.WriteLine($"Id({logoutPacket.UserId})'s Token({logoutPacket.Token}) is Invalid");
-        //		resPacket.Result = (short) ErrorCode.LogoutInvalidToken;
-        //		return resPacket;
-        //	}
+            var tokenDeleteRes = await Util.HttpMessenger.RequestHttp<DBServer.TokenDeleteReq, DBServer.TokenDeleteRes>(
+                "http://localhost:20000/", "DB/DeleteToken", tokenDeleteReq);
 
-        //	// 입력 요청값이 Valid하다고 판단되면 Redis에서 값 삭제.
-        //	await DB.AuthTokenManager.DeleteAuthToken(logoutPacket.UserId);
-        //	resPacket.Result = (short) ErrorCode.None;
-        //	Console.WriteLine($"Id({logoutPacket.UserId}), Logout Success");
+            if (tokenDeleteRes.Result != (short)ErrorCode.None)
+            {
+                resPacket.Result = tokenDeleteRes.Result;
+                return resPacket;
+            }
 
-        //	return resPacket;
-        //}
+            Console.WriteLine($"Id({logoutPacket.UserId}), Logout Success");
+            resPacket.Result = (short)ErrorCode.None; 
+            return resPacket;
+        }
     }
 }

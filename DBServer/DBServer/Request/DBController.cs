@@ -8,7 +8,7 @@ namespace DBServer
 {
     public class DBController : ApiController
     {
-        // 해당 유저가 가입되어 있는지 확인하는 메소드.
+        // 해당 유저가 등록되어 있는지 확인하는 메소드.
         [Route("DB/UserValidation")]
         [HttpPost]
         public async Task<UserValidationRes> GetUserValidation(UserValidationReq req)
@@ -21,12 +21,10 @@ namespace DBServer
 
             res.Result = (short)isUserExisted;
 
-            // TODO :: 여기서 메시지 팩으로 Pack해서 보내주기.
-
             return res;
         }
 
-        // 유저를 가입시키는 메소드.
+        // 유저를 등록하는 메소드.
         [Route("DB/AddUser")]
         [HttpPost]
         public async Task<UserSignInRes> AddUser(UserSignInReq req)
@@ -68,12 +66,44 @@ namespace DBServer
             catch (Exception e)
             {
                 Console.WriteLine(e.Message);
-                res.Result = (short)ErrorCode.RedisRegistError;
+                res.Result = (short)ErrorCode.RedisTokenRegistError;
                 return res;
             }
 
             res.Result = (short)ErrorCode.None;
             return res;
         }
+
+        // 유저의 토큰 값을 삭제하는 메소드.
+        [Route("DB/DeleteToken")]
+        [HttpPost]
+        public async Task<TokenDeleteRes> DeleteToken(TokenDeleteReq req)
+        {
+            var res = new TokenDeleteRes();
+
+            // 유효한 값인지 우선 검사.
+            var validation = await DB.AuthTokenManager.CheckAuthToken(req.UserId, req.Token);
+            if (validation != (short)ErrorCode.None)
+            {
+                res.Result = (short)validation;
+                return res;
+            }
+
+            // 유효한 요청이라면 삭제.
+            try
+            {
+                await DB.AuthTokenManager.DeleteAuthToken(req.UserId);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+                res.Result = (short)ErrorCode.RedisTokenDeleteError;
+                return res;
+            }
+
+            res.Result = (short)ErrorCode.None;
+            return res;
+        }
+
     }
 }
