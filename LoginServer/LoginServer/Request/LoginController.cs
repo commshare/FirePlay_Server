@@ -77,16 +77,49 @@ namespace LoginServer.Request
                 "http://localhost:20000/", "DB/UserValidation", userValidationReq);
 
             // 회원가입이 불가능하다면, 이유를 적고 반환해준다.
-
+            if (userValidationRes.Result != (short)ErrorCode.None)
+            {
+                resPacket.Result = userValidationRes.Result;
+                resPacket.Token = -1;
+                return resPacket;
+            }
 
             // 회원가입이 가능하다면 DB 서버에 회원 가입을 요청한다.
+            var userSignInReq = new DBServer.UserSignInReq();
+            userSignInReq.UserId = signInPacket.UserId;
+            userSignInReq.EncryptedUserPw = encryptedPassword;
+
+            var userSignInRes = await Util.HttpMessenger.RequestHttp<DBServer.UserSignInReq, DBServer.UserSignInRes>(
+                "http://localhost:20000", "DB/AddUser", userSignInReq);
+
+            // 회원가입이 실패했다면, 이유를 적고 반환해준다.
+            if (userSignInRes.Result != (short)ErrorCode.None)
+            {
+                resPacket.Result = userSignInRes.Result;
+                resPacket.Token = -1;
+                return resPacket;
+            }
 
             // 토큰을 생성하고 DB 서버에 등록한다.
+            resPacket.Token = TokenGenerator.GetInstance().CreateToken();
 
-            // 등록이 안되었다면 에러를 반환한다.
+            var tokenAuthReq = new DBServer.TokenAuthReq();
+            tokenAuthReq.UserId = signInPacket.UserId;
+            tokenAuthReq.Token = resPacket.Token;
+
+            var tokenAuthRes = await Util.HttpMessenger.RequestHttp<DBServer.TokenAuthReq, DBServer.TokenAuthRes>(
+                "http://localhost:20000/", "DB/RegistToken", tokenAuthReq);
+
+            // 토큰 등록이 실패했다면 에러 반환.
+            if (tokenAuthRes.Result != (short)ErrorCode.None)
+            {
+                resPacket.Result = userValidationRes.Result;
+                resPacket.Token = -1;
+                return resPacket;
+            }
 
             // 모든 절차가 완료되었다면 정상값을 반환한다.
-
+            resPacket.Result = (short)ErrorCode.None;
             return resPacket;
         }
 
