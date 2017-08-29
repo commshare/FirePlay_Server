@@ -8,7 +8,7 @@ namespace DBServer
         static void Main(string[] args)
         {
             // TODO :: DB 서버 설정파일 읽어오기.
-            const string baseAddress = "http://localhost:20000/";
+            const string baseAddress = "http://*:20000/";
 
             using (WebApp.Start<Startup>(url: baseAddress))
             {
