@@ -108,40 +108,74 @@ public class LoginManager : MonoBehaviour
         }
 	}
 
-    IEnumerator WaitForResponse(string id, string pw)
-    {
-        string loginRequest = _config.GetHttpString() + "Request/Login"; 
-        Debug.LogFormat("Waiting For Response... To {0}", loginRequest);
-
-        List<IMultipartFormSection> formData = new List<IMultipartFormSection>();
-        formData.Add(new MultipartFormDataSection("UserId", id));
-        formData.Add(new MultipartFormDataSection("UserPw", pw));
-
-        var www = UnityWebRequest.Post(loginRequest, formData);
-        yield return www.Send();
-
-        var response = new HttpPack.LoginRes();
-        if (!www.isError)
-        {
-            Debug.Log("Login Success");
-        }
-        else
-        {
-            Debug.LogAssertion(www.error);
-        }
-    }
-
     IEnumerator PostRequest(string url, string bodyJsonString)
     {
         var request = new UnityWebRequest(url, "POST");
         byte[] bodyRaw = new System.Text.UTF8Encoding().GetBytes(bodyJsonString);
+
         request.uploadHandler = (UploadHandler)new UploadHandlerRaw(bodyRaw);
         request.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
         request.SetRequestHeader("Content-Type", "application/json");
 
         yield return request.Send();
 
-        Debug.Log("Response: " + request.downloadHandler.text);
+        if (request.isError)
+        {
+            Debug.LogError("Http Post Failed");
+        }
+        else
+        {
+            Debug.Log("Response : " + request.downloadHandler.text);
+
+            if (request.responseCode == 200)
+            {
+                Debug.Log("Request finished successfully");
+                var response = JsonUtility.FromJson<HttpPack.LoginRes>(request.downloadHandler.text);
+
+                // 받은 정보 처리.
+                HandleLoginMessage(response);
+            }
+            else if (request.responseCode == 401)
+            {
+                Debug.Log("Error 401 : Unauthorized. Resubmitted Request");
+                StartCoroutine(PostRequest(url, bodyJsonString));
+            }
+            else
+            {
+                Debug.Log("Request failed (status : " + request.responseCode + ")");
+            }
+        }
+    }
+
+    void HandleLoginMessage(HttpPack.LoginRes response)
+    {
+        // 정상적으로 처리된 경우.
+        if (response.Result == 0 && response.Token != 0)
+        {
+            // 유저 정보에 받은 내용 기록.
+            if (_info == null)
+            {
+                var infoPrefab = Resources.Load("Prefabs/PlayerInfo") as GameObject;
+                _info = Instantiate(infoPrefab).GetComponent<PlayerInfo>();
+            }
+
+            _info.InfoSetting(_id, response.Token);
+
+            // 다음 씬으로 전환.
+            SceneManager.LoadScene("CharacterSelect");
+        }
+        // 아이디나 비밀번호가 일치 하지 않은 경우.
+        else if (response.Result == 710)
+        {
+            // TODO ::
+            Debug.LogAssertion("Invalid Id or Pw");
+        }
+        // 서버 에러
+        else
+        {
+            // TODO ::
+            Debug.LogAssertion("Login Server Error");
+        }
     }
 }
 
