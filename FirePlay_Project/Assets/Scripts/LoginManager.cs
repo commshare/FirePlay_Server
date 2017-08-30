@@ -3,11 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using UnityEngine.Networking;
+using System;
+using System.Text;
 
 public class LoginManager : MonoBehaviour
 {
 	public InputField _idField;
 	public InputField _pwField;
+    public Config _config;
 	public string _id;
 	public string _pw;
 
@@ -20,9 +24,16 @@ public class LoginManager : MonoBehaviour
 
 	private void Start()
 	{
+        LoadConfig();
 		SetBackground();	
 		MakeInputFields();
 	}
+    
+    private void LoadConfig()
+    {
+        var configText = Resources.Load<TextAsset>("Data/ServerConfig").text;
+        _config = Config.CreateFromText(configText);
+    }
 
 	private void SetBackground()
 	{
@@ -78,102 +89,119 @@ public class LoginManager : MonoBehaviour
 			return;
 		}
 
-		// TODO :: 서버가 연결안되어있을 경우 다음씬으로 넘어가기 위한 임시 코드
-		var infoPrefab = Resources.Load("Prefabs/PlayerInfo") as GameObject;
-		if (infoPrefab != null)
-		{
-			_info = Instantiate(infoPrefab).GetComponent<PlayerInfo>();
-			_info.InfoSetting(_id, 0L);
-
-			SceneManager.LoadScene("CharacterSelect");
-		}
-		else
-		{
-			Debug.LogAssertion("PlayerInfo Prefab Instantiate Failed");
-		}
-
-		try
-		{
-			var request = new HttpPack.LoginReq()
-			{
-				UserId = id,
-				UserPw = pw
-			};
-
-			// Json으로 변환.
-			string requestJson = JsonUtility.ToJson(request);
-
-			// Header 생성.
-			Dictionary<string, string> headers = new Dictionary<string, string>();
-			headers.Add("Content-Type", "application/json");
-
-			byte[] pData = System.Text.Encoding.UTF8.GetBytes(requestJson.ToCharArray());
-			var api = new WWW(HttpPack._serverAddr, pData, headers);
-
-			StartCoroutine(WaitForResponse(api));
-		}
-		catch (UnityException e)
-		{
-			Debug.Log(e.Message);
-		}
-	}
-
-	IEnumerator WaitForResponse(WWW www)
-	{
-		yield return www;
-
-		var response = new HttpPack.LoginRes();
-		if (string.IsNullOrEmpty(www.error))
-		{
-			var content = www.bytes;
-			response = JsonUtility.FromJson<HttpPack.LoginRes>(content.ToString());
-			Debug.Log("Login Success");
-
-            // TODO : response의 결과값 확인.
-            // 결과값에 따라 메시지창 띄워주기.
-
-            if (_info == null)
+        try
+        {
+            var request = new HttpPack.LoginReq()
             {
-                var infoPrefab = Resources.Load("Prefab/PlayerInfo") as GameObject;
-                var _info = Instantiate(infoPrefab).GetComponent<PlayerInfo>();
-            }
-            _info.InfoSetting(_id, response.Token);
-		}
-		else
-		{
-			Debug.LogAssertion(www.error);
-		}
+                UserId = id,
+                UserPw = pw
+            };
+            var jsonStr = JsonUtility.ToJson(request);
+
+            string loginRequestUrl = _config.GetHttpString() + "Request/Login";
+            StartCoroutine(PostRequest(loginRequestUrl, jsonStr));
+
+        }
+        catch (UnityException e)
+        {
+            Debug.Log(e.Message);
+        }
 	}
+
+    IEnumerator WaitForResponse(string id, string pw)
+    {
+        string loginRequest = _config.GetHttpString() + "Request/Login"; 
+        Debug.LogFormat("Waiting For Response... To {0}", loginRequest);
+
+        List<IMultipartFormSection> formData = new List<IMultipartFormSection>();
+        formData.Add(new MultipartFormDataSection("UserId", id));
+        formData.Add(new MultipartFormDataSection("UserPw", pw));
+
+        var www = UnityWebRequest.Post(loginRequest, formData);
+        yield return www.Send();
+
+        var response = new HttpPack.LoginRes();
+        if (!www.isError)
+        {
+            Debug.Log("Login Success");
+        }
+        else
+        {
+            Debug.LogAssertion(www.error);
+        }
+    }
+
+    IEnumerator PostRequest(string url, string bodyJsonString)
+    {
+        var request = new UnityWebRequest(url, "POST");
+        byte[] bodyRaw = new System.Text.UTF8Encoding().GetBytes(bodyJsonString);
+        request.uploadHandler = (UploadHandler)new UploadHandlerRaw(bodyRaw);
+        request.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
+        request.SetRequestHeader("Content-Type", "application/json");
+
+        yield return request.Send();
+
+        Debug.Log("Response: " + request.downloadHandler.text);
+    }
+}
+
+public struct Config
+{
+    [SerializeField]
+    public string LoginServerAddr;
+    [SerializeField]
+    public string Port;
+
+    public static Config CreateFromText(string text)
+    {
+        Config instance;
+        try
+        {
+            instance = JsonUtility.FromJson<Config>(text);
+        }
+        catch (Exception e)
+        {
+            Debug.LogErrorFormat("[Config] Cannot parse Config from source - {0}", text);
+            throw;
+        }
+
+        return instance;
+    }
+
+    public string GetHttpString()
+    {
+        var connectString = "http://" + LoginServerAddr + ":" + Port + "/";
+        return connectString;
+    }
 }
 
 public class HttpPack
 {
-	public static string _serverAddr = "http://127.0.0.1:19000/";
 
-	[System.Serializable]
-	public class LoginReq
-	{
-		public string UserId;
-		public string UserPw;
-	}
+    [System.Serializable]
+    public class LoginReq
+    {
+        public string UserId;
+        public string UserPw;
+    }
 
-	[System.Serializable]
-	public class LoginRes
-	{
-		public short Result;
-		public long Token;
-	}
+    [System.Serializable]
+    public class LoginRes
+    {
+        public short Result;
+        public long Token;
+    }
 
-	[System.Serializable]
-	public class LogoutReq
-	{
-		public string UserId;
-		public long Token;
-	}
+    [System.Serializable]
+    public class LogoutReq
+    {
+        public string UserId;
+        public long Token;
+    }
 
-	[System.Serializable]
-	public class LogoutRes
-	{
-		public short Result;
-	}
+    [System.Serializable]
+    public class LogoutRes
+    {
+        public short Result;
+    }
 }
