@@ -31,6 +31,8 @@ namespace DBServer
         {
             var res = new UserSignInRes();
 
+            Console.WriteLine($"AddUser Request. Id : {req.UserId}, Pw : {req.EncryptedUserPw}");
+
             var result = await DB.MongoDBManager.AddUser(req.UserId, req.EncryptedUserPw);
 
             res.Result = (short)result;
@@ -45,6 +47,8 @@ namespace DBServer
         {
             var res = new TokenValidationRes();
 
+            Console.WriteLine($"Token Validation Request. Id : {req.UserId}, Token : {req.Token}");
+
             var result = await DB.AuthTokenManager.CheckAuthToken(req.UserId, req.Token);
 
             res.Result = (short)result;
@@ -58,6 +62,8 @@ namespace DBServer
         public async Task<TokenAuthRes> GetTokenAuth(TokenAuthReq req)
         {
             var res = new TokenAuthRes();
+
+            Console.WriteLine($"Token Auth Request. Id : {req.UserId}, Token : {req.Token}");
 
             try
             {
@@ -80,6 +86,8 @@ namespace DBServer
         public async Task<TokenDeleteRes> DeleteToken(TokenDeleteReq req)
         {
             var res = new TokenDeleteRes();
+
+            Console.WriteLine($"Token Delete Request. Id : {req.UserId}, Token : {req.Token}");
 
             // 유효한 값인지 우선 검사.
             var validation = await DB.AuthTokenManager.CheckAuthToken(req.UserId, req.Token);

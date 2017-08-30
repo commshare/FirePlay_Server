@@ -17,48 +17,59 @@ namespace LoginServer.Request
 
             Console.WriteLine($"Id({reqPacket.UserId}), Pw({encryptedPassword}), Send Login Request");
 
-            // DB Server에 유저가 가입되어 있는지를 조사한다.
-            var userValidationReq = new DBServer.UserValidationReq()
+            try
             {
-                UserId = reqPacket.UserId,
-                EncryptedUserPw = encryptedPassword
-            };
+                // DB Server에 유저가 가입되어 있는지를 조사한다.
+                var userValidationReq = new DBServer.UserValidationReq()
+                {
+                    UserId = reqPacket.UserId,
+                    EncryptedUserPw = encryptedPassword
+                };
 
-            var userValidationRes = await Util.HttpMessenger.RequestHttp<DBServer.UserValidationReq, DBServer.UserValidationRes>(
-                "http://localhost:20000/", "DB/UserValidation", userValidationReq);
+                var userValidationRes = await Util.HttpMessenger.RequestHttp<DBServer.UserValidationReq, DBServer.UserValidationRes>(
+                    LoginServerMain.config.DBServerAddress, "DB/UserValidation", userValidationReq);
 
-            // 가입되어 있지 않다면 에러 반환.
-            if (userValidationRes.Result != (short)ErrorCode.None)
-            {
-                resPacket.Result = userValidationRes.Result;
-                resPacket.Token = -1;
+                // 가입되어 있지 않다면 에러 반환.
+                if (userValidationRes.Result != (short)ErrorCode.None)
+                {
+                    Console.WriteLine($"Id({reqPacket.UserId}), Pw({encryptedPassword}), Invalid LoginRequest : Error({userValidationRes.Result})");
+                    resPacket.Result = userValidationRes.Result;
+                    resPacket.Token = -1;
+                    return resPacket;
+                }
+
+                // 가입되어 있다면 토큰을 생성한다.
+                resPacket.Token = TokenGenerator.GetInstance().CreateToken();
+
+                // DB Server에 토큰을 등록한다.
+                var tokenAuthReq = new DBServer.TokenAuthReq()
+                {
+                    UserId = reqPacket.UserId,
+                    Token = resPacket.Token
+                };
+
+                var tokenAuthRes = await Util.HttpMessenger.RequestHttp<DBServer.TokenAuthReq, DBServer.TokenAuthRes>(
+                    LoginServerMain.config.DBServerAddress, "DB/RegistToken", tokenAuthReq);
+
+                // 토큰 등록이 실패했다면 에러 반환.
+                if (tokenAuthRes.Result != (short)ErrorCode.None)
+                {
+                    Console.WriteLine($"Id({reqPacket.UserId}), Pw({encryptedPassword}), Token Regist failed : Error({tokenAuthRes.Result})");
+                    resPacket.Result = userValidationRes.Result;
+                    resPacket.Token = -1;
+                    return resPacket;
+                }
+
+                // 모든 절차가 완료되었다면 정상값 반환.
+                Console.WriteLine($"Id({reqPacket.UserId}), Pw({encryptedPassword}), Login Success");
+                resPacket.Result = (short)ErrorCode.None;
                 return resPacket;
             }
-
-            // 가입되어 있다면 토큰을 생성한다.
-            resPacket.Token = TokenGenerator.GetInstance().CreateToken();
-
-            // DB Server에 토큰을 등록한다.
-            var tokenAuthReq = new DBServer.TokenAuthReq()
+            catch (Exception e)
             {
-                UserId = reqPacket.UserId,
-                Token = resPacket.Token
-            };
-
-            var tokenAuthRes = await Util.HttpMessenger.RequestHttp<DBServer.TokenAuthReq, DBServer.TokenAuthRes>(
-                "http://localhost:20000/", "DB/RegistToken", tokenAuthReq);
-
-            // 토큰 등록이 실패했다면 에러 반환.
-            if (tokenAuthRes.Result != (short)ErrorCode.None)
-            {
-                resPacket.Result = userValidationRes.Result;
-                resPacket.Token = -1;
+                Console.WriteLine(e.Message);
                 return resPacket;
-            }
-
-            // 모든 절차가 완료되었다면 정상값 반환.
-            resPacket.Result = (short)ErrorCode.None;
-            return resPacket;
+            }"
         }
 
         [Route("Request/SignIn")]
@@ -80,12 +91,13 @@ namespace LoginServer.Request
             };
 
             var userValidationRes = await Util.HttpMessenger.RequestHttp<DBServer.UserValidationReq, DBServer.UserValidationRes>(
-                "http://localhost:20000/", "DB/UserValidation", userValidationReq);
+                LoginServerMain.config.DBServerAddress, "DB/UserValidation", userValidationReq);
 
             // 회원가입이 불가능하다면, 이유를 적고 반환해준다.
-            if (userValidationRes.Result != (short)ErrorCode.None)
+            if (userValidationRes.Result != (short)ErrorCode.LoginUserInfoDontExist)
             {
-                resPacket.Result = userValidationRes.Result;
+                Console.WriteLine($"Id({signInPacket.UserId}), Pw({encryptedPassword}), Error : ({userValidationRes.Result})");
+                resPacket.Result = (short)ErrorCode.SignInInvalidId;
                 resPacket.Token = -1;
                 return resPacket;
             }
@@ -99,11 +111,12 @@ namespace LoginServer.Request
 
 
             var userSignInRes = await Util.HttpMessenger.RequestHttp<DBServer.UserSignInReq, DBServer.UserSignInRes>(
-                "http://localhost:20000", "DB/AddUser", userSignInReq);
+                LoginServerMain.config.DBServerAddress, "DB/AddUser", userSignInReq);
 
             // 회원가입이 실패했다면, 이유를 적고 반환해준다.
             if (userSignInRes.Result != (short)ErrorCode.None)
             {
+                Console.WriteLine($"Id({signInPacket.UserId}), Pw({encryptedPassword}), Error : ({userSignInRes.Result})");
                 resPacket.Result = userSignInRes.Result;
                 resPacket.Token = -1;
                 return resPacket;
@@ -119,17 +132,19 @@ namespace LoginServer.Request
             };
 
             var tokenAuthRes = await Util.HttpMessenger.RequestHttp<DBServer.TokenAuthReq, DBServer.TokenAuthRes>(
-                "http://localhost:20000/", "DB/RegistToken", tokenAuthReq);
+                LoginServerMain.config.DBServerAddress, "DB/RegistToken", tokenAuthReq);
 
             // 토큰 등록이 실패했다면 에러 반환.
             if (tokenAuthRes.Result != (short)ErrorCode.None)
             {
+                Console.WriteLine($"Id({signInPacket.UserId}), Pw({encryptedPassword}), Error : ({tokenAuthRes.Result})");
                 resPacket.Result = userValidationRes.Result;
                 resPacket.Token = -1;
                 return resPacket;
             }
 
             // 모든 절차가 완료되었다면 정상값을 반환한다.
+            Console.WriteLine($"Id({signInPacket.UserId}), Pw({encryptedPassword}), Sign In Success");
             resPacket.Result = (short)ErrorCode.None;
             return resPacket;
         }
@@ -150,10 +165,11 @@ namespace LoginServer.Request
             };
 
             var tokenDeleteRes = await Util.HttpMessenger.RequestHttp<DBServer.TokenDeleteReq, DBServer.TokenDeleteRes>(
-                "http://localhost:20000/", "DB/DeleteToken", tokenDeleteReq);
+                LoginServerMain.config.DBServerAddress, "DB/DeleteToken", tokenDeleteReq);
 
             if (tokenDeleteRes.Result != (short)ErrorCode.None)
             {
+                Console.WriteLine($"Id({logoutPacket.UserId}), Error : {tokenDeleteRes.Result}");
                 resPacket.Result = tokenDeleteRes.Result;
                 return resPacket;
             }
