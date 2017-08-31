@@ -33,13 +33,13 @@ namespace FPLogic
 
 	private :
 
-		void Update();
+		void process();
 
 		// 패킷 처리 함수 등록 메소드.
-		void Subscribe(short interestedPacketId, PacketFunction registFunction);
+		void subscribe(short interestedPacketId, PacketFunction registFunction);
 
 		// 등록된 메소드들을 호출해주는 메소드.
-		void BroadCast(std::shared_ptr<PacketInfo> recvPacket);
+		void broadCast(std::shared_ptr<PacketInfo> recvPacket);
 
 	private :
 

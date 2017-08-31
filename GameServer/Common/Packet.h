@@ -20,8 +20,8 @@ namespace FPCommon
 
 	struct PacketBase
 	{
-		short _errorCode = static_cast<short>(ErrorCode::None);
-		void SetError(ErrorCode error) { _errorCode = static_cast<short>(error); };
+		short _error = static_cast<short>(ErrorCode::None);
+		void SetError(ErrorCode error) { _error = static_cast<short>(error); };
 	};
 
 	constexpr int maxUserIdSize = 16;

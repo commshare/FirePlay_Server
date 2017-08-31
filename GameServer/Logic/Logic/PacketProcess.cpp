@@ -19,9 +19,11 @@ namespace FPLogic
 		_sendQueue = sendQueue;
 
 		// 업데이트 쓰레드 돌려주기.
+		auto processThread = std::thread(std::bind(&PacketProcess::process, this));
+		processThread.detach();
 	}
 
-	void PacketProcess::Process()
+	void PacketProcess::process()
 	{
 		while (true)
 		{
@@ -35,13 +37,15 @@ namespace FPLogic
 				continue;
 			}
 
+			_logger->Write(LogType::LOG_INFO, "%s | Packet Process Id(%d)", __FUNCTION__, packet->_packetId);
+
 			// 받은 패킷이 있다면 브로드 캐스트.
-			BroadCast(packet);
+			broadCast(packet);
 			_recvQueue->Pop();
 		}
 	}
 
-	void PacketProcess::Subscribe(short interestedPacketId, PacketFunction registFunction)
+	void PacketProcess::subscribe(short interestedPacketId, PacketFunction registFunction)
 	{
 		// 등록하려는 패킷 아이디로 이미 다른 리스트가 등록되어있는지 확인.
 		auto findListResult = _packetFunctionMap.find(interestedPacketId);
@@ -58,7 +62,7 @@ namespace FPLogic
 		_packetFunctionMap.find(interestedPacketId)->second.emplace_back(std::move(registFunction));
 	}
 
-	void PacketProcess::BroadCast(std::shared_ptr<PacketInfo> recvPacket)
+	void PacketProcess::broadCast(std::shared_ptr<PacketInfo> recvPacket)
 	{
 		// 들어온 패킷에 해당하는 함수 목록을 찾는다.
 		auto subscribedFunctions = _packetFunctionMap.find(recvPacket->_packetId);

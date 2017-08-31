@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.Networking;
 using System;
 using System.Text;
+using System.Net.Sockets;
 
 public class LoginManager : MonoBehaviour
 {
@@ -70,6 +71,11 @@ public class LoginManager : MonoBehaviour
 		pwEvent.AddListener(GetPw);
 		_pwField.onEndEdit = pwEvent;
 	}
+
+    private void InitializeNetwork()
+    {
+        Instantiate(Resources.Load("Prefabs/NetworkManager") as GameObject);
+    }
 
 	private void GetId(string arg0)
 	{
@@ -161,8 +167,19 @@ public class LoginManager : MonoBehaviour
 
             _info.InfoSetting(_id, response.Token);
 
-            // 다음 씬으로 전환.
-            SceneManager.LoadScene("CharacterSelect");
+            // 게임 서버에 로그인 요청.
+            try
+            {
+                var network = FindObjectOfType<NetworkManager>();
+
+
+                // 다음 씬으로 전환.
+                SceneManager.LoadScene("CharacterSelect");
+            }
+            catch (SocketException e)
+            {
+                Debug.LogAssertion("Socket Send / Receive Error : " + e.Message);
+            }
         }
         // 아이디나 비밀번호가 일치 하지 않은 경우.
         else if (response.Result == 710)
