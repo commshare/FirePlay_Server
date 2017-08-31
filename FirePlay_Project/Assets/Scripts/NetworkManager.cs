@@ -1,10 +1,10 @@
 ﻿using System.Collections;
-using System.Net.Sockets;
+using System.Collections.Generic;
 using System.Net;
-using System.Text;
+using System.Net.Sockets;
 using UnityEngine;
 
-public class SocketNetwork : MonoBehaviour
+public class NetworkManager : MonoBehaviour
 {
     private Socket _socket = null;
     public string _ipAddress = "127.0.0.1";
@@ -32,6 +32,7 @@ public class SocketNetwork : MonoBehaviour
             IPAddress ipAddr = System.Net.IPAddress.Parse(_ipAddress);
             IPEndPoint iPEndPoint = new System.Net.IPEndPoint(ipAddr, _port);
             _socket.Connect(iPEndPoint);
+            Debug.Log("Socket Connect to Server Success");
         }
         catch (SocketException e)
         {
