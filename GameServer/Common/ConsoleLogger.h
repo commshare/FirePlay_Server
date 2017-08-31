@@ -25,7 +25,9 @@ namespace FPCommon
 
 		void debug(const char * pText) override
 		{
+#ifdef _DEBUG
 			consoleOutWithColor(ConsoleColor::WHITE, "[DEBUG] ", pText);
+#endif
 		}
 
 		void trace(const char * pText) override
