@@ -6,18 +6,25 @@ namespace LoginServer
 	{
 		None = 0,
 
-		SignInIdAlreadyExist = 100,
+        // 600번대는 Login Server 에러 코드.
+        SignInInvalidId = 610,
 
-		ValidationInvalidId = 200,
-		ValidationInvalidPw = 201,
+        // 700번대는 MongoDB 관련 에러 코드.
+        MongoDBFindError = 700,
+        MongoDBAddError = 701,
 
-		LogoutInvalidId = 300,
-		LogoutInvalidToken = 301,
+        LoginUserInfoDontExist = 710,
+        LoginUserInfoAlreadyExist = 711,
 
-		MongoDbFindError = 400,
+        // 800번대는 Redis 관련 에러 코드.
+        RedisStartException = 800,
+        RedisInvalidAddressString = 801,
+        RedisStartSetTestFailed = 802,
 
-		RedisStartException = 500,
-		RedisInvalidAddressString = 501,
-		RedisStartSetTestFailed = 502,
-	}
+        RedisUnRegistedId = 810,
+        RedisInvalidToken = 811,
+
+        RedisTokenRegistError = 820,
+        RedisTokenDeleteError = 821
+    }
 }

@@ -520,4 +520,5 @@ $RECYCLE.BIN/
 data/
 FirePlay_Data/
 PrivateData/
+HttpClient/
 json.hpp

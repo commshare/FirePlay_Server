@@ -14,11 +14,28 @@ namespace FPCommon
 	{
 		short _id;
 		short _bodySize;
-
-		MSGPACK_DEFINE(_id, _bodySize);
 	};
 
 	const auto packetHeaderSize = sizeof(PacketHeader);
+
+	struct PacketBase
+	{
+		short _error = static_cast<short>(ErrorCode::None);
+		void SetError(ErrorCode error) { _error = static_cast<short>(error); };
+	};
+
+	constexpr int maxUserIdSize = 16;
+
+	struct PacketLoginReq
+	{
+		char _id[maxUserIdSize] = { 0, };
+		long _token = 0L;
+	};
+
+	struct PacketLoginRes : PacketBase
+	{
+
+	};
 
 #pragma pack(pop)
 }

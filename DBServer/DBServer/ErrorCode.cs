@@ -1,22 +1,26 @@
-﻿
-namespace DBServer
+﻿namespace DBServer
 {
+    // DBServer 에러 코드는 700~900번 까지 사용.
     public enum ErrorCode
     {
         None = 0,
 
-        SignInIdAlreadExist = 100,
+        // 700번대는 MongoDB 관련 에러 코드.
+        MongoDBFindError = 700,
+        MongoDBAddError = 701,
 
-        ValidationInvalidId = 200,
-        ValidationInvalidPw = 201,
+        LoginUserInfoDontExist = 710,
+        LoginUserInfoAlreadyExist = 711,
 
-        LogoutInvalidId = 300,
-        LogoutInvalidToken = 301,
+        // 800번대는 Redis 관련 에러 코드.
+        RedisStartException = 800,
+        RedisInvalidAddressString = 801,
+        RedisStartSetTestFailed = 802,
 
-        MongoDBFindError = 400,
+        RedisUnRegistedId = 810,
+        RedisInvalidToken = 811,
 
-        RedisStartException = 500,
-        RedisInvalidAddressString = 501,
-        RedisStartSetTestFailed = 502
+        RedisTokenRegistError = 820,
+        RedisTokenDeleteError = 821
     }
 }

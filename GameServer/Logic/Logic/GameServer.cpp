@@ -10,6 +10,9 @@
 
 #include "../../Network/Network/NetworkMessenger.h"
 
+#include "PacketProcess.h"
+#include "UserManager.h"
+
 namespace FPLogic
 {
 	using json = nlohmann::json;
@@ -33,6 +36,14 @@ namespace FPLogic
 		// 네트워크 메신져 생성.
 		_network = std::make_unique<NetworkMessenger>();
 		_network->Init(_logger.get(), _config.get(), _recvQueue.get(), _sendQueue.get());
+		
+		// 유저 관리자 클래스 생성.
+		_userManager = std::make_unique<UserManager>();
+		_userManager->Init(_config.get()->_maxClientCount);
+
+		// 패킷 처리 클래스 생성
+		_packetProcess = std::make_unique<PacketProcess>();
+		_packetProcess->Init(_logger.get(), _userManager.get(), _recvQueue.get(), _sendQueue.get());
 
 		return ErrorCode::None;
 	}

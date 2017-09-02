@@ -11,6 +11,9 @@
 #include "../../Network/Network/NetworkMessenger.h"
 #include "../../Network/Network/SessionInfo.h"
 
+#include "PacketProcess.h"
+#include "UserManager.h"
+
 namespace FPLogic
 {
 	using ErrorCode     = FPCommon::ErrorCode;
@@ -47,6 +50,9 @@ namespace FPLogic
 		
 		std::unique_ptr<PacketQueue> _recvQueue;
 		std::unique_ptr<PacketQueue> _sendQueue;
+
+		std::unique_ptr<PacketProcess> _packetProcess;
+		std::unique_ptr<UserManager> _userManager;
 
 	};
 }

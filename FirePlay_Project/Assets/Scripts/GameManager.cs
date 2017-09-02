@@ -17,7 +17,7 @@ public class GameManager : MonoBehaviour
     // TODO :: 전 씬에서 고른 PlayerType 기억하고 그에 맞추어 Player 생성하기
     private void PlayerCreate()
     {
-        var player1Text = Resources.Load<TextAsset>("Data/Archer3").text;
+        var player1Text = Resources.Load<TextAsset>("Data/Archer1").text;
         var player1Spec = PlayerSpec.CreateFromText(player1Text);
 
         _player1 = Player.Factory.Create(player1Spec);

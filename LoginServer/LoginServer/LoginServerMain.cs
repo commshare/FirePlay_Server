@@ -1,25 +1,27 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
+using System.IO;
 
 namespace LoginServer
 {
+    public class ServerConfig
+    {
+        public string DBServerAddress;
+    }
+
 	public static class LoginServerMain
 	{
-		public static ErrorCode Init()
-		{
-			var error = InitDb();
+        static public ServerConfig config = null;
 
-			// 에러코드가 이상할 경우 출력해준다.
-			if (error != ErrorCode.None) Console.WriteLine($"Starting failed in InitDb : {error}");
+        public static void Init()
+        {
+            using (StreamReader r = new StreamReader("../../PrivateData/address.json"))
+            {
+                string json = r.ReadToEnd();
+                config = new ServerConfig();
 
-			return error;
-		}
-
-		private static ErrorCode InitDb()
-		{
-			const string redisList = "localhost:6379";
-			var error = DB.RedisManager.Init(redisList);
-
-			return error;
-		}
+                config = JsonConvert.DeserializeObject<ServerConfig>(json);
+            }
+        }
 	}
 }
