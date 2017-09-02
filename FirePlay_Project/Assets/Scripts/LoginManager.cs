@@ -25,6 +25,7 @@ public class LoginManager : MonoBehaviour
 
 	private void Start()
 	{
+        InitializeNetwork();
         LoadConfig();
 		SetBackground();	
 		MakeInputFields();
@@ -172,6 +173,12 @@ public class LoginManager : MonoBehaviour
             {
                 var network = FindObjectOfType<NetworkManager>();
 
+                var loginReq = new Packet.LoginReq()
+                {
+                    _id = _id.ToCharArray(),
+                    _token = response.Token
+                };
+                var res = network.SendLoginRequest(loginReq);
 
                 // 다음 씬으로 전환.
                 SceneManager.LoadScene("CharacterSelect");

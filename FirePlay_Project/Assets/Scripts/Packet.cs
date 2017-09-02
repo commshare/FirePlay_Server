@@ -30,28 +30,33 @@ public enum PacketId : short
 
 namespace Packet
 {
+    [System.Serializable]
     public class PacketInfo
     {
         public const int maxUserSize = 16;
     }
 
+    [System.Serializable]
     public class PacketHeader
     {
-        short _id;
-        short _bodySize;
+        public short _id;
+        public short _bodySize;
     }
 
+    [System.Serializable]
     public class PacketBase
     {
-        short _error;
+        public short _error;
     }
 
+    [System.Serializable]
     public class LoginReq
     {
-        char[] _id = new char[PacketInfo.maxUserSize];
-        long _token = 0L;
+        public char[] _id = new char[PacketInfo.maxUserSize];
+        public long _token = 0L;
     }
 
+    [System.Serializable]
     public class LoginRes : PacketBase
     {
 

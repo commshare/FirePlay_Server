@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
+using System.Text;
 using UnityEngine;
 
 public class NetworkManager : MonoBehaviour
@@ -57,12 +58,22 @@ public class NetworkManager : MonoBehaviour
         _socket = null;
     }
 
-    public Result_t Send<Request_t, Result_t>(Request_t req) where Result_t : new()
+    public Packet.LoginRes SendLoginRequest(Packet.LoginReq req)
     {
-        var result = new Result_t();
+        var res = new Packet.LoginRes();
 
+        var jsonReq = JsonUtility.ToJson(req);
 
+        // Send
+        _sendDataLength = Encoding.Default.GetByteCount(jsonReq);
+        _sendByte = Encoding.Default.GetBytes(jsonReq);
+        _socket.Send(_sendByte, _sendByte.Length, 0);
+        Debug.Log("Send Packet " + jsonReq);
 
-        return result;
+        // Receive
+        //_socket.Receive(_receiveByte);
+
+        return res;
     }
+
 }
