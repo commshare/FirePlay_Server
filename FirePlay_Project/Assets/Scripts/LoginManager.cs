@@ -10,11 +10,11 @@ using System.Net.Sockets;
 
 public class LoginManager : MonoBehaviour
 {
-	public InputField _idField;
-	public InputField _pwField;
-    public Config _config;
-	public string _id;
-	public string _pw;
+	public InputField        _idField;
+	public InputField        _pwField;
+    public LoginServerConfig _config;
+	public string            _id;
+	public string            _pw;
 
 	public PlayerInfo _info = null;
 
@@ -25,7 +25,10 @@ public class LoginManager : MonoBehaviour
 
 	private void Start()
 	{
-        InitializeNetwork();
+        #region Network Initiate
+        Instantiate(Resources.Load("Prefabs/NetworkManager") as GameObject);
+        #endregion
+
         LoadConfig();
 		SetBackground();	
 		MakeInputFields();
@@ -34,7 +37,7 @@ public class LoginManager : MonoBehaviour
     private void LoadConfig()
     {
         var configText = Resources.Load<TextAsset>("Data/ServerConfig").text;
-        _config = Config.CreateFromText(configText);
+        _config = LoginServerConfig.CreateFromText(configText);
     }
 
 	private void SetBackground()
@@ -73,16 +76,11 @@ public class LoginManager : MonoBehaviour
 		_pwField.onEndEdit = pwEvent;
 	}
 
-    private void InitializeNetwork()
-    {
-        Instantiate(Resources.Load("Prefabs/NetworkManager") as GameObject);
-    }
-
+    // Input Field에 적힌 string을 가져오기위한 메소드.
 	private void GetId(string arg0)
 	{
 		_id = arg0;
 	}
-
 	private void GetPw(string arg0)
 	{
 		_pw = arg0;
@@ -104,13 +102,12 @@ public class LoginManager : MonoBehaviour
                 UserPw = pw
             };
             var jsonStr = JsonUtility.ToJson(request);
-
-            string loginRequestUrl = _config.GetHttpString() + "Request/Login";
-
             var network = FindObjectOfType<NetworkManager>();
 
-            var res = new HttpPack.LoginRes();
-            StartCoroutine(network._httpNetwork.PostRequest<HttpPack.LoginRes>(loginRequestUrl, jsonStr, HandleLoginMessage));
+            string loginRequestUrl = _config.GetHttpString() + network.GetApiString(LoginApiString.Login); 
+
+            // 로그인 서버로 Post
+            network.HttpPost<HttpPack.LoginRes>(loginRequestUrl, jsonStr, HandleLoginMessage);
         }
         catch (UnityException e)
         {
@@ -118,83 +115,51 @@ public class LoginManager : MonoBehaviour
         }
 	}
 
+    // 로그인 서버에서 온 메시지를 처리해주는 메소드.
     bool HandleLoginMessage(HttpPack.LoginRes response)
     {
-        // 정상적으로 처리된 경우.
-        if (response.Result == 0 && response.Token != 0)
+        switch ((ErrorCode)response.Result)
         {
-            // 유저 정보에 받은 내용 기록.
-            if (_info == null)
-            {
-                var infoPrefab = Resources.Load("Prefabs/PlayerInfo") as GameObject;
-                _info = Instantiate(infoPrefab).GetComponent<PlayerInfo>();
-            }
+            // 정상적으로 처리 된 경우.
+            case ErrorCode.None :
+                #region LoginProcess
+                if (response.Token != 0)
+                {
+                    // 유저 정보에 받은 내용 기록.
+                    if (_info == null)
+                    {
+                        var infoPrefab = Resources.Load("Prefabs/PlayerInfo") as GameObject;
+                        _info = Instantiate(infoPrefab).GetComponent<PlayerInfo>();
+                    }
 
-            _info.InfoSetting(_id, response.Token);
+                    _info.InfoSetting(_id, response.Token);
 
-            // 게임 서버에 로그인 요청.
-            try
-            {
-                var network = FindObjectOfType<NetworkManager>();
+                    // TODO :: 게임 서버에 로그인 요청.
+                    try
+                    {
+                        // 다음 씬으로 전환.
+                        SceneManager.LoadScene("CharacterSelect");
+                    }
+                    catch (SocketException e)
+                    {
+                        Debug.LogAssertion("Socket Send / Receive Error : " + e.Message);
+                    }
+                }
 
-                //var loginReq = new Packet.LoginReq()
-                //{
-                //    _id = _id.ToCharArray(),
-                //    _token = response.Token
-                //};
-                //var res = network.SendLoginRequest(loginReq);
+                break;
+                #endregion
 
-                // 다음 씬으로 전환.
-                SceneManager.LoadScene("CharacterSelect");
-            }
-            catch (SocketException e)
-            {
-                Debug.LogAssertion("Socket Send / Receive Error : " + e.Message);
-            }
-        }
-        // 아이디나 비밀번호가 일치 하지 않은 경우.
-        else if (response.Result == 710)
-        {
-            // TODO ::
-            Debug.LogAssertion("Invalid Id or Pw");
-        }
-        // 서버 에러
-        else
-        {
-            // TODO ::
+            // 아이디나 비밀번호가 잘못된 경우.
+            case ErrorCode.LoginUserInfoDontExist :
+                Debug.LogAssertion("Invalid Id or Pw");
+                break;
+
+            default :
             Debug.LogAssertion("Login Server Error");
+                break;
         }
 
         return true;
     }
 }
 
-public struct Config
-{
-    [SerializeField]
-    public string LoginServerAddr;
-    [SerializeField]
-    public string Port;
-
-    public static Config CreateFromText(string text)
-    {
-        Config instance;
-        try
-        {
-            instance = JsonUtility.FromJson<Config>(text);
-        }
-        catch (Exception e)
-        {
-            Debug.LogErrorFormat("[Config] Cannot parse Config from source - {0}", text);
-            throw;
-        }
-
-        return instance;
-    }
-
-    public string GetHttpString()
-    {
-        var connectString = "http://" + LoginServerAddr + ":" + Port + "/";
-        return connectString;
-    }
-}
