@@ -1,1 +1,178 @@
 // C++ IOCP서버와 Unity C#이 통신하기 위한 패킷 정의 파일입니다.
+
+// 로그인 요청 패킷
+LoginReq
+{
+	single string _id
+	single integer _token
+}
+
+// 로그인 답변 패킷
+LoginRes
+{
+	single integer _result
+}
+
+// 빠른 매치 요청 패킷
+FastMatchReq
+{
+	single integer _type
+	single string _id
+	single integer _token
+}
+
+// 매치 요청 답변 패킷
+FastMatchRes
+{
+	single integer _result
+}
+
+// 매치 취소 패킷
+MatchCancelReq
+{
+	single string _id
+	single integer _token
+}
+
+// 매치 취소 답변 패킷
+MatchCancelRes
+{
+	single integer _result
+}
+
+// 매칭 성사 알림 패킷
+MatchSuccessNotify
+{
+	single integer _gameNumber
+	single string _enemyId
+	single integer _enemyWins
+	single integer _enemyLoses
+	single integer _enemyType
+}
+
+// 매칭 성사 응답 패킷
+MatchSuccessAck
+{
+	single integer _result
+}
+
+// 게임 시작 알림 패킷
+GameStartNotify
+{
+	single integer _playerNumber
+	single integer _positionX
+	single integer _positionY
+	single integer _enemyPositionX
+	single integer _enemyPositionY
+}
+
+// 게임 시작 응답 패킷
+GameStartAck
+{
+	single integer _result
+}
+
+// 내 턴 시작 패킷
+TurnStartNotify
+{
+	single integer _windX
+	single integer _windY
+}
+
+// 내 턴 시작 응답 패킷
+TurnStartAck
+{
+	single integer _result
+}
+
+// 상대 턴 시작 패킷
+EnemyTurnStartNotify
+{
+	single integer _windX
+	single integer _windY
+}
+
+// 상대 턴 시작 응답 패킷
+EnemyTurnStartAck
+{
+	single integer _result
+}
+
+// 움직임 전달 패킷
+MoveNotify
+{
+	single integer _moveRange
+	single integer _enemyPositionX
+	single integer _enemyPositionY
+}
+
+// 움직임 응답 패킷
+MoveAck
+{
+	single integer _result
+}
+
+// 상대 움직임 알림 패킷
+EnemyMoveNotify
+{
+	single integer _moveRange
+	single integer _enemyPositionX
+	single integer _enemyPositionY
+}
+
+// 상대 움직임 응답 패킷
+EnemyMoveAck
+{
+	single integer _result
+}
+
+// 발사 패킷
+FireNotify
+{
+	single integer _fireType
+	single integer _enemyPositionX
+	single integer _enemyPositionY
+	single integer _forceX
+	single integer _forceY
+}
+
+// 발사 응답 패킷
+FireAck
+{
+	single integer _result
+}
+
+// 상대 발사 패킷
+EnemyFireNotify
+{
+	single integer _fireType
+	single integer _enemyPositionX
+	single integer _enemyPositionY
+	single integer _forceX
+	single integer _forceY
+}
+
+// 상대 발사 응답 패킷
+EnemyFireAck
+{
+	single integer _result
+}
+
+// 게임 종료 알림 패킷
+GameSetNotify
+{
+	single integer _winPlayerNum
+}
+
+// 게임 종료 응답 패킷
+GameSetAck
+{
+	single integer _result
+}
+
+// 접속 닫기 패킷
+CloseReq
+{
+	single integer _id
+	single integer _token
+}
