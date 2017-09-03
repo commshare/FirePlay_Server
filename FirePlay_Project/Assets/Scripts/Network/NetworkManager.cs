@@ -18,6 +18,7 @@ public class NetworkManager : MonoBehaviour
 
         // TcpNetwork 생성.
         _tcpNetwork = new TcpNetwork();
+        _tcpNetwork.ConnectToServer();
 
         // HttpNetwork 생성
         _httpNetwork = new HttpNetwork();
@@ -32,9 +33,7 @@ public class NetworkManager : MonoBehaviour
     // 컴포넌트 HttpNetwork의 Api를 찾아주는 래핑 메소드.
     public string GetApiString(LoginApiString apiEnum)
     {
-        string apiString;
-        _httpNetwork._apiDic.TryGetValue(apiEnum, out apiString);
-        return apiString;
+        return _httpNetwork.GetApiString(apiEnum);
     }
 
     // 어플리케이션이 종료될 때 소켓을 닫아주는 메소드.

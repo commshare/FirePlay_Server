@@ -27,7 +27,7 @@ public enum PacketId : short
     NotifyEnemyFire = 142
 }
 
-namespace Packet
+namespace PacketInfo
 {
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public struct PacketHeader
