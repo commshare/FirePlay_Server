@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Runtime.InteropServices;
 
 public enum PacketId : short
 {
@@ -30,35 +29,18 @@ public enum PacketId : short
 
 namespace Packet
 {
-    [System.Serializable]
-    public class PacketInfo
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    public struct PacketHeader
     {
-        public const int maxUserSize = 16;
+        public int packetId;
+        public int bodySize;
     }
 
-    [System.Serializable]
-    public class PacketHeader
+    [StructLayout(LayoutKind.Sequential, Pack = 1)]
+    public struct Packet
     {
-        public short _id;
-        public short _bodySize;
-    }
-
-    [System.Serializable]
-    public class PacketBase
-    {
-        public short _error;
-    }
-
-    [System.Serializable]
-    public class LoginReq
-    {
-        public char[] _id = new char[PacketInfo.maxUserSize];
-        public long _token = 0L;
-    }
-
-    [System.Serializable]
-    public class LoginRes : PacketBase
-    {
-
+        public int packetId;
+        public int bodySize;
+        public string data;
     }
 }

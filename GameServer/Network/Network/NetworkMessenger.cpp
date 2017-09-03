@@ -9,11 +9,12 @@
 
 #include "IOInfo.h"
 #include "SessionInfo.h"
+#include "PacketInfo.h"
 #include "ServerNetworkErrorCode.h"
 
 namespace FPNetwork
 {
-	using PacketHeader = FPCommon::PacketHeader;
+	using PacketHeader = FPNetwork::PacketHeader;
 
 	void NetworkMessenger::Stop()
 	{
@@ -221,7 +222,7 @@ namespace FPNetwork
 				// 패킷으로 만들어지길 기다리는 데이터의 사이즈
 				auto remainDataSize = totalDataSize;
 
-				const auto packetHeaderSize = FPCommon::packetHeaderSize;
+				const auto packetHeaderSize = FPNetwork::packetHeaderSize;
 				while (remainDataSize >= packetHeaderSize)
 				{
 					// 헤더를 들여다 보기에 충분한 데이터가 있다면 헤더를 들여다본다.
@@ -371,7 +372,7 @@ namespace FPNetwork
 			// TODO :: strcat_s에 에러 있을 수도 있음. 기존에는 strcat사용.
 			strcat_s(sendChar, sizeof(sendChar), sendPacket->_body);
 
-			send(destSession._socket, sendChar, FPCommon::packetHeaderSize + sendPacket->_bodySize, 0);
+			send(destSession._socket, sendChar, FPNetwork::packetHeaderSize + sendPacket->_bodySize, 0);
 
 			//send(destSession._socket, (char*)&sendHeader, FirePlayCommon::packetHeaderSize, 0);
 			//send(destSession._socket, sendPacket->pData, sendPacket->PacketBodySize, 0);

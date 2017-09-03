@@ -44,17 +44,11 @@
     <ClInclude Include="common\Packet.h">
       <Filter>Common</Filter>
     </ClInclude>
-    <ClInclude Include="common\PacketID.h">
-      <Filter>Common</Filter>
-    </ClInclude>
     <ClInclude Include="common\PacketQueue.h">
       <Filter>Common</Filter>
     </ClInclude>
     <ClInclude Include="network\network\SessionInfo.h">
       <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="Common\json.hpp">
-      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

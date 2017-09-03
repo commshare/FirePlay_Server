@@ -7,6 +7,7 @@
 #include "../../Common/PacketQueue.h"
 #include "../../Common/ObjectPool.h"
 
+#include "PacketInfo.h"
 #include "SessionInfo.h"
 
 namespace FPCommon
@@ -19,10 +20,10 @@ namespace FPCommon
 namespace FPNetwork
 {
 	using PacketQueue   = FPCommon::PacketQueue;
-	using PacketInfo    = FPCommon::PacketInfo;
 	using LogType       = FPCommon::LogType;
 	using ConsoleLogger = FPCommon::ConsoleLogger;
 	using ServerConfig  = FPCommon::ServerConfig;
+	using PacketInfo    = FPNetwork::PacketInfo;
 
 	class NetworkMessenger 
 	{

@@ -2,7 +2,7 @@
 
 #include <string>
 #include <vector>
-#include "..\GameServer\include\json\json.h"
+#include <json/json.h>
 
 namespace Packet
 {

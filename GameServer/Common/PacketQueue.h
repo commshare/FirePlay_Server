@@ -3,6 +3,8 @@
 #include <deque>
 #include <mutex>
 
+#include "../Network/Network/PacketInfo.h"
+
 #include "Define.h"
 
 namespace FPCommon
@@ -13,6 +15,9 @@ namespace FPCommon
 	 */
 	class PacketQueue
 	{
+
+		using PacketInfo = FPNetwork::PacketInfo;
+
 	public:
 
 		PacketQueue() = default;
@@ -56,5 +61,5 @@ namespace FPCommon
 		std::deque<std::shared_ptr<PacketInfo>> _packetDeque;
 		std::mutex _mutex;
 	};
-
 }
+

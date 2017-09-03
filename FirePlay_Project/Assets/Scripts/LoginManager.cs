@@ -106,8 +106,11 @@ public class LoginManager : MonoBehaviour
             var jsonStr = JsonUtility.ToJson(request);
 
             string loginRequestUrl = _config.GetHttpString() + "Request/Login";
-            StartCoroutine(PostRequest(loginRequestUrl, jsonStr));
 
+            var network = FindObjectOfType<NetworkManager>();
+
+            var res = new HttpPack.LoginRes();
+            StartCoroutine(network._httpNetwork.PostRequest<HttpPack.LoginRes>(loginRequestUrl, jsonStr, HandleLoginMessage));
         }
         catch (UnityException e)
         {
@@ -115,46 +118,7 @@ public class LoginManager : MonoBehaviour
         }
 	}
 
-    IEnumerator PostRequest(string url, string bodyJsonString)
-    {
-        var request = new UnityWebRequest(url, "POST");
-        byte[] bodyRaw = new System.Text.UTF8Encoding().GetBytes(bodyJsonString);
-
-        request.uploadHandler = (UploadHandler)new UploadHandlerRaw(bodyRaw);
-        request.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
-        request.SetRequestHeader("Content-Type", "application/json");
-
-        yield return request.Send();
-
-        if (request.isError)
-        {
-            Debug.LogError("Http Post Failed");
-        }
-        else
-        {
-            Debug.Log("Response : " + request.downloadHandler.text);
-
-            if (request.responseCode == 200)
-            {
-                Debug.Log("Request finished successfully");
-                var response = JsonUtility.FromJson<HttpPack.LoginRes>(request.downloadHandler.text);
-
-                // 받은 정보 처리.
-                HandleLoginMessage(response);
-            }
-            else if (request.responseCode == 401)
-            {
-                Debug.Log("Error 401 : Unauthorized. Resubmitted Request");
-                StartCoroutine(PostRequest(url, bodyJsonString));
-            }
-            else
-            {
-                Debug.Log("Request failed (status : " + request.responseCode + ")");
-            }
-        }
-    }
-
-    void HandleLoginMessage(HttpPack.LoginRes response)
+    bool HandleLoginMessage(HttpPack.LoginRes response)
     {
         // 정상적으로 처리된 경우.
         if (response.Result == 0 && response.Token != 0)
@@ -173,12 +137,12 @@ public class LoginManager : MonoBehaviour
             {
                 var network = FindObjectOfType<NetworkManager>();
 
-                var loginReq = new Packet.LoginReq()
-                {
-                    _id = _id.ToCharArray(),
-                    _token = response.Token
-                };
-                var res = network.SendLoginRequest(loginReq);
+                //var loginReq = new Packet.LoginReq()
+                //{
+                //    _id = _id.ToCharArray(),
+                //    _token = response.Token
+                //};
+                //var res = network.SendLoginRequest(loginReq);
 
                 // 다음 씬으로 전환.
                 SceneManager.LoadScene("CharacterSelect");
@@ -200,6 +164,8 @@ public class LoginManager : MonoBehaviour
             // TODO ::
             Debug.LogAssertion("Login Server Error");
         }
+
+        return true;
     }
 }
 
@@ -230,36 +196,5 @@ public struct Config
     {
         var connectString = "http://" + LoginServerAddr + ":" + Port + "/";
         return connectString;
-    }
-}
-
-public class HttpPack
-{
-
-    [System.Serializable]
-    public class LoginReq
-    {
-        public string UserId;
-        public string UserPw;
-    }
-
-    [System.Serializable]
-    public class LoginRes
-    {
-        public short Result;
-        public long Token;
-    }
-
-    [System.Serializable]
-    public class LogoutReq
-    {
-        public string UserId;
-        public long Token;
-    }
-
-    [System.Serializable]
-    public class LogoutRes
-    {
-        public short Result;
     }
 }

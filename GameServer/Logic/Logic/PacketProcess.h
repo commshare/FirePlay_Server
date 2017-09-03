@@ -8,14 +8,17 @@
 #include "../../Common/ConsoleLogger.h"
 #include "../../Common/Define.h"
 
+#include "../../Network/Network/PacketInfo.h"
+
 #include "UserManager.h"
 
 namespace FPLogic
 {
-	using PacketInfo = FPCommon::PacketInfo;
 	using PacketQueue = FPCommon::PacketQueue;
 	using ConsoleLogger = FPCommon::ConsoleLogger;
 	using LogType = FPCommon::LogType;
+
+	using PacketInfo = FPNetwork::PacketInfo;
 
 	class PacketProcess
 	{

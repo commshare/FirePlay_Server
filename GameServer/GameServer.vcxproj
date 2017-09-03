@@ -112,11 +112,9 @@
     <ClInclude Include="common\ConsoleLogger.h" />
     <ClInclude Include="common\Define.h" />
     <ClInclude Include="common\ErrorCode.h" />
-    <ClInclude Include="Common\json.hpp" />
     <ClInclude Include="common\LogBase.h" />
     <ClInclude Include="common\ObjectPool.h" />
     <ClInclude Include="common\Packet.h" />
-    <ClInclude Include="common\PacketID.h" />
     <ClInclude Include="common\PacketQueue.h" />
     <ClInclude Include="network\network\IOInfo.h" />
     <ClInclude Include="network\network\SessionInfo.h" />
