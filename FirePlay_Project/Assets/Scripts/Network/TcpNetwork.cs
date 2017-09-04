@@ -37,6 +37,11 @@ public class TcpNetwork
         }
     }
 
+    public void Update()
+    {
+        
+    }
+
     // 소켓을 닫아주는 메소드.
     public void CloseNetwork()
     {

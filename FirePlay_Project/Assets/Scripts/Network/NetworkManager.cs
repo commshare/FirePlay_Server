@@ -24,6 +24,11 @@ public class NetworkManager : MonoBehaviour
         _httpNetwork = new HttpNetwork();
     }
 
+    private void Update()
+    {
+        _tcpNetwork.Update();  
+    }
+
     // 컴포넌트 HttpNetwork의 PostRequest 래핑 메소드.
     public void HttpPost<T>(string url, string bodyJson, Func<T, bool> onSuccess)
     {
