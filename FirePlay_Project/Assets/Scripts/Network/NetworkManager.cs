@@ -27,6 +27,13 @@ public class NetworkManager : MonoBehaviour
 
     private void Update()
     {
+        // 처리할 패킷이 있다면 모두 다 처리.
+        while (_tcpNetwork.IsQueueEmpty() == false)
+        {
+            var packet = _tcpNetwork.GetPacket();
+
+            _packetProcessor.Process(packet);
+        }
     }
 
     // 컴포넌트 HttpNetwork의 PostRequest 래핑 메소드.
