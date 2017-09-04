@@ -8,8 +8,9 @@ using UnityEngine;
 
 public class NetworkManager : MonoBehaviour
 {
-    public HttpNetwork _httpNetwork = null;
-    public TcpNetwork  _tcpNetwork  = null;
+    public HttpNetwork     _httpNetwork = null;
+    public TcpNetwork      _tcpNetwork  = null;
+    public PacketProcessor _packetProcessor;
 
     private void Start()
     {
@@ -26,7 +27,6 @@ public class NetworkManager : MonoBehaviour
 
     private void Update()
     {
-        _tcpNetwork.Update();  
     }
 
     // 컴포넌트 HttpNetwork의 PostRequest 래핑 메소드.

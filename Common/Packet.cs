@@ -174,7 +174,7 @@ namespace Packet
 	// 접속 닫기 패킷
 	public class CloseReq
 {
-	public int					_id;
+	public string				_id;
 	public int					_token;
 	}
 

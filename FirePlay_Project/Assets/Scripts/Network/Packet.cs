@@ -1,4 +1,4 @@
-namespace PacketInfo
+namespace Packet
 {
 	// C++ IOCP서버와 Unity C#이 통신하기 위한 패킷 정의 파일입니다.
 	// 로그인 요청 패킷
@@ -174,7 +174,7 @@ namespace PacketInfo
 	// 접속 닫기 패킷
 	public class CloseReq
 {
-	public int					_id;
+	public string				_id;
 	public int					_token;
 	}
 

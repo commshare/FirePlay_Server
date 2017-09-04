@@ -106,6 +106,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Common\Packet.cpp" />
     <ClCompile Include="gameserver\ServerMain.cpp" />
   </ItemGroup>
   <ItemGroup>

@@ -173,6 +173,6 @@ GameSetAck
 // 접속 닫기 패킷
 CloseReq
 {
-	single integer _id
+	single string _id
 	single integer _token
 }

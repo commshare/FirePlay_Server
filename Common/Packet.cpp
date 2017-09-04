@@ -332,7 +332,7 @@ namespace Packet
 
 	void CloseReq::Deserialize( Json::Value& root )
 	{
-		_id = root.get("_id", 0).asInt();
+		_id = root.get("_id", "").asString();
 		_token = root.get("_token", 0).asInt();
 	}
 

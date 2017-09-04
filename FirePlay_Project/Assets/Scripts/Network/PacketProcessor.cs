@@ -27,5 +27,14 @@ public partial class PacketProcessor : MonoBehaviour
 
     }
 
+    // 클라이언트 종료 요청 메소드.
+    void ConnectCloseReq()
+    {
+        // 로직을 정리한다.
 
+        // 종료 패킷을 보내달라고 요청한다.
+        var network = FindObjectOfType<NetworkManager>();
+
+        var myInfo = FindObjectOfType<PlayerInfo>();
+    }
 }

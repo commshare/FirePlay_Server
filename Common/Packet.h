@@ -348,7 +348,7 @@ namespace Packet
 		virtual void Serialize ( Json::Value& root );
 		virtual void Deserialize( Json::Value& root );
 
-		int							_id;
+		std::string					_id;
 		int							_token;
 	};
 
