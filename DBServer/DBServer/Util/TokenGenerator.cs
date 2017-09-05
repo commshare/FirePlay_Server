@@ -21,17 +21,17 @@ namespace DBServer.Util
 
             /*
 			 * 토큰 생성 비트 설정
-			 * 전체 45비트, TokenGenerator-id에 2비트, 16에 시퀀스 비트
+			 * 전체 32비트, TokenGenerator-id에 2비트, 16에 시퀀스 비트
 			 */
-            var tokenCreationBitConfig = new MaskConfig(45, 2, 16);
+            var tokenCreationBitConfig = new MaskConfig(32, 2, 16);
 
             _generator = new IdGenerator(0, tokenStartDate, tokenCreationBitConfig);
         }
 
         // 토큰 뽑아내기
-        public long CreateToken()
+        public int CreateToken()
         {
-            return _generator.CreateId();
+            return (int)_generator.CreateId();
         }
 
         // 토큰 생성기.

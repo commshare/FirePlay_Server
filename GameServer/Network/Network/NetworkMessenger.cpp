@@ -89,6 +89,14 @@ namespace FPNetwork
 			return false;
 		}
 
+		// 소켓과 IOCP 포트를 연결해준다.
+		HANDLE hResult = CreateIoCompletionPort((HANDLE)_serverSocket, _iocpHandle, 0, 0);
+		if (hResult != _iocpHandle)
+		{
+			_logger->Write(LogType::LOG_ERROR, "%s | Socket connection to IOCP Failed", __FUNCTION__);
+			return false;
+		}
+
 		// 서버 소켓에 설정 값을 바인딩 한다.
 		sockaddr_in socketAddr;
 		ZeroMemory(&socketAddr, sizeof(socketAddr));
@@ -96,7 +104,7 @@ namespace FPNetwork
 		socketAddr.sin_addr.s_addr = htonl(INADDR_ANY);
 		socketAddr.sin_port = htons(_serverConfig._port);
 		auto result = bind(_serverSocket, (sockaddr*)&socketAddr, sizeof(socketAddr));
-		if (result != 0)
+		if (result == SOCKET_ERROR)
 		{
 			_logger->Write(LogType::LOG_ERROR, "%s | Socket Bind Failed", __FUNCTION__);
 			return false;
@@ -106,12 +114,14 @@ namespace FPNetwork
 
 		// 세팅된 소켓을 listen해준다.
 		result = listen(_serverSocket, _serverConfig._backlog);
+		//result = listen(_serverSocket, SOMAXCONN);
 		if (result != 0)
 		{
 			_logger->Write(LogType::LOG_ERROR, "%s | Socket listen Failed", __FUNCTION__);
 			return false;
 		}
 		_logger->Write(LogType::LOG_INFO, "%s | Listen Start. ServerSocketFD(%I64u), BackLog(%d)", __FUNCTION__, _serverSocket, _serverConfig._backlog);
+
 
 		// Listen 쓰레드를 활성화 한다.
 		auto listenThread = std::thread(std::bind(&NetworkMessenger::listenThreadFunc, this));
@@ -120,7 +130,7 @@ namespace FPNetwork
 		// 시스템 정보를 알아온다.
 		SYSTEM_INFO si;
 		GetSystemInfo(&si);
-		int workerNum = si.dwNumberOfProcessors * 2;
+		int workerNum = static_cast<int>(si.dwNumberOfProcessors * 2);
 
 		// 코어 수의 두 배 만큼 worker 쓰레드를 활성화한다.
 		for (auto i = 0; i < workerNum; ++i)
@@ -177,6 +187,7 @@ namespace FPNetwork
 
 	void NetworkMessenger::workerThreadFunc()
 	{
+		HANDLE ioCompletionPort = _iocpHandle;
 		DWORD transferredByte = 0;
 		IOInfo * ioInfo = nullptr;
 		// Key가 넘어 온다고 하는데, 뭔지 모르겠고 안씀. 나중에 검색해봐야징. :)
@@ -184,7 +195,7 @@ namespace FPNetwork
 
 		while (true)
 		{
-			auto retval = GetQueuedCompletionStatus(_iocpHandle, &transferredByte, (PULONG_PTR)&key, (LPOVERLAPPED*)&ioInfo, INFINITE);
+			auto retval = GetQueuedCompletionStatus(ioCompletionPort, &transferredByte, (PULONG_PTR)&key, (LPOVERLAPPED*)&ioInfo, INFINITE);
 			if (retval == FALSE)
 			{
 				_logger->Write(LogType::LOG_ERROR, "%s | Iocp GetQueuedCompletionStatus Failed", __FUNCTION__);
@@ -319,14 +330,14 @@ namespace FPNetwork
 			newSession._socketAddress = clientAddr;
 
 			auto newIOCPInfo = new IOInfo();
-			ZeroMemory(&newIOCPInfo->Overlapped, sizeof(OVERLAPPED));
+			ZeroMemory(&(newIOCPInfo->Overlapped), sizeof(OVERLAPPED));
 			newIOCPInfo->Wsabuf.buf = newSession._recvBuffer;
 			newIOCPInfo->Wsabuf.len = _serverConfig._maxClientRecvSize;
 			newIOCPInfo->Status = IOInfoStatus::READ;
 			newIOCPInfo->SessionTag = newTag;
 
 			// IOCP에 새로운 세션을 등록해준다.
-			CreateIoCompletionPort((HANDLE)&newSession._socket, _iocpHandle, (ULONG_PTR)nullptr, 0);
+			CreateIoCompletionPort((HANDLE)newSession._socket, _iocpHandle, (DWORD)newSession._socket, 0);
 
 			DWORD recvSize = 0;
 			DWORD flags = 0;
@@ -336,7 +347,7 @@ namespace FPNetwork
 				newSession._socket,
 				&newIOCPInfo->Wsabuf,
 				1,
-				&recvSize, &flags, &newIOCPInfo->Overlapped, nullptr);
+				&recvSize, &flags, &(newIOCPInfo->Overlapped), nullptr);
 			_logger->Write(LogType::LOG_DEBUG, "%s | Waiting for recv massage from socket(%I64u)", __FUNCTION__, newSession._socket);
 
 			if (SOCKET_ERROR == retval)

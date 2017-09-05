@@ -24,6 +24,9 @@
     <ClCompile Include="Common\Packet.cpp">
       <Filter>Common</Filter>
     </ClCompile>
+    <ClCompile Include="include\jsoncpp.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common\ConsoleLogger.h">
