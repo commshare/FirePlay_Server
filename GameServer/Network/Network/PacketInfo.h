@@ -17,11 +17,11 @@ namespace FPNetwork
 		PacketInfo() = default;
 		~PacketInfo()
 		{
-			if (_body != nullptr)
-			{
-				delete[] _body;
-				_body = nullptr;
-			}
+			//if (_body != nullptr)
+			//{
+			//	delete[] _body;
+			//	_body = nullptr;
+			//}
 		}
 
 		int _sessionIdx = 0;
