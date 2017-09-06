@@ -1,0 +1,5 @@
+{
+	"_dbServerUrl" : "10.73.42.223",
+	"_dbServerPort" : 20000,
+	"_apiTokenValidation" : "DB/TokenValidation"
+}	
