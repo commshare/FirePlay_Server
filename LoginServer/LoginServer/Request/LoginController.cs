@@ -69,7 +69,7 @@ namespace LoginServer.Request
             {
                 Console.WriteLine(e.Message);
                 return resPacket;
-            }"
+            }
         }
 
         [Route("Request/SignIn")]

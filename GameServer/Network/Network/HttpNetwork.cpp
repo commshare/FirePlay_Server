@@ -33,7 +33,12 @@ namespace FPNetwork
 		_logger = logger;
 		_recvQueue = recvQueue;
 
-		LoadHttpConfig();
+		if (LoadHttpConfig() != ErrorCode::None)
+		{
+			return ErrorCode::FailConfigLoad;
+		}
+
+		return ErrorCode::None;
 	}
 
 	std::string HttpNetwork::PostRequest(std::string reqData)
@@ -64,7 +69,7 @@ namespace FPNetwork
 
 	ErrorCode HttpNetwork::LoadHttpConfig()
 	{
-		std::ifstream configFile("HttpConfig.json");
+		std::ifstream configFile("C:\\HttpConfig.json");
 		if (configFile.fail())
 		{
 			_logger->Write(LogType::LOG_ERROR, "%s | Config File Load Failed", __FUNCTION__);
@@ -77,7 +82,7 @@ namespace FPNetwork
 		_config = std::make_unique<HttpConfig>();
 
 		_config->_dbServerUrl = configJson["_dbServerUrl"].get<std::string>();
-		_config->_dbServerPort = std::stoi(configJson["_dbServerPort"].get<std::string>());
+		_config->_dbServerPort = configJson["_dbServerPort"].get<int>();
 
 		std::string api = "api";
 		for (auto i = 1; i < static_cast<int>(HttpConfig::ApiEnum::ApiMaxNum); ++i)

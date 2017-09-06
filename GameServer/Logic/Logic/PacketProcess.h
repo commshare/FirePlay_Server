@@ -51,6 +51,18 @@ namespace FPLogic
 
 		// 패킷 관련 함수들.
 		void LoginReq(std::shared_ptr<PacketInfo> packet);
+		void FastMatchReq(std::shared_ptr<PacketInfo> packet);
+		void MatchCancelReq(std::shared_ptr<PacketInfo> packet);
+		void MatchSuccessAck(std::shared_ptr<PacketInfo> packet);
+		void GameStartAck(std::shared_ptr<PacketInfo> packet);
+		void TurnStartAck(std::shared_ptr<PacketInfo> packet);
+		void EnemyTurnStartAck(std::shared_ptr<PacketInfo> packet);
+		void MoveNotify(std::shared_ptr<PacketInfo> packet);
+		void EnemyMoveAck(std::shared_ptr<PacketInfo> packet);
+		void FireNotify(std::shared_ptr<PacketInfo> packet);
+		void EnemyFireAck(std::shared_ptr<PacketInfo> packet);
+		void GameSetAck(std::shared_ptr<PacketInfo> packet);
+		void CloseReq(std::shared_ptr<PacketInfo> packet);
 
 	private :
 

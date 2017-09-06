@@ -11,7 +11,7 @@ int main(void)
 	GameServer gameServer;
 	gameServer.Init();
 
-	gameServer.Run();
+	//gameServer.Run();
 
 	std::cout << "press any key to exit...";
 	getchar();
