@@ -35,6 +35,17 @@ namespace FPNetwork
 		json configJson;
 		configFile >> configJson;
 
+		_config = std::make_unique<HttpConfig>();
+
+		_config->_dbServerUrl = configJson["_dbServerUrl"].get<std::string>();
+		_config->_dbServerPort = std::stoi(configJson["_dbServerPort"].get<std::string>());
+
+		std::string api = "api";
+		for (auto i = 1; i < static_cast<int>(HttpConfig::ApiEnum::ApiMaxNum); ++i)
+		{
+			auto currentApi = api + std::to_string(i);
+			_config->_dbServerApi[i] = configJson[currentApi].get<std::string>();
+		}
 	}
 
 	void HttpNetwork::OnBegin(const happyhttp::Response * r, void * userdata)
