@@ -8,19 +8,29 @@
 namespace FPLogic
 {
 	void PacketProcess::Init(
-		ConsoleLogger * logger,
-		UserManager * userManager,
-		PacketQueue * recvQueue,
-		PacketQueue * sendQueue)
+		ConsoleLogger    * logger,
+		NetworkMessenger * network,
+		UserManager      * userManager,
+		PacketQueue      * recvQueue,
+		PacketQueue      * sendQueue)
 	{
-		_logger = logger;
+		_logger      = logger;
+		_network     = network;
 		_userManager = userManager;
-		_recvQueue = recvQueue;
-		_sendQueue = sendQueue;
+		_recvQueue   = recvQueue;
+		_sendQueue   = sendQueue;
+
+		// 패킷 관련 함수 등록하기.
+		RegistPacketFunctions();
 
 		// 업데이트 쓰레드 돌려주기.
 		auto processThread = std::thread(std::bind(&PacketProcess::process, this));
 		processThread.detach();
+	}
+
+	void PacketProcess::RegistPacketFunctions()
+	{
+
 	}
 
 	void PacketProcess::process()
@@ -55,7 +65,6 @@ namespace FPLogic
 		{
 			PacketFunctionList newList;
 			_packetFunctionMap.emplace(interestedPacketId, newList);
-
 		}
 			
 		// 함수 등록.

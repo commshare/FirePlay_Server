@@ -32,8 +32,6 @@ namespace FPLogic
 
 		ErrorCode Init();
 
-		void Run();
-
 		void Stop();
 
 	private :
@@ -44,15 +42,15 @@ namespace FPLogic
 
 	private :
 
-		std::unique_ptr<ConsoleLogger> _logger;
+		std::unique_ptr<ConsoleLogger>    _logger;
 		std::unique_ptr<NetworkMessenger> _network;
-		std::unique_ptr<ServerConfig> _config;
+		std::unique_ptr<ServerConfig>     _config;
 		
-		std::unique_ptr<PacketQueue> _recvQueue;
-		std::unique_ptr<PacketQueue> _sendQueue;
+		std::unique_ptr<PacketQueue>      _recvQueue;
+		std::unique_ptr<PacketQueue>      _sendQueue;
 
-		std::unique_ptr<PacketProcess> _packetProcess;
-		std::unique_ptr<UserManager> _userManager;
+		std::unique_ptr<PacketProcess>    _packetProcess;
+		std::unique_ptr<UserManager>      _userManager;
 
 	};
 }

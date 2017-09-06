@@ -43,7 +43,7 @@ namespace FPNetwork
 
 		// Getter, Setter
 		HANDLE GetIocpHandler() const { return _iocpHandle; }
-		int GetSessionPoolSize() { return _sessionPool.GetSize(); }
+		int    GetSessionPoolSize() { return _sessionPool.GetSize(); }
 
 	private :
 

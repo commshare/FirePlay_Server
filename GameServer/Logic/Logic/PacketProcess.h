@@ -8,6 +8,7 @@
 #include "../../Common/ConsoleLogger.h"
 #include "../../Common/Define.h"
 
+#include "../../Network/Network/NetworkMessenger.h"
 #include "../../Network/Network/PacketInfo.h"
 
 #include "UserManager.h"
@@ -18,6 +19,7 @@ namespace FPLogic
 	using ConsoleLogger = FPCommon::ConsoleLogger;
 	using LogType = FPCommon::LogType;
 
+	using NetworkMessenger = FPNetwork::NetworkMessenger;
 	using PacketInfo = FPNetwork::PacketInfo;
 
 	class PacketProcess
@@ -32,9 +34,12 @@ namespace FPLogic
 		PacketProcess() {}
 		~PacketProcess() {}
 
-		void Init(ConsoleLogger * logger, UserManager * userManager, PacketQueue * recvQueue, PacketQueue * sendQueue);
+		void Init(ConsoleLogger * logger, NetworkMessenger * network, UserManager * userManager, PacketQueue * recvQueue, PacketQueue * sendQueue);
 
 	private :
+
+		// 사용할 함수들을 초기에 등록해주는 메소드.
+		void RegistPacketFunctions();
 
 		void process();
 
@@ -44,12 +49,16 @@ namespace FPLogic
 		// 등록된 메소드들을 호출해주는 메소드.
 		void broadCast(std::shared_ptr<PacketInfo> recvPacket);
 
+		// 패킷 관련 함수들.
+		void LoginReq(std::shared_ptr<PacketInfo> packet);
+
 	private :
 
-		ConsoleLogger * _logger = nullptr;
-		UserManager * _userManager = nullptr;
-		PacketQueue * _recvQueue = nullptr;
-		PacketQueue * _sendQueue = nullptr;
+		ConsoleLogger *    _logger      = nullptr;
+		UserManager *      _userManager = nullptr;
+		PacketQueue *      _recvQueue   = nullptr;
+		PacketQueue *      _sendQueue   = nullptr;
+		NetworkMessenger * _network     = nullptr;
 
 		// 패킷 번호와 등록된 패킷 처리 함수 리스트를 저장하는 자료구조.
 		std::unordered_map<short, PacketFunctionList> _packetFunctionMap;

@@ -21,6 +21,5 @@ namespace FPLogic
 	private :
 
 		UserPool _userPool;
-
 	};
 }

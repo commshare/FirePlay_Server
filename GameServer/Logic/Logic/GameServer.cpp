@@ -43,13 +43,9 @@ namespace FPLogic
 
 		// 패킷 처리 클래스 생성
 		_packetProcess = std::make_unique<PacketProcess>();
-		_packetProcess->Init(_logger.get(), _userManager.get(), _recvQueue.get(), _sendQueue.get());
+		_packetProcess->Init(_logger.get(), _network.get(), _userManager.get(), _recvQueue.get(), _sendQueue.get());
 
 		return ErrorCode::None;
-	}
-
-	void GameServer::Run()
-	{
 	}
 
 	void GameServer::Stop()
