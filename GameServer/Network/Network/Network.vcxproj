@@ -19,12 +19,16 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="happyhttp.h" />
+    <ClInclude Include="HttpNetwork.h" />
     <ClInclude Include="NetworkMessenger.h" />
     <ClInclude Include="PacketInfo.h" />
     <ClInclude Include="ServerNetworkErrorCode.h" />
     <ClInclude Include="SessionInfo.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="happyhttp.cpp" />
+    <ClCompile Include="HttpNetwork.cpp" />
     <ClCompile Include="NetworkMessenger.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

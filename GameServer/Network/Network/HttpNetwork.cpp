@@ -12,6 +12,20 @@
 
 namespace FPNetwork
 {
+	void OnBegin(const happyhttp::Response* r, void* userdata)
+	{
+	}
+
+	void OnData(const happyhttp::Response* r, void* userdata, const unsigned char* data, int n)
+	{
+		std::string &result = *(static_cast<std::string*>(userdata));
+		result = std::string(reinterpret_cast<const char*>(data));
+	}
+
+	void OnComplete(const happyhttp::Response* r, void* userdata)
+	{
+	}
+
 	using json = nlohmann::json;
 
 	ErrorCode HttpNetwork::Init(ConsoleLogger * logger, PacketQueue * recvQueue)
@@ -19,8 +33,33 @@ namespace FPNetwork
 		_logger = logger;
 		_recvQueue = recvQueue;
 
-		// TODO :: DB 서버 주소를 config에서 가져오기.
 		LoadHttpConfig();
+	}
+
+	std::string HttpNetwork::PostRequest(std::string reqData)
+	{
+		std::string result;
+
+		const char* headers[] =
+		{
+			"Connection", "close",
+			"Content-type", "application/json",
+			"Accept", "text/plain",
+			0
+		};
+
+		happyhttp::Connection conn("localhost", 19000);
+		conn.setcallbacks(OnBegin, OnData, OnComplete, static_cast<void*>(&result));
+		conn.request("POST",
+			"/Request/Login",
+			headers,
+			(const unsigned char*)reqData.c_str(),
+			strlen(reqData.c_str()));
+
+		while (conn.outstanding())
+			conn.pump();
+
+		return result;
 	}
 
 	ErrorCode HttpNetwork::LoadHttpConfig()
@@ -48,20 +87,24 @@ namespace FPNetwork
 		}
 	}
 
-	void HttpNetwork::OnBegin(const happyhttp::Response * r, void * userdata)
-	{
-		_logger->Write(LogType::LOG_DEBUG, "%s | Begin HTTP POST Status(%d : %s)", __FUNCTION__, r->getstatus(), r->getreason());
-	}
+	//void HttpNetwork::OnBegin(const happyhttp::Response * r, void * userdata)
+	//{
+	//	_logger->Write(LogType::LOG_DEBUG, "%s | Begin HTTP POST Status(%d : %s)", __FUNCTION__, r->getstatus(), r->getreason());
+	//}
 
-	void HttpNetwork::OnData(const happyhttp::Response * r, void * userdata, const unsigned char * data, int n)
-	{
-		auto recvPacket = std::make_shared<PacketInfo>();
-	}
+	//void HttpNetwork::OnData(const happyhttp::Response * r, void * userdata, const unsigned char * data, int n)
+	//{
+	//	auto recvPacket = std::make_shared<PacketInfo>();
 
-	void HttpNetwork::OnComplete(const happyhttp::Response * r, void * userdata)
-	{
-		_logger->Write(LogType::LOG_DEBUG, "%s | Complete HTTP POST Status(%d : %s)", __FUNCTION__, r->getstatus(), r->getreason());
-	}
+	//	// TODO :: 여기서부터 코딩 시작.
+
+	//	
+	//}
+
+	//void HttpNetwork::OnComplete(const happyhttp::Response * r, void * userdata)
+	//{
+	//	_logger->Write(LogType::LOG_DEBUG, "%s | Complete HTTP POST Status(%d : %s)", __FUNCTION__, r->getstatus(), r->getreason());
+	//}
 
 
 }

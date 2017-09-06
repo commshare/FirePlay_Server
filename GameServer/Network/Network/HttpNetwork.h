@@ -52,18 +52,17 @@ namespace FPNetwork
 
 		ErrorCode Init(ConsoleLogger * logger, PacketQueue * recvQueue);
 
-		template <class Request_t>
-		void PostRequest(Request_t req, int reqSessionIdx);
+		std::string PostRequest(std::string reqData);
 
 	private :
 
 		ErrorCode LoadHttpConfig();
 
-		void OnBegin(const happyhttp::Response* r, void* userdata);
+		//void OnBegin(const happyhttp::Response* r, void* userdata);
 
-		void OnData(const happyhttp::Response* r, void* userdata, const unsigned char* data, int n);
+		//void OnData(const happyhttp::Response* r, void* userdata, const unsigned char* data, int n);
 
-		void OnComplete(const happyhttp::Response* r, void* userdata);
+		//void OnComplete(const happyhttp::Response* r, void* userdata);
 
 	private :
 
@@ -72,10 +71,4 @@ namespace FPNetwork
 		std::unique_ptr<HttpConfig> _config;
 
 	};
-
-	template<class Request_t>
-	inline void HttpNetwork::PostRequest(Request_t req, int reqSessionIdx)
-	{
-		
-	}
 }

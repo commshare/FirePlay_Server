@@ -10,6 +10,7 @@
 #include "IOInfo.h"
 #include "SessionInfo.h"
 #include "PacketInfo.h"
+#include "HttpNetwork.h"
 #include "ServerNetworkErrorCode.h"
 
 namespace FPNetwork
@@ -55,6 +56,9 @@ namespace FPNetwork
 		_logger = logger;
 		_recvQueue = recvQueue;
 		_sendQueue = sendQueue;
+		_httpNetwork = std::make_unique<HttpNetwork>();
+		_httpNetwork->Init(_logger, _recvQueue);
+
 		memcpy(&_serverConfig, serverConfig, sizeof(ServerConfig));
 
 		// 클라이언트 세션 풀 초기화.

@@ -9,6 +9,7 @@
 
 #include "PacketInfo.h"
 #include "SessionInfo.h"
+#include "HttpNetwork.h"
 
 namespace FPCommon
 {
@@ -44,6 +45,7 @@ namespace FPNetwork
 		// Getter, Setter
 		HANDLE GetIocpHandler() const { return _iocpHandle; }
 		int    GetSessionPoolSize() { return _sessionPool.GetSize(); }
+		HttpNetwork * GetHttp() { return _httpNetwork.get(); }
 
 	private :
 
@@ -66,5 +68,6 @@ namespace FPNetwork
 		PacketQueue * _recvQueue = nullptr;
 		PacketQueue * _sendQueue = nullptr;
 
+		std::unique_ptr<HttpNetwork> _httpNetwork;
 	};
 }
