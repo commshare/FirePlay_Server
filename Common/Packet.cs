@@ -5,7 +5,7 @@ namespace Packet
 	public class LoginReq
 {
 	public string				_id;
-	public int					_token;
+	public string				_token;
 	}
 
 	// 로그인 답변 패킷
@@ -19,7 +19,7 @@ namespace Packet
 {
 	public int					_type;
 	public string				_id;
-	public int					_token;
+	public string				_token;
 	}
 
 	// 매치 요청 답변 패킷
@@ -32,7 +32,7 @@ namespace Packet
 	public class MatchCancelReq
 {
 	public string				_id;
-	public int					_token;
+	public string				_token;
 	}
 
 	// 매치 취소 답변 패킷
@@ -175,7 +175,7 @@ namespace Packet
 	public class CloseReq
 {
 	public string				_id;
-	public int					_token;
+	public string				_token;
 	}
 
 	public enum PacketId

@@ -4,7 +4,7 @@
 LoginReq
 {
 	single string _id
-	single integer _token
+	single string _token
 }
 
 // 로그인 답변 패킷
@@ -18,7 +18,7 @@ FastMatchReq
 {
 	single integer _type
 	single string _id
-	single integer _token
+	single string _token
 }
 
 // 매치 요청 답변 패킷
@@ -31,7 +31,7 @@ FastMatchRes
 MatchCancelReq
 {
 	single string _id
-	single integer _token
+	single string _token
 }
 
 // 매치 취소 답변 패킷
@@ -174,5 +174,5 @@ GameSetAck
 CloseReq
 {
 	single string _id
-	single integer _token
+	single string _token
 }
