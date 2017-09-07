@@ -35,7 +35,7 @@ namespace Packet
 		virtual void Deserialize( Json::Value& root );
 
 		std::string					_id;
-		int							_token;
+		std::string					_token;
 	};
 
 	// 로그인 답변 패킷
@@ -61,7 +61,7 @@ namespace Packet
 
 		int							_type;
 		std::string					_id;
-		int							_token;
+		std::string					_token;
 	};
 
 	// 매치 요청 답변 패킷
@@ -86,7 +86,7 @@ namespace Packet
 		virtual void Deserialize( Json::Value& root );
 
 		std::string					_id;
-		int							_token;
+		std::string					_token;
 	};
 
 	// 매치 취소 답변 패킷
@@ -349,7 +349,7 @@ namespace Packet
 		virtual void Deserialize( Json::Value& root );
 
 		std::string					_id;
-		int							_token;
+		std::string					_token;
 	};
 
 	enum PacketId

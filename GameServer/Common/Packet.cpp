@@ -41,7 +41,7 @@ namespace Packet
 	void LoginReq::Deserialize( Json::Value& root )
 	{
 		_id = root.get("_id", "").asString();
-		_token = root.get("_token", 0).asInt();
+		_token = root.get("_token", "").asString();
 	}
 
 	void LoginRes::Serialize( Json::Value& root )
@@ -65,7 +65,7 @@ namespace Packet
 	{
 		_type = root.get("_type", 0).asInt();
 		_id = root.get("_id", "").asString();
-		_token = root.get("_token", 0).asInt();
+		_token = root.get("_token", "").asString();
 	}
 
 	void FastMatchRes::Serialize( Json::Value& root )
@@ -87,7 +87,7 @@ namespace Packet
 	void MatchCancelReq::Deserialize( Json::Value& root )
 	{
 		_id = root.get("_id", "").asString();
-		_token = root.get("_token", 0).asInt();
+		_token = root.get("_token", "").asString();
 	}
 
 	void MatchCancelRes::Serialize( Json::Value& root )
@@ -333,7 +333,7 @@ namespace Packet
 	void CloseReq::Deserialize( Json::Value& root )
 	{
 		_id = root.get("_id", "").asString();
-		_token = root.get("_token", 0).asInt();
+		_token = root.get("_token", "").asString();
 	}
 
 }

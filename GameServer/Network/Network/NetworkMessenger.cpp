@@ -251,6 +251,7 @@ namespace FPNetwork
 						newPacket->_packetId = header->_id;
 						newPacket->_bodySize = bodySize;
 						newPacket->_body= headerPosition + packetHeaderSize;
+						std::string debugString = std::string(newPacket->_body);
 						newPacket->_sessionIdx = ioInfo->SessionTag;
 
 						_recvQueue->Push(newPacket);
