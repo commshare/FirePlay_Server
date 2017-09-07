@@ -4,6 +4,8 @@
 #include <list>
 #include <functional>
 
+#include "../../include/json/json.h"
+
 #include "../../Common/PacketQueue.h"
 #include "../../Common/ConsoleLogger.h"
 #include "../../Common/Define.h"
@@ -63,6 +65,10 @@ namespace FPLogic
 		void EnemyFireAck     (std::shared_ptr<PacketInfo> packet);
 		void GameSetAck       (std::shared_ptr<PacketInfo> packet);
 		void CloseReq         (std::shared_ptr<PacketInfo> packet);
+
+		// 패킷 정보를 Char에서 Json으로 바꿔주는 함수.
+		// Json 라이브러리의 CharReader 사용을 래핑.
+		void ConvertFromCharByte(Json::Value& value, char * data, int dataSize, std::string& errString);
 
 	private :
 

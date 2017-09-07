@@ -19,11 +19,8 @@ namespace FPLogic
 		Json::Value jsonData;
 		std::string err;
 
-		auto a = new Json::CharReaderBuilder();
-		auto reader = a->newCharReader();
-		reader->parse(packet->_body, packet->_body + packet->_bodySize, &jsonData, &err);
+		ConvertFromCharByte(jsonData, packet->_body, packet->_bodySize, err);
 
-		auto _id = jsonData.get("_id", "").asString();
 		Packet::LoginReq req;
 		req.Deserialize(jsonData);
 
@@ -83,6 +80,13 @@ namespace FPLogic
 
 	void PacketProcess::CloseReq(std::shared_ptr<PacketInfo> packet)
 	{
+	}
+
+	void PacketProcess::ConvertFromCharByte(Json::Value & value, char * data, int dataSize, std::string & errString)
+	{
+		auto readerBuilder = new Json::CharReaderBuilder();
+		auto reader = readerBuilder->newCharReader();
+		reader->parse(data, data + dataSize, &value, &errString);
 	}
 
 }
