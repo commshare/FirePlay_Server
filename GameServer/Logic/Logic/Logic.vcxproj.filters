@@ -27,7 +27,7 @@
     <ClCompile Include="PacketProcess.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="PacketProcessLogin.cpp">
+    <ClCompile Include="PacketProcessLogic.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

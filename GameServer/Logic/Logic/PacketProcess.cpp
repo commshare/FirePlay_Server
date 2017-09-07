@@ -5,6 +5,8 @@
 #include <chrono>
 #include <functional>
 
+#include "../../Common/Packet.h"
+
 namespace FPLogic
 {
 	void PacketProcess::Init(
@@ -30,7 +32,21 @@ namespace FPLogic
 
 	void PacketProcess::RegistPacketFunctions()
 	{
+		using namespace Packet;
 
+		subscribe(static_cast<short>(PacketId::ID_LoginReq         ), std::bind(&PacketProcess::LoginReq         , this, std::placeholders::_1));
+		subscribe(static_cast<short>(PacketId::ID_FastMatchReq     ), std::bind(&PacketProcess::FastMatchReq     , this, std::placeholders::_1));
+		subscribe(static_cast<short>(PacketId::ID_MatchCancelReq   ), std::bind(&PacketProcess::MatchCancelReq   , this, std::placeholders::_1));
+		subscribe(static_cast<short>(PacketId::ID_MatchSuccessAck  ), std::bind(&PacketProcess::MatchSuccessAck  , this, std::placeholders::_1));
+		subscribe(static_cast<short>(PacketId::ID_GameStartAck     ), std::bind(&PacketProcess::GameStartAck     , this, std::placeholders::_1));
+		subscribe(static_cast<short>(PacketId::ID_TurnStartAck     ), std::bind(&PacketProcess::TurnStartAck     , this, std::placeholders::_1));
+		subscribe(static_cast<short>(PacketId::ID_EnemyTurnStartAck), std::bind(&PacketProcess::EnemyTurnStartAck, this, std::placeholders::_1));
+		subscribe(static_cast<short>(PacketId::ID_MoveNotify       ), std::bind(&PacketProcess::MoveNotify       , this, std::placeholders::_1));
+		subscribe(static_cast<short>(PacketId::ID_EnemyMoveAck     ), std::bind(&PacketProcess::EnemyMoveAck     , this, std::placeholders::_1));
+		subscribe(static_cast<short>(PacketId::ID_FireNotify       ), std::bind(&PacketProcess::FireNotify       , this, std::placeholders::_1));
+		subscribe(static_cast<short>(PacketId::ID_EnemyFireAck     ), std::bind(&PacketProcess::EnemyFireAck     , this, std::placeholders::_1));
+		subscribe(static_cast<short>(PacketId::ID_GameSetAck       ), std::bind(&PacketProcess::GameSetAck       , this, std::placeholders::_1));
+		subscribe(static_cast<short>(PacketId::ID_CloseReq         ), std::bind(&PacketProcess::CloseReq         , this, std::placeholders::_1));
 	}
 
 	void PacketProcess::process()

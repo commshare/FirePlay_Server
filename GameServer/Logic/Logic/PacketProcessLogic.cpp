@@ -28,5 +28,53 @@ namespace FPLogic
 		// 정상적인 답변 전달.
 	}
 
+	void PacketProcess::FastMatchReq(std::shared_ptr<PacketInfo> packet)
+	{
+
+	}
+
+	void PacketProcess::MatchCancelReq(std::shared_ptr<PacketInfo> packet)
+	{
+	}
+
+	void PacketProcess::MatchSuccessAck(std::shared_ptr<PacketInfo> packet)
+	{
+	}
+
+	void PacketProcess::GameStartAck(std::shared_ptr<PacketInfo> packet)
+	{
+	}
+
+	void PacketProcess::TurnStartAck(std::shared_ptr<PacketInfo> packet)
+	{
+	}
+
+	void PacketProcess::EnemyTurnStartAck(std::shared_ptr<PacketInfo> packet)
+	{
+	}
+
+	void PacketProcess::MoveNotify(std::shared_ptr<PacketInfo> packet)
+	{
+	}
+
+	void PacketProcess::EnemyMoveAck(std::shared_ptr<PacketInfo> packet)
+	{
+	}
+
+	void PacketProcess::FireNotify(std::shared_ptr<PacketInfo> packet)
+	{
+	}
+
+	void PacketProcess::EnemyFireAck(std::shared_ptr<PacketInfo> packet)
+	{
+	}
+
+	void PacketProcess::GameSetAck(std::shared_ptr<PacketInfo> packet)
+	{
+	}
+
+	void PacketProcess::CloseReq(std::shared_ptr<PacketInfo> packet)
+	{
+	}
 
 }
