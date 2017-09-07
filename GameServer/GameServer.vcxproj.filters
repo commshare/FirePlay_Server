@@ -56,6 +56,9 @@
     <ClInclude Include="network\network\SessionInfo.h">
       <Filter>Common</Filter>
     </ClInclude>
+    <ClInclude Include="Common\Util.h">
+      <Filter>Common</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="GameServer\ServerConfig.json">

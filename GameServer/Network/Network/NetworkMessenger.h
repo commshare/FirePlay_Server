@@ -43,9 +43,9 @@ namespace FPNetwork
 		void ForcingClose(const int sessionIdx);
 
 		// Getter, Setter
-		HANDLE GetIocpHandler() const { return _iocpHandle; }
-		int    GetSessionPoolSize() { return _sessionPool.GetSize(); }
-		HttpNetwork * GetHttp() { return _httpNetwork.get(); }
+		HANDLE        GetIocpHandler()		 { return _iocpHandle;            }
+		int           GetSessionPoolSize()   { return _sessionPool.GetSize(); }
+		HttpNetwork * GetHttp()              { return _httpNetwork.get();     }
 
 	private :
 

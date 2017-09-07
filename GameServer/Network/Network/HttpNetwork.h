@@ -17,10 +17,10 @@ namespace FPCommon
 namespace FPNetwork
 {
 	using ConsoleLogger = FPCommon::ConsoleLogger;
-	using PacketQueue = FPCommon::PacketQueue;
-	using ServerConfig = FPCommon::ServerConfig;
-	using LogType = FPCommon::LogType;
-	using ErrorCode = FPCommon::ErrorCode;
+	using PacketQueue   = FPCommon::PacketQueue;
+	using ServerConfig  = FPCommon::ServerConfig;
+	using LogType       = FPCommon::LogType;
+	using ErrorCode     = FPCommon::ErrorCode;
 
 	enum class ApiEnum : int
 	{
@@ -49,28 +49,28 @@ namespace FPNetwork
 	{
 	public :
 
-
 		HttpNetwork() {}
 		~HttpNetwork() {}
 
-		ErrorCode Init(ConsoleLogger * logger, PacketQueue * recvQueue);
+		ErrorCode Init(ConsoleLogger * logger);
+
+		// Token의 유효성을 검증하는 요청을 날리는 메소드.
+		ErrorCode PostTokenValidationRequest(std::string id, std::string token);
+
+	private :
 
 		// DB 서버와의 Post 통신을 담당하는 메소드.
 		std::string PostRequestToDBServer(std::string reqData, ApiEnum api);
-
-	private :
 
 		ErrorCode LoadHttpConfig();
 
 	private :
 
 		ConsoleLogger *             _logger;
-		PacketQueue *               _recvQueue;
 		std::unique_ptr<HttpConfig> _config;
 
 	};
 
-	// DB Server와의 통신을 위한 패킷 구조체.
 	
 
 }

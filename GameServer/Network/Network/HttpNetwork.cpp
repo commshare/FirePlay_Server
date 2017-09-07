@@ -3,10 +3,13 @@
 #include <memory>
 #include <string>
 
+#include "../../include/json/json.h"
+
 #include "../../Common/ConsoleLogger.h"
 #include "../../Common/Define.h"
 #include "../../Common/json.hpp"
 #include "../../Common/ErrorCode.h"
+#include "../../Common/Util.h"
 
 #include "PacketInfo.h"
 
@@ -29,10 +32,9 @@ namespace FPNetwork
 
 	using json = nlohmann::json;
 
-	ErrorCode HttpNetwork::Init(ConsoleLogger * logger, PacketQueue * recvQueue)
+	ErrorCode HttpNetwork::Init(ConsoleLogger * logger)
 	{
 		_logger = logger;
-		_recvQueue = recvQueue;
 
 		if (LoadHttpConfig() != ErrorCode::None)
 		{
@@ -40,6 +42,19 @@ namespace FPNetwork
 		}
 
 		return ErrorCode::None;
+	}
+
+	ErrorCode HttpNetwork::PostTokenValidationRequest(std::string id, std::string token)
+	{
+		Json::Value tokenValidation;
+		tokenValidation["Token"] = id;
+		tokenValidation["UserId"] = token;
+
+		auto userValidationString = PostRequestToDBServer(tokenValidation.toStyledString(), ApiEnum::TokenValidation);
+
+		auto result = FPCommon::Util::GetDataInCharByte<int>(userValidationString.c_str(), strlen(userValidationString.c_str()), "Result");
+
+		return static_cast<ErrorCode>(result);
 	}
 
 	std::string HttpNetwork::PostRequestToDBServer(std::string reqData, ApiEnum api)
@@ -53,7 +68,6 @@ namespace FPNetwork
 		};
 
 		happyhttp::Connection conn(_config->_dbServerUrl.c_str(), _config->_dbServerPort);
-		//happyhttp::Connection conn("10.73.39.93", 20000);
 		// 결과 값이 콜백 함수 호출시에 인자로 들어가도록 등록.
 		std::string result;
 		conn.setcallbacks(OnBegin, OnData, OnComplete, static_cast<void*>(&result));

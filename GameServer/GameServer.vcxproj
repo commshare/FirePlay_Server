@@ -128,6 +128,7 @@
     <ClInclude Include="common\ObjectPool.h" />
     <ClInclude Include="common\Packet.h" />
     <ClInclude Include="common\PacketQueue.h" />
+    <ClInclude Include="Common\Util.h" />
     <ClInclude Include="network\network\IOInfo.h" />
     <ClInclude Include="network\network\SessionInfo.h" />
   </ItemGroup>

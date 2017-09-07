@@ -57,7 +57,7 @@ namespace FPNetwork
 		_recvQueue = recvQueue;
 		_sendQueue = sendQueue;
 		_httpNetwork = std::make_unique<HttpNetwork>();
-		_httpNetwork->Init(_logger, _recvQueue);
+		_httpNetwork->Init(_logger);
 
 		memcpy(&_serverConfig, serverConfig, sizeof(ServerConfig));
 

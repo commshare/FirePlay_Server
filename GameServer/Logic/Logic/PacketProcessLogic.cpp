@@ -5,6 +5,8 @@
 #include "../../include/json/json.h"
 
 #include "../../Common/Packet.h"
+#include "../../Common/ErrorCode.h"
+#include "../../Common/Util.h"
 
 #include "../../Network/Network/PacketInfo.h"
 #include "../../Network/Network/HttpNetwork.h"
@@ -16,23 +18,35 @@ namespace FPLogic
 		_logger->Write(LogType::LOG_DEBUG, "%s | Entry, Session(%d)", __FUNCTION__, packet->_sessionIdx);
 
 		// 요청 패킷 정보를 얻는다.
-		Packet::LoginReq req;
-		DeserializeFromCharByte(&req, packet);
+		Packet::LoginReq loginReq;
+		FPCommon::Util::DeserializeFromCharByte(&loginReq, packet);
 
 		// Http와 통신하여 Validation한지 확인.
-		Json::Value tokenValidation;
-		tokenValidation["Token"] = req._token;
-		tokenValidation["UserId"] = req._id;
+		auto result = _network->GetHttp()->PostTokenValidationRequest(loginReq._id, loginReq._token);
 
-		// WARN :: 내가 HttpNetwork를 Include해서 저 enum을 가져다 쓰는게 맞는지..?
-		// TODO :: 어차피 DB 서버랑 통신하는 경로가 얼마 안될텐데 API를 따로 뚫어주는게 더 좋을 수도.
-		auto userValidationString = _network->GetHttp()->PostRequestToDBServer(tokenValidation.toStyledString(), FPNetwork::ApiEnum::TokenValidation);
-		
-		// Validation하지 않다면 에러 코드 전달.
+		// 보낼 패킷을 준비.
+		Packet::LoginRes loginRes;
+		loginRes._result = static_cast<int>(result);
 
-		// Validation하다면 해당 세션을 ConnectedUser에 추가.
+		// 유효한 요청이었다면 해당 세션을 UserManager에 추가.
+		if (result == ErrorCode::None)
+		{
+			auto isLoginSuccessd = _userManager->LoginUser(packet->_sessionIdx, loginReq._id, loginReq._token);
+			if (isLoginSuccessd == false)
+			{
+				loginRes._result = static_cast<int>(ErrorCode::NoRoomInUserPool);
+			}
+		}
 
-		// 정상적인 답변 전달.
+		// TODO :: User의 전적을 DB에서 받아와서 갱신해주어야 함.
+
+		// 답변 전달.
+		auto sendPacket = std::make_shared<PacketInfo>();
+		sendPacket->_packetId = Packet::PacketId::ID_LoginRes;
+		sendPacket->_sessionIdx = packet->_sessionIdx;
+		sendPacket->_bodySize = sizeof(Packet::LoginRes);
+		sendPacket->_body = (char*)&loginRes;
+		_sendQueue->Push(sendPacket);
 	}
 
 	void PacketProcess::FastMatchReq(std::shared_ptr<PacketInfo> packet)
@@ -84,18 +98,4 @@ namespace FPLogic
 	{
 	}
 
-	// Char Byte 형태에서 Deserialize를 진행해주는 메소드.
-	void PacketProcess::DeserializeFromCharByte(Packet::IJsonSerializable * outResult, std::shared_ptr<PacketInfo> packetInfo) 
-	{
-		Json::Value jsonValue;
-		std::string errorMessage;
-
-		auto readerBuilder = new Json::CharReaderBuilder();
-		auto reader = readerBuilder->newCharReader();
-		reader->parse(packetInfo->_body, packetInfo->_body + packetInfo->_bodySize, &jsonValue, &errorMessage);
-
-		// TODO :: 에러 확인.
-
-		outResult->Deserialize(jsonValue);
-	}
 }

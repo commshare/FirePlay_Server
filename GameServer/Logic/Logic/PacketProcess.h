@@ -9,6 +9,7 @@
 #include "../../Common/PacketQueue.h"
 #include "../../Common/ConsoleLogger.h"
 #include "../../Common/Define.h"
+#include "../../Common/ErrorCode.h"
 #include "../../Common/Packet.h"
 
 #include "../../Network/Network/NetworkMessenger.h"
@@ -18,17 +19,18 @@
 
 namespace FPLogic
 {
-	using PacketQueue = FPCommon::PacketQueue;
+	using PacketQueue   = FPCommon::PacketQueue;
 	using ConsoleLogger = FPCommon::ConsoleLogger;
-	using LogType = FPCommon::LogType;
+	using LogType       = FPCommon::LogType;
+	using ErrorCode     = FPCommon::ErrorCode;
 
 	using NetworkMessenger = FPNetwork::NetworkMessenger;
-	using PacketInfo = FPNetwork::PacketInfo;
+	using PacketInfo       = FPNetwork::PacketInfo;
 
 	class PacketProcess
 	{
 		// 패킷을 처리하는 함수 형태 정의.
-		using PacketFunction = std::function<void(std::shared_ptr<PacketInfo>)>;
+		using PacketFunction     = std::function<void(std::shared_ptr<PacketInfo>)>;
 		// 패킷 처리 함수 리스트 정의.
 		using PacketFunctionList = std::list<PacketFunction>;
 
@@ -67,9 +69,6 @@ namespace FPLogic
 		void GameSetAck       (std::shared_ptr<PacketInfo> packet);
 		void CloseReq         (std::shared_ptr<PacketInfo> packet);
 
-		// 패킷 정보를 Char Byte 형태에서 정의한 패킷 구조체로 Deserialize 하는 메소드.
-		// Json 라이브러리의 CharReader 사용을 래핑.
-		void DeserializeFromCharByte(Packet::IJsonSerializable * outResult, std::shared_ptr<PacketInfo> packetInfo);
 
 	private :
 

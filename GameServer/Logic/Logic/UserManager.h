@@ -18,6 +18,10 @@ namespace FPLogic
 
 		void Init(const int maxUserCount);
 
+		// 유저를 로그인 시켜주는 메소드.
+		bool LoginUser(const int sessionIdx, std::string id, std::string token);
+
+
 	private :
 
 		UserPool _userPool;
