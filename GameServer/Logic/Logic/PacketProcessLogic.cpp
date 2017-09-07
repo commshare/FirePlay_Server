@@ -15,16 +15,11 @@ namespace FPLogic
 		_logger->Write(LogType::LOG_DEBUG, "%s | Entry, Session(%d)", __FUNCTION__, packet->_sessionIdx);
 
 		// 요청 패킷 정보를 얻는다.
-		auto bodyString = std::string(packet->_body);
-		Json::Value jsonData;
-		std::string err;
-
-		ConvertFromCharByte(jsonData, packet->_body, packet->_bodySize, err);
-
 		Packet::LoginReq req;
-		req.Deserialize(jsonData);
+		DeserializeFromCharByte(&req, packet);
 
 		// Http와 통신하여 Validation한지 확인.
+
 		
 		// Validation하지 않다면 에러 코드 전달.
 
@@ -82,11 +77,18 @@ namespace FPLogic
 	{
 	}
 
-	void PacketProcess::ConvertFromCharByte(Json::Value & value, char * data, int dataSize, std::string & errString)
+	// Char Byte 형태에서 Deserialize를 진행해주는 메소드.
+	void PacketProcess::DeserializeFromCharByte(Packet::IJsonSerializable * outResult, std::shared_ptr<PacketInfo> packetInfo) 
 	{
+		Json::Value jsonValue;
+		std::string errorMessage;
+
 		auto readerBuilder = new Json::CharReaderBuilder();
 		auto reader = readerBuilder->newCharReader();
-		reader->parse(data, data + dataSize, &value, &errString);
-	}
+		reader->parse(packetInfo->_body, packetInfo->_body + packetInfo->_bodySize, &jsonValue, &errorMessage);
 
+		// TODO :: 에러 확인.
+
+		outResult->Deserialize(jsonValue);
+	}
 }
