@@ -47,8 +47,8 @@ namespace FPNetwork
 	ErrorCode HttpNetwork::PostTokenValidationRequest(std::string id, std::string token)
 	{
 		Json::Value tokenValidation;
-		tokenValidation["Token"] = id;
-		tokenValidation["UserId"] = token;
+		tokenValidation["Token"] = token;
+		tokenValidation["UserId"] = id;
 
 		auto userValidationString = PostRequestToDBServer(tokenValidation.toStyledString(), ApiEnum::TokenValidation);
 
