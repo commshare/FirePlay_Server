@@ -95,7 +95,7 @@ namespace FPLogic
 		// 대응되는 함수가 없다면 워닝을 띄운다.
 		if (subscribedFunctions == _packetFunctionMap.end())
 		{
-			_logger->Write(LogType::LOG_WARN, "%s | Unregisted packet id arrived", __FUNCTION__);
+			_logger->Write(LogType::LOG_WARN, "%s | Unregisted packet id arrived Id(%d)", __FUNCTION__, recvPacket->_packetId);
 			return;
 		}
 

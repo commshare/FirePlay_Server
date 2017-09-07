@@ -377,8 +377,6 @@ namespace FPNetwork
 				continue;
 			}
 
-			_logger->Write(LogType::LOG_DEBUG, "%s | SendThreadFunc Entry", __FUNCTION__);
-
 			std::shared_ptr<PacketInfo> sendPacket = _sendQueue->Peek();
 			auto destSession = _sessionPool[sendPacket->_sessionIdx];
 			auto sendHeader = PacketHeader{ sendPacket->_packetId, sendPacket->_bodySize };
@@ -388,9 +386,6 @@ namespace FPNetwork
 			strcat_s(sendChar, sizeof(sendChar), sendPacket->_body);
 
 			send(destSession._socket, sendChar, FPNetwork::packetHeaderSize + sendPacket->_bodySize, 0);
-
-			//send(destSession._socket, (char*)&sendHeader, FirePlayCommon::packetHeaderSize, 0);
-			//send(destSession._socket, sendPacket->pData, sendPacket->PacketBodySize, 0);
 
 			_sendQueue->Pop();
 

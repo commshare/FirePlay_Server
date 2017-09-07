@@ -15,6 +15,8 @@ namespace FPNetwork
 	struct PacketInfo
 	{
 		PacketInfo() = default;
+		// ERROR :: 패킷 인포에서 body를 삭제하면 메모리 이상한 접근뜸. ㅠㅠ
+		// 근데 또 처리안하면 잘 돌아감.
 		~PacketInfo()
 		{
 			//if (_body != nullptr)
