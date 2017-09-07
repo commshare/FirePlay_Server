@@ -12,6 +12,7 @@
 
 namespace FPNetwork
 {
+	// WARN :: HappyHttp 라이브러리가 함수 형태를 이렇게 정의해 놓고 있어서 멤버 함수 콜백으로 사용하기가 껄적지근함.
 	void OnBegin(const happyhttp::Response* r, void* userdata)
 	{
 	}
@@ -19,7 +20,7 @@ namespace FPNetwork
 	void OnData(const happyhttp::Response* r, void* userdata, const unsigned char* data, int n)
 	{
 		std::string &result = *(static_cast<std::string*>(userdata));
-		result = std::string(reinterpret_cast<const char*>(data));
+		result += std::string(reinterpret_cast<const char*>(data));
 	}
 
 	void OnComplete(const happyhttp::Response* r, void* userdata)
@@ -41,10 +42,8 @@ namespace FPNetwork
 		return ErrorCode::None;
 	}
 
-	std::string HttpNetwork::PostRequest(std::string reqData)
+	std::string HttpNetwork::PostRequestToDBServer(std::string reqData, ApiEnum api)
 	{
-		std::string result;
-
 		const char* headers[] =
 		{
 			"Connection", "close",
@@ -53,10 +52,13 @@ namespace FPNetwork
 			0
 		};
 
-		happyhttp::Connection conn("localhost", 19000);
+		happyhttp::Connection conn(_config->_dbServerUrl.c_str(), _config->_dbServerPort);
+		//happyhttp::Connection conn("10.73.39.93", 20000);
+		// 결과 값이 콜백 함수 호출시에 인자로 들어가도록 등록.
+		std::string result;
 		conn.setcallbacks(OnBegin, OnData, OnComplete, static_cast<void*>(&result));
 		conn.request("POST",
-			"/Request/Login",
+			_config->_dbServerApi[static_cast<int>(api)].c_str(),
 			headers,
 			(const unsigned char*)reqData.c_str(),
 			strlen(reqData.c_str()));
@@ -85,31 +87,10 @@ namespace FPNetwork
 		_config->_dbServerPort = configJson["_dbServerPort"].get<int>();
 
 		std::string api = "api";
-		for (auto i = 1; i < static_cast<int>(HttpConfig::ApiEnum::ApiMaxNum); ++i)
+		for (auto i = 1; i < static_cast<int>(ApiEnum::ApiMaxNum); ++i)
 		{
 			auto currentApi = api + std::to_string(i);
 			_config->_dbServerApi[i] = configJson[currentApi].get<std::string>();
 		}
 	}
-
-	//void HttpNetwork::OnBegin(const happyhttp::Response * r, void * userdata)
-	//{
-	//	_logger->Write(LogType::LOG_DEBUG, "%s | Begin HTTP POST Status(%d : %s)", __FUNCTION__, r->getstatus(), r->getreason());
-	//}
-
-	//void HttpNetwork::OnData(const happyhttp::Response * r, void * userdata, const unsigned char * data, int n)
-	//{
-	//	auto recvPacket = std::make_shared<PacketInfo>();
-
-	//	// TODO :: 여기서부터 코딩 시작.
-
-	//	
-	//}
-
-	//void HttpNetwork::OnComplete(const happyhttp::Response * r, void * userdata)
-	//{
-	//	_logger->Write(LogType::LOG_DEBUG, "%s | Complete HTTP POST Status(%d : %s)", __FUNCTION__, r->getstatus(), r->getreason());
-	//}
-
-
 }

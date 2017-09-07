@@ -69,7 +69,7 @@ namespace FPLogic
 
 		// 패킷 정보를 Char Byte 형태에서 정의한 패킷 구조체로 Deserialize 하는 메소드.
 		// Json 라이브러리의 CharReader 사용을 래핑.
-		void DeserializeFromCharByte(Packet::IJsonSerializable * bodyStruct, std::shared_ptr<PacketInfo> packetInfo);
+		void DeserializeFromCharByte(Packet::IJsonSerializable * outResult, std::shared_ptr<PacketInfo> packetInfo);
 
 	private :
 

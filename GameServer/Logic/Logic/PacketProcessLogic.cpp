@@ -7,6 +7,7 @@
 #include "../../Common/Packet.h"
 
 #include "../../Network/Network/PacketInfo.h"
+#include "../../Network/Network/HttpNetwork.h"
 
 namespace FPLogic
 {
@@ -19,7 +20,13 @@ namespace FPLogic
 		DeserializeFromCharByte(&req, packet);
 
 		// Http와 통신하여 Validation한지 확인.
+		Json::Value tokenValidation;
+		tokenValidation["Token"] = req._token;
+		tokenValidation["UserId"] = req._id;
 
+		// WARN :: 내가 HttpNetwork를 Include해서 저 enum을 가져다 쓰는게 맞는지..?
+		// TODO :: 어차피 DB 서버랑 통신하는 경로가 얼마 안될텐데 API를 따로 뚫어주는게 더 좋을 수도.
+		auto userValidationString = _network->GetHttp()->PostRequestToDBServer(tokenValidation.toStyledString(), FPNetwork::ApiEnum::TokenValidation);
 		
 		// Validation하지 않다면 에러 코드 전달.
 
