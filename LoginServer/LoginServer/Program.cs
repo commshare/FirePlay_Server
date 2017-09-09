@@ -8,7 +8,11 @@ namespace LoginServer
 	{
 		private static void Main(string[] args)
 		{
-			const string baseAddress = "http://*:19000/";
+#if DEBUG
+            const string baseAddress = "http://localhost:19000/";
+#else
+            const string baseAddress = "http://*:19000/";
+#endif
 
 			using (WebApp.Start<Startup>(url: baseAddress))
 			{

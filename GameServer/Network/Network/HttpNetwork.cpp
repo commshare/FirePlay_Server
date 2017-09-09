@@ -97,7 +97,11 @@ namespace FPNetwork
 
 		_config = std::make_unique<HttpConfig>();
 
+#ifdef _DEBUG
+		_config->_dbServerUrl = "localhost";
+#else
 		_config->_dbServerUrl = configJson["_dbServerUrl"].get<std::string>();
+#endif
 		_config->_dbServerPort = configJson["_dbServerPort"].get<int>();
 
 		std::string api = "api";
