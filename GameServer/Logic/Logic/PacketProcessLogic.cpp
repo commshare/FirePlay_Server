@@ -44,8 +44,13 @@ namespace FPLogic
 		auto sendPacket = std::make_shared<PacketInfo>();
 		sendPacket->_packetId = Packet::PacketId::ID_LoginRes;
 		sendPacket->_sessionIdx = packet->_sessionIdx;
-		sendPacket->_bodySize = sizeof(Packet::LoginRes);
-		sendPacket->_body = (char*)&loginRes;
+
+		auto jsonBody = std::string();
+		Packet::CJsonSerializer::Serialize(&loginRes, jsonBody);
+
+		sendPacket->_bodySize = static_cast<int>(strlen(jsonBody.c_str())) + 1;
+		sendPacket->_body = (char*)jsonBody.c_str();
+
 		_sendQueue->Push(sendPacket);
 	}
 

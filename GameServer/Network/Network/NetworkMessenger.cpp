@@ -381,15 +381,22 @@ namespace FPNetwork
 			auto destSession = _sessionPool[sendPacket->_sessionIdx];
 			auto sendHeader = PacketHeader{ sendPacket->_packetId, sendPacket->_bodySize };
 
-			char* sendChar = (char*)&sendHeader;
-			// TODO :: strcat_s에 에러 있을 수도 있음. 기존에는 strcat사용.
-			strcat_s(sendChar, sizeof(sendChar), sendPacket->_body);
+			// TODO :: 우선 이렇게 동적할당 해놓았지만 NetworkMessenger에서 sendbuffer를 하나 가지고 있어야 함. 
+			char * sendByte = new char[FPNetwork::packetHeaderSize + sendPacket->_bodySize];
+			memcpy_s(sendByte, FPNetwork::packetHeaderSize + sendPacket->_bodySize, &sendHeader, FPNetwork::packetHeaderSize);
+			memcpy_s(sendByte + FPNetwork::packetHeaderSize, sendPacket->_bodySize, &sendPacket->_bodySize, FPNetwork::packetHeaderSize);
 
-			send(destSession._socket, sendChar, FPNetwork::packetHeaderSize + sendPacket->_bodySize, 0);
+			auto sendByteSize = send(destSession._socket, sendByte, FPNetwork::packetHeaderSize + sendPacket->_bodySize, 0);
+			if (sendByteSize < 0)
+			{
+				_logger->Write(LogType::LOG_ERROR, "%s | Socket Send has Problem.", __FUNCTION__);
+			}
 
 			_sendQueue->Pop();
 
-			_logger->Write(LogType::LOG_DEBUG, "%s | Send Packet, To Socket(%I64u), Session(%d), Packet ID(%d)", __FUNCTION__, destSession._socket, destSession._tag, static_cast<int>(sendPacket->_packetId));
+			delete[] sendByte;
+
+			_logger->Write(LogType::LOG_DEBUG, "%s | Send Packet, To Socket(%I64u), Session(%d), Packet ID(%d), BodySize(%d)", __FUNCTION__, destSession._socket, destSession._tag, static_cast<int>(sendPacket->_packetId), sendPacket->_bodySize);
 		}
 	}
 
