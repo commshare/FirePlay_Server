@@ -16,16 +16,40 @@ namespace FPLogic
 
 		// 요청 패킷 정보를 얻는다.
 		Json::Value jsonData = packet->_body;
-		Packet::LoginReq req;
-		req.Deserialize(jsonData);
+		Packet::LoginReq loginReq;
+		loginReq.Deserialize(jsonData);
 
 		// Http와 통신하여 Validation한지 확인.
-		
-		// Validation하지 않다면 에러 코드 전달.
+		auto result = _network->GetHttp()->PostTokenValidationRequest(loginReq._id, loginReq._token);
 
-		// Validation하다면 해당 세션을 ConnectedUser에 추가.
+		// 보낼 패킷을 준비.
+		Packet::LoginRes loginRes;
+		loginRes._result = static_cast<int>(result);
 
-		// 정상적인 답변 전달.
+		// 유효한 요청이었다면 해당 세션을 UserManager에 추가.
+		if (result == ErrorCode::None)
+		{
+			auto isLoginSuccessd = _userManager->LoginUser(packet->_sessionIdx, loginReq._id, loginReq._token);
+			if (isLoginSuccessd == false)
+			{
+				loginRes._result = static_cast<int>(ErrorCode::NoRoomInUserPool);
+			}
+		}
+
+		// TODO :: User의 전적을 DB에서 받아와서 갱신해주어야 함.
+
+		// 답변 전달.
+		auto sendPacket = std::make_shared<PacketInfo>();
+		sendPacket->_packetId = Packet::PacketId::ID_LoginRes;
+		sendPacket->_sessionIdx = packet->_sessionIdx;
+
+		auto jsonBody = std::string();
+		Packet::CJsonSerializer::Serialize(&loginRes, jsonBody);
+
+		sendPacket->_bodySize = static_cast<int>(strlen(jsonBody.c_str())) + 1;
+		sendPacket->_body = (char*)jsonBody.c_str();
+
+		_sendQueue->Push(sendPacket);
 	}
 
 	void PacketProcess::FastMatchReq(std::shared_ptr<PacketInfo> packet)
