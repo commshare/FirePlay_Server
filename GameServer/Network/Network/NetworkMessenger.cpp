@@ -244,7 +244,8 @@ namespace FPNetwork
 					auto header = (PacketHeader*)headerPosition;
 					auto bodySize = header->_bodySize;
 
-					if (packetHeaderSize + bodySize >= remainDataSize)
+					long long requiredSize = packetHeaderSize + bodySize;
+					if (requiredSize <= remainDataSize)
 					{
 						// 패킷을 만들어준다.
 						std::shared_ptr<PacketInfo> newPacket = std::make_shared<PacketInfo>();

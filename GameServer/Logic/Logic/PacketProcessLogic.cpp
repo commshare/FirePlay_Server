@@ -15,9 +15,14 @@ namespace FPLogic
 		_logger->Write(LogType::LOG_DEBUG, "%s | Entry, Session(%d)", __FUNCTION__, packet->_sessionIdx);
 
 		// 요청 패킷 정보를 얻는다.
-		Json::Value jsonData = packet->_body;
+		auto rawJson = std::string(packet->_body);
+		Json::Value root;
+		Json::Reader reader;
+
+		bool isParsingSuccess = reader.parse(rawJson.c_str(), root);
+
 		Packet::LoginReq loginReq;
-		loginReq.Deserialize(jsonData);
+		loginReq.Deserialize(root);
 
 		// Http와 통신하여 Validation한지 확인.
 		auto result = _network->GetHttp()->PostTokenValidationRequest(loginReq._id, loginReq._token);

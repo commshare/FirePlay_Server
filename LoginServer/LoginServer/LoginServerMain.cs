@@ -18,7 +18,7 @@ namespace LoginServer
 #if DEBUG
             config = new ServerConfig
             {
-                DBServerAddress = "127.0.0.1"
+                DBServerAddress = "http://localhost:20000/"
             };
 #else
             using (StreamReader r = new StreamReader("../../PrivateData/address.json"))
