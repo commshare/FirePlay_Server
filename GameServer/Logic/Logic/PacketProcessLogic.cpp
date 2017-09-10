@@ -8,6 +8,8 @@
 
 #include "../../Network/Network/PacketInfo.h"
 
+#include "Define.h"
+
 namespace FPLogic
 {
 	void PacketProcess::LoginReq(std::shared_ptr<PacketInfo> packet)
@@ -38,13 +40,7 @@ namespace FPLogic
 		// TODO :: User의 전적을 DB에서 받아와서 갱신해주어야 함.
 
 		// 답변 전달.
-		auto jsonBody = std::string();
-		Packet::CJsonSerializer::Serialize(&loginRes, jsonBody);
-		auto bodySize = static_cast<int>(strlen(jsonBody.c_str())) + 1;
-		auto sendPacket = std::make_shared<PacketInfo>();
-		sendPacket->SetPacketInfo(Packet::PacketId::ID_LoginRes, packet->_sessionIdx, bodySize, jsonBody.c_str());
-
-		_sendQueue->Push(sendPacket);
+		PushToSendQueue(Packet::PacketId::ID_LoginRes, packet->_sessionIdx, &loginRes);
 	}
 
 	void PacketProcess::FastMatchReq(std::shared_ptr<PacketInfo> packet)
@@ -56,11 +52,23 @@ namespace FPLogic
 		PacketUnpack(packet, &fastMatchReq);
 
 		// 요청한 유저의 상태를 변경해준다.
+		auto reqUser = _userManager->FindUserWithSessionIdx(packet->_sessionIdx);
+		if (reqUser == nullptr)
+		{
+			// 이상한 요청이 들어왔다고 생각하고 무시한다.
+			_logger->Write(LogType::LOG_WARN, "%s | Invalid Match Req Input, Session Idx(%d)", __FUNCTION__, packet->_sessionIdx);
+			return;
+		}
+		reqUser->JoinMatching(static_cast<CharacterType>(fastMatchReq._type), MatchingType::FastMatch);
 
 		// 요청한 정보를 바탕으로 매치 메이커에 넣어준다.
-
+		_matchMaker->RequestMatch(packet->_sessionIdx);
 
 		// 결과를 반환한다.
+		Packet::FastMatchRes matchRes;
+		matchRes._result = static_cast<int>(ErrorCode::None);
+
+		PushToSendQueue(Packet::PacketId::ID_FastMatchRes, packet->_sessionIdx, &matchRes);
 	}
 
 	void PacketProcess::MatchCancelReq(std::shared_ptr<PacketInfo> packet)
@@ -116,6 +124,17 @@ namespace FPLogic
 		reader.parse(rawJson.c_str(), root);
 
 		outSturct->Deserialize(root);
+	}
+
+	void PacketProcess::PushToSendQueue(Packet::PacketId packetId, const int sessionIdx, Packet::IJsonSerializable * packetToSend)
+	{
+		auto jsonBody = std::string();
+		Packet::CJsonSerializer::Serialize(packetToSend, jsonBody);
+		auto bodySize = static_cast<int>(strlen(jsonBody.c_str())) + 1;
+		auto sendPacket = std::make_shared<PacketInfo>();
+		sendPacket->SetPacketInfo(packetId, sessionIdx, bodySize, jsonBody.c_str());
+
+		_sendQueue->Push(sendPacket);
 	}
 
 }

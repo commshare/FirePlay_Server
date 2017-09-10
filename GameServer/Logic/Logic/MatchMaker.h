@@ -2,10 +2,12 @@
 #include <deque>
 
 #include "../../Common/PacketQueue.h"
+#include "../../Common/ConsoleLogger.h"
 
 namespace FPLogic
 {
 	using PacketQueue = FPCommon::PacketQueue;
+	using ConsoleLogger = FPCommon::ConsoleLogger;
 
 	class MatchMaker
 	{
@@ -13,8 +15,9 @@ namespace FPLogic
 
 		MatchMaker() {}
 		~MatchMaker() {}
-		void Init(PacketQueue * sendQueue)
+		void Init(ConsoleLogger * logger, PacketQueue * sendQueue)
 		{
+			_logger = logger;
 			_sendQueue = sendQueue;
 		}
 
@@ -49,6 +52,7 @@ namespace FPLogic
 		// 지금은 시간이 없어서 deque로 대체.
 		std::deque<int> _matchingQueue;
 
+		ConsoleLogger * _logger;
 		PacketQueue * _sendQueue;
 	};
 }

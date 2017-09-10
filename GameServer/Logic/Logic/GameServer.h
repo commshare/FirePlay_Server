@@ -13,6 +13,7 @@
 
 #include "PacketProcess.h"
 #include "UserManager.h"
+#include "MatchMaker.h"
 
 namespace FPLogic
 {
@@ -33,6 +34,7 @@ namespace FPLogic
 		ErrorCode Init();
 
 		void Stop();
+		void Run();
 
 	private :
 
@@ -51,6 +53,8 @@ namespace FPLogic
 
 		std::unique_ptr<PacketProcess>    _packetProcess;
 		std::unique_ptr<UserManager>      _userManager;
+		std::unique_ptr<MatchMaker>		  _matchMaker;
 
+		bool _isServerInitialized = false;
 	};
 }

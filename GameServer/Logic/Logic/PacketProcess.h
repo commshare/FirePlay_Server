@@ -72,6 +72,7 @@ namespace FPLogic
 		
 		// 패킷 처리를 도와줄 메소드.
 		void PacketUnpack(std::shared_ptr<PacketInfo> packet, Packet::IJsonSerializable * outSturct);
+		void PushToSendQueue(Packet::PacketId packetId, const int sessionIdx, Packet::IJsonSerializable * packetToSend);
 
 	private :
 

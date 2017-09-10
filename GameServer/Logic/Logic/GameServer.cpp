@@ -12,6 +12,7 @@
 
 #include "PacketProcess.h"
 #include "UserManager.h"
+#include "MatchMaker.h"
 
 namespace FPLogic
 {
@@ -40,17 +41,32 @@ namespace FPLogic
 		// 유저 관리자 클래스 생성.
 		_userManager = std::make_unique<UserManager>();
 		_userManager->Init(_config.get()->_maxClientCount);
+		
+		// 매치 관리자 클래스 생성.
+		_matchMaker = std::make_unique<MatchMaker>();
+		_matchMaker->Init(_sendQueue.get());
+
+		// TODO :: 게임 관리자 클래스 생성.
 
 		// 패킷 처리 클래스 생성
 		_packetProcess = std::make_unique<PacketProcess>();
-		_packetProcess->Init(_logger.get(), _network.get(), _userManager.get(), _recvQueue.get(), _sendQueue.get());
+		_packetProcess->Init(_logger.get(), _network.get(), _matchMaker.get(), _userManager.get(), _recvQueue.get(), _sendQueue.get());
 
+		_isServerInitialized = true;
 		return ErrorCode::None;
 	}
 
 	void GameServer::Stop()
 	{
 		Release();
+	}
+
+	void GameServer::Run()
+	{
+		if (_isServerInitialized)
+		{
+			_matchMaker->CheckMatchMaked();
+		}
 	}
 
 	ErrorCode GameServer::loadConfig()
