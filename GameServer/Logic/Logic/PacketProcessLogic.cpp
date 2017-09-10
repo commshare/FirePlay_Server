@@ -15,14 +15,8 @@ namespace FPLogic
 		_logger->Write(LogType::LOG_DEBUG, "%s | Entry, Session(%d)", __FUNCTION__, packet->_sessionIdx);
 
 		// 요청 패킷 정보를 얻는다.
-		auto rawJson = std::string(packet->_body);
-		Json::Value root;
-		Json::Reader reader;
-
-		bool isParsingSuccess = reader.parse(rawJson.c_str(), root);
-
 		Packet::LoginReq loginReq;
-		loginReq.Deserialize(root);
+		PacketUnpack(packet, &loginReq);
 
 		// Http와 통신하여 Validation한지 확인.
 		auto result = _network->GetHttp()->PostTokenValidationRequest(loginReq._id, loginReq._token);
@@ -55,6 +49,17 @@ namespace FPLogic
 
 	void PacketProcess::FastMatchReq(std::shared_ptr<PacketInfo> packet)
 	{
+		_logger->Write(LogType::LOG_DEBUG, "%s | Entry, Session(%d)", __FUNCTION__, packet->_sessionIdx);
+
+		// 패킷 정보를 얻는다.
+		auto rawJson = std::string(packet->_body);
+		Json::Value root;
+		Json::Reader reader;
+
+		bool isParsingSuccess = reader.parse(rawJson.c_str(), root);
+
+		Packet::LoginReq loginReq;
+		loginReq.Deserialize(root);
 	}
 
 	void PacketProcess::MatchCancelReq(std::shared_ptr<PacketInfo> packet)
@@ -101,5 +106,14 @@ namespace FPLogic
 	{
 	}
 
+	void PacketProcess::PacketUnpack(std::shared_ptr<PacketInfo> packet, Packet::IJsonSerializable * outSturct)
+	{
+		auto rawJson = std::string(packet->_body);
+		Json::Value root;
+		Json::Reader reader;
 
+		reader.parse(rawJson.c_str(), root);
+
+		outSturct->Deserialize(root);
+	}
 }

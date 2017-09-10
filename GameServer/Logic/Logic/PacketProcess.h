@@ -68,7 +68,9 @@ namespace FPLogic
 		void EnemyFireAck     (std::shared_ptr<PacketInfo> packet);
 		void GameSetAck       (std::shared_ptr<PacketInfo> packet);
 		void CloseReq         (std::shared_ptr<PacketInfo> packet);
-
+		
+		// 패킷 처리를 도와줄 메소드.
+		void PacketUnpack(std::shared_ptr<PacketInfo> packet, Packet::IJsonSerializable * outSturct);
 
 	private :
 
@@ -81,4 +83,6 @@ namespace FPLogic
 		// 패킷 번호와 등록된 패킷 처리 함수 리스트를 저장하는 자료구조.
 		std::unordered_map<short, PacketFunctionList> _packetFunctionMap;
 	};
+
+
 }
