@@ -7,17 +7,21 @@
 
 #include "../../Common/Packet.h"
 
+#include "MatchMaker.h"
+
 namespace FPLogic
 {
 	void PacketProcess::Init(
 		ConsoleLogger    * logger,
 		NetworkMessenger * network,
+		MatchMaker		 * matchMaker,
 		UserManager      * userManager,
 		PacketQueue      * recvQueue,
 		PacketQueue      * sendQueue)
 	{
 		_logger      = logger;
 		_network     = network;
+		_matchMaker  = matchMaker;
 		_userManager = userManager;
 		_recvQueue   = recvQueue;
 		_sendQueue   = sendQueue;

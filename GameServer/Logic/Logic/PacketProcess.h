@@ -16,6 +16,7 @@
 #include "../../Network/Network/PacketInfo.h"
 
 #include "UserManager.h"
+#include "MatchMaker.h"
 
 namespace FPLogic
 {
@@ -39,7 +40,7 @@ namespace FPLogic
 		PacketProcess() {}
 		~PacketProcess() {}
 
-		void Init(ConsoleLogger * logger, NetworkMessenger * network, UserManager * userManager, PacketQueue * recvQueue, PacketQueue * sendQueue);
+		void Init(ConsoleLogger * logger, NetworkMessenger * network, MatchMaker * matchMaker, UserManager * userManager, PacketQueue * recvQueue, PacketQueue * sendQueue);
 
 	private :
 
@@ -79,6 +80,7 @@ namespace FPLogic
 		PacketQueue *      _recvQueue   = nullptr;
 		PacketQueue *      _sendQueue   = nullptr;
 		NetworkMessenger * _network     = nullptr;
+		MatchMaker *       _matchMaker  = nullptr;
 
 		// 패킷 번호와 등록된 패킷 처리 함수 리스트를 저장하는 자료구조.
 		std::unordered_map<short, PacketFunctionList> _packetFunctionMap;

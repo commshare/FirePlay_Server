@@ -21,6 +21,23 @@ namespace FPLogic
 		auto newUser = _userPool[newUserTag];
 		newUser.Clear();
 		newUser.Login(sessionIdx, id.c_str());
+
+		// À¯Àú µñ¼Å³Ê¸®¿¡ µî·Ï.
+		_userSessionDic.emplace(sessionIdx, newUserTag);
+
 		return true;
+	}
+
+	User * UserManager::FindUserWithSessionIdx(const int sessionIdx)
+	{
+		auto findResult = _userSessionDic.find(sessionIdx);
+
+		if (findResult == _userSessionDic.end())
+		{
+			return nullptr;
+		}
+
+		auto userPoolIdx = findResult->second;
+		return &_userPool[userPoolIdx];
 	}
 }

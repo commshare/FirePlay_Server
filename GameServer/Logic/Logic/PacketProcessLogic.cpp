@@ -52,14 +52,15 @@ namespace FPLogic
 		_logger->Write(LogType::LOG_DEBUG, "%s | Entry, Session(%d)", __FUNCTION__, packet->_sessionIdx);
 
 		// 패킷 정보를 얻는다.
-		auto rawJson = std::string(packet->_body);
-		Json::Value root;
-		Json::Reader reader;
+		Packet::FastMatchReq fastMatchReq;
+		PacketUnpack(packet, &fastMatchReq);
 
-		bool isParsingSuccess = reader.parse(rawJson.c_str(), root);
+		// 요청한 유저의 상태를 변경해준다.
 
-		Packet::LoginReq loginReq;
-		loginReq.Deserialize(root);
+		// 요청한 정보를 바탕으로 매치 메이커에 넣어준다.
+
+
+		// 결과를 반환한다.
 	}
 
 	void PacketProcess::MatchCancelReq(std::shared_ptr<PacketInfo> packet)
@@ -116,4 +117,5 @@ namespace FPLogic
 
 		outSturct->Deserialize(root);
 	}
+
 }
