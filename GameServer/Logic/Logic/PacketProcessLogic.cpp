@@ -44,15 +44,11 @@ namespace FPLogic
 		// TODO :: User의 전적을 DB에서 받아와서 갱신해주어야 함.
 
 		// 답변 전달.
-		auto sendPacket = std::make_shared<PacketInfo>();
-		sendPacket->_packetId = Packet::PacketId::ID_LoginRes;
-		sendPacket->_sessionIdx = packet->_sessionIdx;
-
 		auto jsonBody = std::string();
 		Packet::CJsonSerializer::Serialize(&loginRes, jsonBody);
-
-		sendPacket->_bodySize = static_cast<int>(strlen(jsonBody.c_str())) + 1;
-		sendPacket->_body = (char*)jsonBody.c_str();
+		auto bodySize = static_cast<int>(strlen(jsonBody.c_str())) + 1;
+		auto sendPacket = std::make_shared<PacketInfo>();
+		sendPacket->SetPacketInfo(Packet::PacketId::ID_LoginRes, packet->_sessionIdx, bodySize, jsonBody.c_str());
 
 		_sendQueue->Push(sendPacket);
 	}

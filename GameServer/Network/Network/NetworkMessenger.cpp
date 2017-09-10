@@ -384,8 +384,11 @@ namespace FPNetwork
 
 			// TODO :: 우선 이렇게 동적할당 해놓았지만 NetworkMessenger에서 sendbuffer를 하나 가지고 있어야 함. 
 			char * sendByte = new char[FPNetwork::packetHeaderSize + sendPacket->_bodySize];
+
 			memcpy_s(sendByte, FPNetwork::packetHeaderSize + sendPacket->_bodySize, &sendHeader, FPNetwork::packetHeaderSize);
-			memcpy_s(sendByte + FPNetwork::packetHeaderSize, sendPacket->_bodySize, &sendPacket->_bodySize, FPNetwork::packetHeaderSize);
+			strcpy_s(sendByte + FPNetwork::packetHeaderSize, sendPacket->_bodySize, sendPacket->_body);
+
+			//memcpy_s(sendByte + FPNetwork::packetHeaderSize, sendPacket->_bodySize, &sendPacket->_body, FPNetwork::packetHeaderSize);
 
 			auto sendByteSize = send(destSession._socket, sendByte, FPNetwork::packetHeaderSize + sendPacket->_bodySize, 0);
 			if (sendByteSize < 0)

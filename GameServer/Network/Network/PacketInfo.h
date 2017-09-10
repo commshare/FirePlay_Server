@@ -1,4 +1,5 @@
 #pragma once
+#include "../../Common/Packet.h"
 
 namespace FPNetwork
 {
@@ -15,16 +16,21 @@ namespace FPNetwork
 	struct PacketInfo
 	{
 		PacketInfo() = default;
-		// ERROR :: 패킷 인포에서 body를 삭제하면 메모리 이상한 접근뜸. ㅠㅠ
-		// 근데 또 처리안하면 잘 돌아감. 처리를 해줘야 할 것 같은데 아닌가?
-		// 내 생각엔 shared_ptr상태에서 queue의 pop이 호출되면서 두 번 삭제가 이루어지는 듯.
+		void SetPacketInfo(Packet::PacketId id, int sessionIdx, int bodySize, const char * body)
+		{
+			_packetId = id;
+			_sessionIdx = sessionIdx;
+			_bodySize = bodySize;
+			_body = new char[_bodySize];
+			strcpy_s(_body, _bodySize, body);
+		}
+
 		~PacketInfo()
 		{
-			//if (_body != nullptr)
-			//{
-			//	delete[] _body;
-			//	_body = nullptr;
-			//}
+			if (_body != nullptr)
+			{
+				//delete[] _body;
+			}
 		}
 
 		int _sessionIdx = 0;
