@@ -149,6 +149,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Define.h" />
+    <ClInclude Include="GameManager.h" />
+    <ClInclude Include="GameRoom.h" />
     <ClInclude Include="MatchMaker.h" />
     <ClInclude Include="GameServer.h" />
     <ClInclude Include="PacketProcess.h" />
@@ -156,6 +158,7 @@
     <ClInclude Include="UserManager.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="GameServer.cpp" />
     <ClCompile Include="PacketProcess.cpp" />
     <ClCompile Include="PacketProcessLogic.cpp" />

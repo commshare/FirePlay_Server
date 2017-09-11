@@ -1,6 +1,8 @@
 #pragma once
 #include <deque>
 
+#include "../../Common/Packet.h"
+
 #include "../../Common/PacketQueue.h"
 #include "../../Common/ConsoleLogger.h"
 
@@ -26,8 +28,17 @@ namespace FPLogic
 			// TODO :: 두 명 이상 기다리면 바로 매칭을 시켜주게 되는 임시 코드.
 			if (_matchingQueue.size() >= 2)
 			{
-				// 매칭이 되었다는 패킷을 보내준다.
 				// 이 두사람을 매칭 큐에서 빼준다.
+				auto player1Idx = _matchingQueue.front();
+				_matchingQueue.pop_front();
+				auto player2Idx = _matchingQueue.front();
+				_matchingQueue.pop_front();
+
+				// 매칭이 되었다는 패킷을 보내준다.
+				Packet::MatchSuccessNotify notifyPacketToPlayer1;
+				Packet::MatchSuccessNotify notifyPacketToPlayer2;
+
+
 			}
 		}
 

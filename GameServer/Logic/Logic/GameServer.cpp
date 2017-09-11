@@ -44,7 +44,7 @@ namespace FPLogic
 		
 		// 매치 관리자 클래스 생성.
 		_matchMaker = std::make_unique<MatchMaker>();
-		_matchMaker->Init(_sendQueue.get());
+		_matchMaker->Init(_logger.get(), _sendQueue.get());
 
 		// TODO :: 게임 관리자 클래스 생성.
 
