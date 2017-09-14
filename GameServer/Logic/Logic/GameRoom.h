@@ -6,6 +6,9 @@ namespace FPLogic
 	{
 	public :
 
+		GameRoom() {}
+		~GameRoom() {}
+
 	private :
 		
 	};

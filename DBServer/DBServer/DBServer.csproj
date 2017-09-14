@@ -125,6 +125,8 @@
     <None Include="IdGenHelp.chm" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Analyzer Include="..\packages\MessagePackAnalyzer.1.6.0\analyzers\dotnet\cs\MessagePackAnalyzer.dll" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

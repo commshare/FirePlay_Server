@@ -109,4 +109,27 @@ namespace FPLogic
 			function(recvPacket);
 		}
 	}
+
+	// 패킷 데이터 처리를 도와주는 메소드들.
+	void PacketProcess::PacketUnpack(std::shared_ptr<PacketInfo> packet, Packet::IJsonSerializable * outSturct)
+	{
+		auto rawJson = std::string(packet->_body);
+		Json::Value root;
+		Json::Reader reader;
+
+		reader.parse(rawJson.c_str(), root);
+
+		outSturct->Deserialize(root);
+	}
+
+	void PacketProcess::PushToSendQueue(Packet::PacketId packetId, const int sessionIdx, Packet::IJsonSerializable * packetToSend)
+	{
+		auto jsonBody = std::string();
+		Packet::CJsonSerializer::Serialize(packetToSend, jsonBody);
+		auto bodySize = static_cast<int>(strlen(jsonBody.c_str())) + 1;
+		auto sendPacket = std::make_shared<PacketInfo>();
+		sendPacket->SetPacketInfo(packetId, sessionIdx, bodySize, jsonBody.c_str());
+
+		_sendQueue->Push(sendPacket);
+	}
 }

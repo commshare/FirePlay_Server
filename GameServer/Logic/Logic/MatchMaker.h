@@ -1,5 +1,7 @@
 #pragma once
 #include <deque>
+#include <memory>
+#include <algorithm>
 
 #include "../../Common/Packet.h"
 
@@ -34,7 +36,7 @@ namespace FPLogic
 				auto player2Idx = _matchingQueue.front();
 				_matchingQueue.pop_front();
 
-				// 매칭이 되었다는 패킷을 보내준다.
+				// TODO :: 매칭이 되었다는 패킷을 보내준다.
 				Packet::MatchSuccessNotify notifyPacketToPlayer1;
 				Packet::MatchSuccessNotify notifyPacketToPlayer2;
 
@@ -47,7 +49,16 @@ namespace FPLogic
 		// 나중에 매칭 랭킹 시스템 도입.
 		void RequestMatch(const int sessionId)
 		{
+			std::lock_guard<std::mutex> lock(_mutex);
 			_matchingQueue.push_back(sessionId);
+		}
+
+		// 매치를 신청한 유저가 취소했을 경우를 처리해주는 메소드. 
+		void CancleMatch(const int sessionId)
+		{
+			std::lock_guard<std::mutex> lock(_mutex);
+			// 요청받은 세션을 찾아 삭제한다.
+			_matchingQueue.erase(std::remove_if(_matchingQueue.begin(), _matchingQueue.end(), [](int sessionId) {}), _matchingQueue.end());
 		}
 
 	private :
@@ -62,6 +73,7 @@ namespace FPLogic
 		// TODO :: 전용 자료구조를 만들어주는 것이 좋을 것 같다.
 		// 지금은 시간이 없어서 deque로 대체.
 		std::deque<int> _matchingQueue;
+		std::mutex _mutex;
 
 		ConsoleLogger * _logger;
 		PacketQueue * _sendQueue;

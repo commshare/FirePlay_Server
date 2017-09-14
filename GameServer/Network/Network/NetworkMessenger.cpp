@@ -19,10 +19,10 @@ namespace FPNetwork
 
 	void NetworkMessenger::Stop()
 	{
-		WSACleanup();
-
-		// 세션 풀 클래스를 초기화.
+		// 세션 풀 클래스를 할당 해제.
 		_sessionPool.Release();
+
+		WSACleanup();
 	}
 
 	void NetworkMessenger::ForcingClose(const int sessionIdx)
@@ -52,6 +52,7 @@ namespace FPNetwork
 		{
 			return false;
 		}
+
 
 		_logger = logger;
 		_recvQueue = recvQueue;

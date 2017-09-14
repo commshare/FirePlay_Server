@@ -42,6 +42,7 @@ namespace FPCommon
 			auto reader = readerBuilder->newCharReader();
 			reader->parse(data, data + dataSize, &jsonValue, &errorMessage);
 
+			// TODO :: int말고 다른 형식도 지원해야함.
 			if (std::is_same<T, int>::value)
 			{
 				return jsonValue.get(jsonItemName, -1).asInt();
