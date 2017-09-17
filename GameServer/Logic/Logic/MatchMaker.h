@@ -63,6 +63,11 @@ namespace FPLogic
 			return true;
 		}
 
+		void CancelMatch(const int sessionId)
+		{
+			std::remove_if(_matchingQueue.begin(), _matchingQueue.end(), sessionId);
+		}
+
 	private :
 
 		// TODO :: 게임 인덱스는 어떻게 관리하지?
