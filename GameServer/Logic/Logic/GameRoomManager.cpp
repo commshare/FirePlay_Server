@@ -1,8 +1,8 @@
-#include "GameManager.h"
+#include "GameRoomManager.h"
 
 namespace FPLogic
 {
-	void GameManager::Init()
+	void GameRoomManager::Init()
 	{
 		_gameRoomPool.Init(maxGameRoomNum);
 	}

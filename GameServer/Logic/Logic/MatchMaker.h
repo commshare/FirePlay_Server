@@ -6,6 +6,8 @@
 #include "../../Common/PacketQueue.h"
 #include "../../Common/ConsoleLogger.h"
 
+#include "GameManager.h"
+
 namespace FPLogic
 {
 	using PacketQueue = FPCommon::PacketQueue;
@@ -17,10 +19,11 @@ namespace FPLogic
 
 		MatchMaker() {}
 		~MatchMaker() {}
-		void Init(ConsoleLogger * logger, PacketQueue * sendQueue)
+		void Init(ConsoleLogger * logger, PacketQueue * sendQueue, GameRoomManager * gameRoomManager)
 		{
 			_logger = logger;
 			_sendQueue = sendQueue;
+			_gameRoomManager = gameRoomManager;
 		}
 
 		void CheckMatchMaked()
@@ -37,7 +40,6 @@ namespace FPLogic
 				// 매칭이 되었다는 패킷을 보내준다.
 				Packet::MatchSuccessNotify notifyPacketToPlayer1;
 				Packet::MatchSuccessNotify notifyPacketToPlayer2;
-
 
 			}
 		}
@@ -65,5 +67,6 @@ namespace FPLogic
 
 		ConsoleLogger * _logger;
 		PacketQueue * _sendQueue;
+		GameRoomManager * _gameRoomManager;
 	};
 }

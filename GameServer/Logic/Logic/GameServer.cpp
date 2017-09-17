@@ -41,12 +41,14 @@ namespace FPLogic
 		// 유저 관리자 클래스 생성.
 		_userManager = std::make_unique<UserManager>();
 		_userManager->Init(_config.get()->_maxClientCount);
+
+		// 게임 룸 관리자 클래스 생성.
+		_gameRoomManager = std::make_unique<GameRoomManager>();
+		_gameRoomManager->Init();
 		
 		// 매치 관리자 클래스 생성.
 		_matchMaker = std::make_unique<MatchMaker>();
-		_matchMaker->Init(_logger.get(), _sendQueue.get());
-
-		// TODO :: 게임 관리자 클래스 생성.
+		_matchMaker->Init(_logger.get(), _sendQueue.get(), _gameRoomManager.get());
 
 		// 패킷 처리 클래스 생성
 		_packetProcess = std::make_unique<PacketProcess>();
