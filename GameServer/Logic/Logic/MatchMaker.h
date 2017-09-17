@@ -1,12 +1,13 @@
 #pragma once
 #include <deque>
+#include <algorithm>
 
 #include "../../Common/Packet.h"
 
 #include "../../Common/PacketQueue.h"
 #include "../../Common/ConsoleLogger.h"
 
-#include "GameManager.h"
+#include "GameRoomManager.h"
 
 namespace FPLogic
 {
@@ -50,6 +51,16 @@ namespace FPLogic
 		void RequestMatch(const int sessionId)
 		{
 			_matchingQueue.push_back(sessionId);
+		}
+
+		bool isUserIsInMatching(const int sessionId)
+		{
+			auto findResult = std::find_if(_matchingQueue.begin(), _matchingQueue.end(), sessionId);
+			if (findResult == _matchingQueue.end())
+			{
+				return false;
+			}
+			return true;
 		}
 
 	private :

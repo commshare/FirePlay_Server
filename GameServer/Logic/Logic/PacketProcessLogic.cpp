@@ -73,6 +73,32 @@ namespace FPLogic
 
 	void PacketProcess::MatchCancelReq(std::shared_ptr<PacketInfo> packet)
 	{
+		_logger->Write(LogType::LOG_DEBUG, "%s | Entry, Session(%d)", __FUNCTION__, packet->_sessionIdx);
+
+		// 패킷 정보를 얻는다.
+		Packet::MatchCancelReq matchCancelReq;
+		PacketUnpack(packet, &matchCancelReq);
+
+		// 요청한 유저를 찾는다.
+		auto reqUser = _userManager->FindUserWithSessionIdx(packet->_sessionIdx);
+		if (reqUser == nullptr)
+		{
+			// 이상한 요청이 들어왔다고 생각하고 무시한다.
+			_logger->Write(LogType::LOG_WARN, "%s | Invalid Match Cancel Input, Session Idx(%d)", __FUNCTION__, packet->_sessionIdx);
+			return;
+		}
+
+		// 요청한 유저가 매칭큐에 있다면 매칭큐에서 빼준다.
+		if (_matchMaker->isUserIsInMatching(packet->_sessionIdx))
+		{
+
+		}
+
+		// 결과를 반환한다.
+		Packet::MatchCancelRes cancelRes;
+		cancelRes._result = static_cast<int>(ErrorCode::None);
+
+		PushToSendQueue(Packet::PacketId::ID_MatchCancelRes, packet->_sessionIdx, &cancelRes);
 	}
 
 	void PacketProcess::MatchSuccessAck(std::shared_ptr<PacketInfo> packet)
