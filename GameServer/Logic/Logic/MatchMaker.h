@@ -116,6 +116,9 @@ namespace FPLogic
 			// WARN :: Util 클래스의 PushToSendQueue는 _sendQueue를 인자로 받기 때문에 위험할 수도 있음.
 			Util::PushToSendQueue(_sendQueue, Packet::PacketId::ID_MatchSuccessNotify, user1->GetSessionIdx(), &matchNotify1);
 			Util::PushToSendQueue(_sendQueue, Packet::PacketId::ID_MatchSuccessNotify, user2->GetSessionIdx(), &matchNotify2);
+
+			user1->JoinGame(gameIdx);
+			user2->JoinGame(gameIdx);
 		}
 
 		// 매칭을 기다리는 큐를 가지고 있음.

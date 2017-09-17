@@ -108,8 +108,14 @@ namespace FPLogic
 		_logger->Write(LogType::LOG_DEBUG, "%s | Entry, Session(%d)", __FUNCTION__, packet->_sessionIdx);
 
 		// 매치를 확인한 유저를 찾는다.
+		auto reqUser = _userManager->FindUserWithSessionIdx(packet->_sessionIdx);
 
 		// 유저가 INVALID하다면 로그를 찍고 무시한다.
+		if (reqUser == nullptr)
+		{
+			_logger->Write(LogType::LOG_WARN, "%s | Invalid Match Ack Input, Session Idx(%d)", __FUNCTION__, packet->_sessionIdx);
+			return;
+		}
 
 		// 매치를 확인한 유저를 게임 룸에 보내준다.
 

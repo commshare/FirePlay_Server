@@ -8,6 +8,8 @@
 #include "../../Common/Packet.h"
 
 #include "MatchMaker.h"
+#include "UserManager.h"
+#include "GameRoomManager.h"
 
 namespace FPLogic
 {
@@ -17,7 +19,8 @@ namespace FPLogic
 		MatchMaker		 * matchMaker,
 		UserManager      * userManager,
 		PacketQueue      * recvQueue,
-		PacketQueue      * sendQueue)
+		PacketQueue      * sendQueue,
+		GameRoomManager  * gameRoomManager)
 	{
 		_logger      = logger;
 		_network     = network;
@@ -25,6 +28,7 @@ namespace FPLogic
 		_userManager = userManager;
 		_recvQueue   = recvQueue;
 		_sendQueue   = sendQueue;
+		_gameRoomManager = gameRoomManager;
 
 		// 패킷 관련 함수 등록하기.
 		RegistPacketFunctions();
