@@ -82,7 +82,7 @@ namespace FPLogic
 		auto reqUser = _userManager->FindUserWithSessionIdx(packet->_sessionIdx);
 		if (reqUser == nullptr)
 		{
-			// 이상한 요청이 들어왔다고 생각하고 무시한다.
+			// 요청한 유저가 없다면 이상한 요청이 들어왔다고 생각하고 무시한다.
 			_logger->Write(LogType::LOG_WARN, "%s | Invalid Match Cancel Input, Session Idx(%d)", __FUNCTION__, packet->_sessionIdx);
 			return;
 		}
@@ -90,24 +90,8 @@ namespace FPLogic
 		// 요청한 유저가 매칭큐에 있다면 매칭큐에서 빼준다.
 		if (_matchMaker->isUserIsInMatching(packet->_sessionIdx))
 		{
-
+			_matchMaker->CancleMatch(packet->_sessionIdx);
 		}
-
-		// 결과를 반환한다.
-		Packet::MatchCancelRes cancelRes;
-		cancelRes._result = static_cast<int>(ErrorCode::None);
-
-		PushToSendQueue(Packet::PacketId::ID_MatchCancelRes, packet->_sessionIdx, &cancelRes);
-
-		// 요청한 유저가 INVALID하다면 로그를 찍고 무시한다.
-		if (reqUser == nullptr || reqUser->IsUserActivated() == false)
-		{
-			_logger->Write(LogType::LOG_WARN, "%s | Invalid Cancel Match Input, Session Idx(%d)", __FUNCTION__, packet->_sessionIdx);
-			return;
-		}
-
-		// 요청한 유저를 매치메이커에서 빼준다.
-		_matchMaker->CancleMatch(packet->_sessionIdx);
 
 		// 요청한 유저의 상태를 변화시킨다.
 		reqUser->CancelMatching();
