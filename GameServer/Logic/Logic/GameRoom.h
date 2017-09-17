@@ -8,7 +8,6 @@ namespace FPLogic
 		GameRoom() {}
 		~GameRoom() {}
 
-
 	private :
 		
 	};
