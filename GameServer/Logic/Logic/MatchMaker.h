@@ -69,7 +69,7 @@ namespace FPLogic
 
 		bool isUserIsInMatching(const int sessionId)
 		{
-			auto findResult = std::find_if(_matchingQueue.begin(), _matchingQueue.end(), sessionId);
+			auto findResult = std::find_if(_matchingQueue.begin(), _matchingQueue.end(), [sessionId](int i) { return i == sessionId; });
 			if (findResult == _matchingQueue.end())
 			{
 				return false;
@@ -82,7 +82,7 @@ namespace FPLogic
 		{
 			std::lock_guard<std::mutex> lock(_mutex);
 			// 요청받은 세션을 찾아 삭제한다.
-			std::remove_if(_matchingQueue.begin(), _matchingQueue.end(), sessionId);
+			std::remove_if(_matchingQueue.begin(), _matchingQueue.end(), [sessionId](int i) { return i == sessionId; });
 		}
 
 	private :
