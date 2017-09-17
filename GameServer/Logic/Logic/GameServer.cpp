@@ -44,11 +44,11 @@ namespace FPLogic
 
 		// 게임 룸 관리자 클래스 생성.
 		_gameRoomManager = std::make_unique<GameRoomManager>();
-		_gameRoomManager->Init();
+		_gameRoomManager->Init(_logger.get(), _sendQueue.get(), _userManager.get());
 		
 		// 매치 관리자 클래스 생성.
 		_matchMaker = std::make_unique<MatchMaker>();
-		_matchMaker->Init(_logger.get(), _sendQueue.get(), _gameRoomManager.get());
+		_matchMaker->Init(_logger.get(), _sendQueue.get(), _gameRoomManager.get(), _userManager.get());
 
 		// 패킷 처리 클래스 생성
 		_packetProcess = std::make_unique<PacketProcess>();

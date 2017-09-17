@@ -11,4 +11,10 @@ namespace FPLogic
 		_gameRoomPool.Init(maxGameRoomNum);
 	}
 
+	// GameRoom 오브젝트 풀에서 빈 방을 찾아 반환하는 메소드.
+	int GameRoomManager::GetEmptyRoom()
+	{
+		return _gameRoomPool.GetTag();
+	}
+
 }

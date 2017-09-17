@@ -24,12 +24,14 @@ namespace FPLogic
 
 		void Init(ConsoleLogger * logger, PacketQueue * sendQueue, UserManager * userManager);
 
+		int GetEmptyRoom();
+
 	private :
 		
-		GameRoomPool _gameRoomPool;
+		GameRoomPool    _gameRoomPool;
 		ConsoleLogger * _logger;
-		UserManager * _userManager;
-		PacketQueue * _sendQueue;
+		UserManager   * _userManager;
+		PacketQueue   * _sendQueue;
 	};
 
 }
