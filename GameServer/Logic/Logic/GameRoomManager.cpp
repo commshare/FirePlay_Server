@@ -21,9 +21,12 @@ namespace FPLogic
 		return _gameRoomPool.GetTag();
 	}
 
-	void GameRoomManager::EnterUserToRoom(const int sessionId, const int gameIdx)
+	ErrorCode GameRoomManager::EnterUserToRoom(const int sessionId, const int gameRoomIdx)
 	{
+		auto& gameRoom = _gameRoomPool[gameRoomIdx];
+		auto enteringUser = _userManager->FindUserWithSessionIdx(sessionId);
 
+		return gameRoom.EnterUser(enteringUser);
 	}
 
 }

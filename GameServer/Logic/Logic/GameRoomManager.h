@@ -3,6 +3,7 @@
 #include "../../Common/ObjectPool.h"
 #include "../../Common/ConsoleLogger.h"
 #include "../../Common/PacketQueue.h"
+#include "../../Common/ErrorCode.h"
 
 #include "GameRoom.h"
 #include "User.h"
@@ -13,6 +14,7 @@ namespace FPLogic
 	using GameRoomPool = FPCommon::ObjectPool<GameRoom>;
 	using ConsoleLogger = FPCommon::ConsoleLogger;
 	using PacketQueue = FPCommon::PacketQueue;
+	using ErrorCode = FPCommon::ErrorCode;
 
 	const int maxGameRoomNum = 200;
 
@@ -28,7 +30,7 @@ namespace FPLogic
 
 		int GetEmptyRoom();
 
-		void EnterUserToRoom(const int sessionId, const int gameIdx);
+		ErrorCode EnterUserToRoom(const int sessionId, const int gameRoomIdx);
 
 	private :
 		
