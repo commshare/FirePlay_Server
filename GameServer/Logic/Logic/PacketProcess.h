@@ -18,6 +18,7 @@
 #include "GameRoomManager.h"
 #include "UserManager.h"
 #include "MatchMaker.h"
+#include "User.h"
 
 namespace FPLogic
 {
@@ -35,6 +36,7 @@ namespace FPLogic
 		using PacketFunction     = std::function<void(std::shared_ptr<PacketInfo>)>;
 		// 패킷 처리 함수 리스트 정의.
 		using PacketFunctionList = std::list<PacketFunction>;
+		using UserState = User::UserState;
 
 	public :
 

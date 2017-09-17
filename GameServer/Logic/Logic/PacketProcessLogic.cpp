@@ -9,6 +9,7 @@
 #include "../../Network/Network/PacketInfo.h"
 
 #include "Define.h"
+#include "User.h"
 
 namespace FPLogic
 {
@@ -117,9 +118,15 @@ namespace FPLogic
 			return;
 		}
 
-		// 매치를 확인한 유저를 게임 룸에 보내준다.
+		// 유저가 GameRoom에 있는 상태인지 확인한다.
+		if (reqUser->GetUserState() != UserState::InGame)
+		{
+			_logger->Write(LogType::LOG_WARN, "%s | Invalid User Matching Process, User is not in GameRoom, Session Idx(%d)", __FUNCTION__, packet->_sessionIdx);
+			return;
+		}
 
-		// 결과를 반환한다.
+		// 유저를 게임 룸에 입장시켜준다.		
+		_gameRoomManager->EnterUserToRoom(reqUser->GetSessionIdx(), reqUser->GetGameIdx());
 	}
 
 	void PacketProcess::GameStartAck(std::shared_ptr<PacketInfo> packet)

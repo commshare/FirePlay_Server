@@ -24,7 +24,11 @@ namespace FPLogic
 
 		void Init(ConsoleLogger * logger, PacketQueue * sendQueue, UserManager * userManager);
 
+		void UpdateRooms();
+
 		int GetEmptyRoom();
+
+		void EnterUserToRoom(const int sessionId, const int gameIdx);
 
 	private :
 		
