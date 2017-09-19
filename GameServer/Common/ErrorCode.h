@@ -12,7 +12,7 @@ namespace FPCommon
 		NoRoomInUserPool = 100,
 
 		// 200번대는 Game 관련 에러 코드.
-		InvalidRoomNumber = 200,
+		RoomAlreadyFull = 200,
 
 		// 600번대는 Login Server 에러 코드.
 		SignInInvalidId = 610,

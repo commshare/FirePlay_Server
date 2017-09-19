@@ -68,6 +68,7 @@ namespace FPLogic
 		if (_isServerInitialized)
 		{
 			_matchMaker->CheckMatchMaked();
+			_gameRoomManager->UpdateRooms();
 		}
 	}
 

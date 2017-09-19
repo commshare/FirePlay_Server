@@ -33,6 +33,8 @@ namespace FPLogic
 		ErrorCode EnterUserToRoom(const int sessionId, const int gameRoomIdx);
 
 	private :
+
+		bool roomProcess(GameRoom * room);
 		
 		GameRoomPool    _gameRoomPool;
 		ConsoleLogger * _logger;
