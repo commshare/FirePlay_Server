@@ -136,6 +136,31 @@ namespace FPLogic
 	void PacketProcess::GameStartAck(std::shared_ptr<PacketInfo> packet)
 	{
 		_logger->Write(LogType::LOG_DEBUG, "%s | Entry, Session(%d)", __FUNCTION__, packet->_sessionIdx);
+
+		// 패킷 정보를 얻는다.
+		Packet::GameStartAck gameAck;
+		PacketUnpack(packet, &gameAck);
+
+		// 게임 시작을 확인한 유저를 찾는다.
+		auto reqUser = _userManager->FindUserWithSessionIdx(packet->_sessionIdx);
+
+		// 유저가 INVALID하다면 로그를 찍고 무시한다.
+		if (reqUser == nullptr)
+		{
+			_logger->Write(LogType::LOG_WARN, "%s | Invalid Game Start Ack Input, Session Idx(%d)", __FUNCTION__, packet->_sessionIdx);
+			return;
+		}
+
+		// 유저가 GameRoom에 있는 상태인지 확인한다.
+		if (reqUser->GetUserState() != UserState::InGame)
+		{
+			_logger->Write(LogType::LOG_WARN, "%s | Invalid User Matching Process, User is not in GameRoom, Session Idx(%d)", __FUNCTION__, packet->_sessionIdx);
+			return;
+		}
+
+		// 게임 룸에 유저가 확인했다는 걸 알려준다.
+		// TODO :: 에러코드 받아서 잘 Ack 해주었는지 확인.
+		_gameRoomManager->GameStartAck(packet->_sessionIdx);
 	}
 
 	void PacketProcess::TurnStartAck(std::shared_ptr<PacketInfo> packet)

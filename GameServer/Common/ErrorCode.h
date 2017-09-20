@@ -13,6 +13,7 @@ namespace FPCommon
 
 		// 200번대는 Game 관련 에러 코드.
 		RoomAlreadyFull = 200,
+		RoomAckFindError = 210,
 
 		// 600번대는 Login Server 에러 코드.
 		SignInInvalidId = 610,

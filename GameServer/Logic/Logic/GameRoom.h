@@ -31,9 +31,13 @@ namespace FPLogic
 			_state = RoomState::None;
 			_player1 = nullptr;
 			_player2 = nullptr;
+			_player1Pos = 0;
+			_player2Pos = 0;
 			_playerCount = 0;
+			_ackCount = 0;
 
 			_isGameStartPacketSended = false;
+			_isGameStartReadyed = false;
 		}
 
 		ErrorCode EnterUser(User * enteringUser)
@@ -68,11 +72,28 @@ namespace FPLogic
 
 		}
 
+		void AckGameStart()
+		{
+			if (_ackCount >= 2)
+			{
+				++_ackCount;
+			}
+
+			if (_ackCount >= 2)
+			{
+				_state = RoomState::InGame;
+			}
+		}
+
 		RoomState _state;
 		int _playerCount = 0;
+		int _ackCount = 0;
 		User * _player1 = nullptr;
 		User * _player2 = nullptr;
+		int _player1Pos = 0;
+		int _player2Pos = 0;
 
 		bool _isGameStartPacketSended = false;
+		bool _isGameStartReadyed = false;
 	};
 }

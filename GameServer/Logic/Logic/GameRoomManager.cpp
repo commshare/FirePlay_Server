@@ -54,6 +54,21 @@ namespace FPLogic
 		return gameRoom.EnterUser(enteringUser);
 	}
 
+	ErrorCode GameRoomManager::GameStartAck(const int sessionId)
+	{
+		for (auto i = 0; i < _gameRoomPool.GetSize(); ++i)
+		{
+			auto room = &_gameRoomPool[i];
+			if (room->_player1->GetSessionIdx() == sessionId
+				|| room->_player2->GetSessionIdx() == sessionId)
+			{
+				room->AckGameStart();
+				return ErrorCode::None;
+			}
+		}
+		return ErrorCode::RoomAckFindError;
+	}
+
 	bool GameRoomManager::roomProcess(GameRoom * room)
 	{
 		switch (room->GetState)
@@ -84,6 +99,10 @@ namespace FPLogic
 
 				Util::PushToSendQueue(_sendQueue, Packet::PacketId::ID_GameStartNotify, room->_player1->GetSessionIdx(), &notify1);
 				Util::PushToSendQueue(_sendQueue, Packet::PacketId::ID_GameStartNotify, room->_player2->GetSessionIdx(), &notify2);
+
+				// 생성한 정보를 방에 기록.
+				room->_player1Pos = player1Pos;
+				room->_player2Pos = player2Pos;
 
 				room->_isGameStartPacketSended = true;
 			}
