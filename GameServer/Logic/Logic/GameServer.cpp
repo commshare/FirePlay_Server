@@ -65,10 +65,13 @@ namespace FPLogic
 
 	void GameServer::Run()
 	{
-		if (_isServerInitialized)
+		while (true)
 		{
-			_matchMaker->CheckMatchMaked();
-			_gameRoomManager->UpdateRooms();
+			if (_isServerInitialized)
+			{
+				_matchMaker->CheckMatchMaked();
+				_gameRoomManager->UpdateRooms();
+			}
 		}
 	}
 

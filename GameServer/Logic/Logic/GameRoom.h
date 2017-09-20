@@ -47,7 +47,7 @@ namespace FPLogic
 				return ErrorCode::RoomAlreadyFull;
 			}
 
-			if (_player1 = nullptr)
+			if (_player1 == nullptr)
 			{
 				_player1 = enteringUser;
 			}
