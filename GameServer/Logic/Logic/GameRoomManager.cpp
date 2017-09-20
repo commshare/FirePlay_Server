@@ -1,7 +1,11 @@
 #include "GameRoomManager.h"
 
+#include "../../Common/Util.h"
+
 namespace FPLogic
 {
+	using Util = FPCommon::Util;
+
 	void GameRoomManager::Init(ConsoleLogger * logger, PacketQueue * sendQueue, UserManager * userManager)
 	{
 		_logger = logger;
@@ -56,11 +60,32 @@ namespace FPLogic
 		{
 		case RoomState::Waiting:
 			#pragma region WAITING ROOM PROCESS
-
-			// 방에 참가자가 다 차있다면, 게임을 시작시킨다.
-			if (room->GetPlayerCount() >= 2)
+			// 방에 참가자가 다 차있다면, 게임을 시작을 알리는 패킷을 보낸다.
+			if (room->GetPlayerCount() >= 2 && room->_isGameStartPacketSended == false)
 			{
-				room->StartGame();
+				// 플레이어 포지션 랜덤 생성.
+				auto player1Pos = Util::GetRandomNumber(-100, 100);
+				auto player2Pos = Util::GetRandomNumber(-100, 100);
+
+				// 패킷에 플레이어 정보 기록.
+				Packet::GameStartNotify notify1;
+				notify1._playerNumber = 1;
+				notify1._positionX = player1Pos;
+				notify1._enemyPositionX = player2Pos;
+				notify1._positionY = 300;
+				notify1._enemyPositionY = 300;
+
+				Packet::GameStartNotify notify2;
+				notify2._playerNumber = 2;
+				notify2._positionX = player2Pos;
+				notify2._enemyPositionX = player1Pos;
+				notify2._positionY = 300;
+				notify2._enemyPositionY = 300;
+
+				Util::PushToSendQueue(_sendQueue, Packet::PacketId::ID_GameStartNotify, room->_player1->GetSessionIdx(), &notify1);
+				Util::PushToSendQueue(_sendQueue, Packet::PacketId::ID_GameStartNotify, room->_player2->GetSessionIdx(), &notify2);
+
+				room->_isGameStartPacketSended = true;
 			}
 
 			#pragma endregion
@@ -69,11 +94,15 @@ namespace FPLogic
 		case RoomState::InGame:
 			#pragma region INGAME ROOM PROCESS
 
+			room->GameProcess();
+
 			#pragma endregion
 			break;
 
 		case RoomState::EndGame:
 			#pragma region ENDGAME ROOM PROCESS
+
+			room->EndGame();
 
 			#pragma endregion
 			break;

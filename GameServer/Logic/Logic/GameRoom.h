@@ -1,8 +1,9 @@
 #pragma once
 #include <memory>
 
-#include "User.h"
 #include "../../Common/ErrorCode.h"
+
+#include "User.h"
 
 namespace FPLogic
 {
@@ -19,6 +20,7 @@ namespace FPLogic
 	class GameRoom
 	{
 	public :
+
 		GameRoom() {}
 		~GameRoom() {}
 
@@ -30,6 +32,8 @@ namespace FPLogic
 			_player1 = nullptr;
 			_player2 = nullptr;
 			_playerCount = 0;
+
+			_isGameStartPacketSended = false;
 		}
 
 		ErrorCode EnterUser(User * enteringUser)
@@ -52,18 +56,23 @@ namespace FPLogic
 			_state = RoomState::Waiting;
 		}
 
-		void StartGame()
+		int GetPlayerCount() const { return _playerCount; }
+
+		void GameProcess()
 		{
 
 		}
 
-		int GetPlayerCount() const { return _playerCount; }
+		void EndGame()
+		{
 
-	private :
+		}
 
 		RoomState _state;
 		int _playerCount = 0;
 		User * _player1 = nullptr;
 		User * _player2 = nullptr;
+
+		bool _isGameStartPacketSended = false;
 	};
 }

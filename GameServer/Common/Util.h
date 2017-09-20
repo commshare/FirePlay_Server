@@ -2,6 +2,7 @@
 #include <memory>
 #include <string>
 #include <type_traits>
+#include <random>
 
 #include "../include/json/json.h"
 
@@ -60,5 +61,15 @@ namespace FPCommon
 
 			sendQueue->Push(sendPacket);
 		}
+
+		// 의사 난수 생성기.
+		static int GetRandomNumber(int min, int max)
+		{
+			std::mt19937 rng(std::chrono::system_clock::now());
+			std::uniform_int_distribution<int> dist(min, max);
+
+			return dist(rng);
+		}
+
 	};
 }
