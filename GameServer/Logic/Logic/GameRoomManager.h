@@ -36,7 +36,7 @@ namespace FPLogic
 
 	private :
 
-		bool roomProcess(GameRoom * room);
+		void roomProcess(GameRoom * room);
 		
 		GameRoomPool    _gameRoomPool;
 		ConsoleLogger * _logger;

@@ -69,9 +69,9 @@ namespace FPLogic
 		return ErrorCode::RoomAckFindError;
 	}
 
-	bool GameRoomManager::roomProcess(GameRoom * room)
+	void GameRoomManager::roomProcess(GameRoom * room)
 	{
-		switch (room->GetState)
+		switch (room->GetState())
 		{
 		case RoomState::Waiting:
 			#pragma region WAITING ROOM PROCESS
