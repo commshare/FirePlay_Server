@@ -10,6 +10,7 @@ namespace FPLogic
 
 	enum class RoomState : int
 	{
+		None,
 		Waiting,
 		InGame,
 		EndGame
@@ -25,7 +26,7 @@ namespace FPLogic
 
 		void Clear()
 		{
-			_state = RoomState::Waiting;
+			_state = RoomState::None;
 			_player1 = nullptr;
 			_player2 = nullptr;
 			_playerCount = 0;
@@ -48,7 +49,15 @@ namespace FPLogic
 			}
 
 			++_playerCount;
+			_state = RoomState::Waiting;
 		}
+
+		void StartGame()
+		{
+
+		}
+
+		int GetPlayerCount() const { return _playerCount; }
 
 	private :
 

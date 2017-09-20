@@ -26,10 +26,13 @@ namespace FPLogic
 
 			auto room = &_gameRoomPool[i];
 
-			if (roomProcess(room))
+			if (room->GetState() == RoomState::None)
 			{
-				++countActivateRoom;
+				continue;
 			}
+
+			roomProcess(room);
+			++countActivateRoom;
 		}
 	}
 
@@ -49,20 +52,31 @@ namespace FPLogic
 
 	bool GameRoomManager::roomProcess(GameRoom * room)
 	{
-		// TODO :: 룸 상태에 따라 다른 로직이 돌아갈 수 있도록.
 		switch (room->GetState)
 		{
 		case RoomState::Waiting:
+			#pragma region WAITING ROOM PROCESS
 
-			return false;
+			// 방에 참가자가 다 차있다면, 게임을 시작시킨다.
+			if (room->GetPlayerCount() >= 2)
+			{
+				room->StartGame();
+			}
+
+			#pragma endregion
+			break;
 
 		case RoomState::InGame:
+			#pragma region INGAME ROOM PROCESS
 
-			return true;
+			#pragma endregion
+			break;
 
 		case RoomState::EndGame:
+			#pragma region ENDGAME ROOM PROCESS
 
-			return true;
+			#pragma endregion
+			break;
 		}
 	}
 
