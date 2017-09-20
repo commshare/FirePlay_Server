@@ -48,5 +48,17 @@ namespace FPCommon
 				return jsonValue.get(jsonItemName, -1).asInt();
 			}
 		}
+
+		// 패킷을 알맞은 형태로 SendQueue에 넣어주는 함수.
+		static void PushToSendQueue(PacketQueue * sendQueue, Packet::PacketId packetId, const int sessionIdx, Packet::IJsonSerializable * packetToSend)
+		{
+			auto jsonBody = std::string();
+			Packet::CJsonSerializer::Serialize(packetToSend, jsonBody);
+			auto bodySize = static_cast<int>(strlen(jsonBody.c_str())) + 1;
+			auto sendPacket = std::make_shared<FPNetwork::PacketInfo>();
+			sendPacket->SetPacketInfo(packetId, sessionIdx, bodySize, jsonBody.c_str());
+
+			sendQueue->Push(sendPacket);
+		}
 	};
 }

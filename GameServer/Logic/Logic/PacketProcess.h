@@ -15,8 +15,10 @@
 #include "../../Network/Network/NetworkMessenger.h"
 #include "../../Network/Network/PacketInfo.h"
 
+#include "GameRoomManager.h"
 #include "UserManager.h"
 #include "MatchMaker.h"
+#include "User.h"
 
 namespace FPLogic
 {
@@ -34,13 +36,14 @@ namespace FPLogic
 		using PacketFunction     = std::function<void(std::shared_ptr<PacketInfo>)>;
 		// 패킷 처리 함수 리스트 정의.
 		using PacketFunctionList = std::list<PacketFunction>;
+		using UserState = User::UserState;
 
 	public :
 
 		PacketProcess() {}
 		~PacketProcess() {}
 
-		void Init(ConsoleLogger * logger, NetworkMessenger * network, MatchMaker * matchMaker, UserManager * userManager, PacketQueue * recvQueue, PacketQueue * sendQueue);
+		void Init(ConsoleLogger * logger, NetworkMessenger * network, MatchMaker * matchMaker, UserManager * userManager, PacketQueue * recvQueue, PacketQueue * sendQueue, GameRoomManager * gameRoomManager);
 
 	private :
 
@@ -76,16 +79,15 @@ namespace FPLogic
 
 	private :
 
-		ConsoleLogger *    _logger      = nullptr;
-		UserManager *      _userManager = nullptr;
-		PacketQueue *      _recvQueue   = nullptr;
-		PacketQueue *      _sendQueue   = nullptr;
-		NetworkMessenger * _network     = nullptr;
-		MatchMaker *       _matchMaker  = nullptr;
+		ConsoleLogger    * _logger          = nullptr;
+		UserManager      * _userManager     = nullptr;
+		PacketQueue      * _recvQueue       = nullptr;
+		PacketQueue      * _sendQueue       = nullptr;
+		NetworkMessenger * _network         = nullptr;
+		MatchMaker       * _matchMaker      = nullptr;
+		GameRoomManager  * _gameRoomManager = nullptr;
 
 		// 패킷 번호와 등록된 패킷 처리 함수 리스트를 저장하는 자료구조.
 		std::unordered_map<short, PacketFunctionList> _packetFunctionMap;
 	};
-
-
 }

@@ -30,7 +30,7 @@
     <ClCompile Include="PacketProcessLogic.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="GameManager.cpp">
+    <ClCompile Include="GameRoomManager.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
@@ -53,10 +53,10 @@
     <ClInclude Include="MatchMaker.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="GameManager.h">
+    <ClInclude Include="GameRoom.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="GameRoom.h">
+    <ClInclude Include="GameRoomManager.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

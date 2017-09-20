@@ -9,6 +9,7 @@
 #include "../../Network/Network/PacketInfo.h"
 
 #include "Define.h"
+#include "User.h"
 
 namespace FPLogic
 {
@@ -74,23 +75,24 @@ namespace FPLogic
 	void PacketProcess::MatchCancelReq(std::shared_ptr<PacketInfo> packet)
 	{
 		_logger->Write(LogType::LOG_DEBUG, "%s | Entry, Session(%d)", __FUNCTION__, packet->_sessionIdx);
-		
 		// 패킷 정보를 얻는다.
 		Packet::MatchCancelReq matchCancelReq;
 		PacketUnpack(packet, &matchCancelReq);
 
 		// 요청한 유저를 찾는다.
 		auto reqUser = _userManager->FindUserWithSessionIdx(packet->_sessionIdx);
-
-		// 요청한 유저가 INVALID하다면 로그를 찍고 무시한다.
-		if (reqUser == nullptr || reqUser->IsUserActivated() == false)
+		if (reqUser == nullptr)
 		{
-			_logger->Write(LogType::LOG_WARN, "%s | Invalid User Cancel Match Packet, Session Idx(%d)", __FUNCTION__, packet->_sessionIdx);
+			// 요청한 유저가 없다면 이상한 요청이 들어왔다고 생각하고 무시한다.
+			_logger->Write(LogType::LOG_WARN, "%s | Invalid Match Cancel Input, Session Idx(%d)", __FUNCTION__, packet->_sessionIdx);
 			return;
 		}
 
-		// 요청한 유저를 매치메이커에서 빼준다.
-		_matchMaker->CancleMatch(packet->_sessionIdx);
+		// 요청한 유저가 매칭큐에 있다면 매칭큐에서 빼준다.
+		if (_matchMaker->isUserIsInMatching(packet->_sessionIdx))
+		{
+			_matchMaker->CancleMatch(packet->_sessionIdx);
+		}
 
 		// 요청한 유저의 상태를 변화시킨다.
 		reqUser->CancelMatching();
@@ -111,19 +113,24 @@ namespace FPLogic
 		PacketUnpack(packet, &matchAck);
 
 		// 매치를 확인한 유저를 찾는다.
-		auto ackUser = _userManager->FindUserWithSessionIdx(packet->_sessionIdx);
+		auto reqUser = _userManager->FindUserWithSessionIdx(packet->_sessionIdx);
 
 		// 유저가 INVALID하다면 로그를 찍고 무시한다.
-		if (ackUser == nullptr || ackUser->IsUserActivated() == false)
+		if (reqUser == nullptr)
 		{
-			_logger->Write(LogType::LOG_WARN, "%s | Invalid User Match Ack Packet, Session Idx(%d)", __FUNCTION__, packet->_sessionIdx);
+			_logger->Write(LogType::LOG_WARN, "%s | Invalid Match Ack Input, Session Idx(%d)", __FUNCTION__, packet->_sessionIdx);
 			return;
 		}
 
-		// 매치를 확인한 유저를 게임 룸에 보내준다.
+		// 유저가 GameRoom에 있는 상태인지 확인한다.
+		if (reqUser->GetUserState() != UserState::InGame)
+		{
+			_logger->Write(LogType::LOG_WARN, "%s | Invalid User Matching Process, User is not in GameRoom, Session Idx(%d)", __FUNCTION__, packet->_sessionIdx);
+			return;
+		}
 
-
-		// 결과를 반환한다.
+		// 유저를 게임 룸에 입장시켜준다.		
+		_gameRoomManager->EnterUserToRoom(reqUser->GetSessionIdx(), reqUser->GetGameIdx());
 	}
 
 	void PacketProcess::GameStartAck(std::shared_ptr<PacketInfo> packet)

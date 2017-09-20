@@ -18,9 +18,9 @@ namespace FPLogic
 			return false;
 		}
 
-		auto newUser = _userPool[newUserTag];
-		newUser.Clear();
-		newUser.Login(sessionIdx, id.c_str());
+		User * newUser = &_userPool[newUserTag];
+		newUser->Clear();
+		newUser->Login(sessionIdx, id.c_str());
 
 		// À¯Àú µñ¼Å³Ê¸®¿¡ µî·Ï.
 		_userSessionDic.emplace(sessionIdx, newUserTag);

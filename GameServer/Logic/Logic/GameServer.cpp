@@ -41,16 +41,18 @@ namespace FPLogic
 		// 유저 관리자 클래스 생성.
 		_userManager = std::make_unique<UserManager>();
 		_userManager->Init(_config.get()->_maxClientCount);
+
+		// 게임 룸 관리자 클래스 생성.
+		_gameRoomManager = std::make_unique<GameRoomManager>();
+		_gameRoomManager->Init(_logger.get(), _sendQueue.get(), _userManager.get());
 		
 		// 매치 관리자 클래스 생성.
 		_matchMaker = std::make_unique<MatchMaker>();
-		_matchMaker->Init(_logger.get(), _sendQueue.get());
-
-		// TODO :: 게임 관리자 클래스 생성.
+		_matchMaker->Init(_logger.get(), _sendQueue.get(), _gameRoomManager.get(), _userManager.get());
 
 		// 패킷 처리 클래스 생성
 		_packetProcess = std::make_unique<PacketProcess>();
-		_packetProcess->Init(_logger.get(), _network.get(), _matchMaker.get(), _userManager.get(), _recvQueue.get(), _sendQueue.get());
+		_packetProcess->Init(_logger.get(), _network.get(), _matchMaker.get(), _userManager.get(), _recvQueue.get(), _sendQueue.get(), _gameRoomManager.get());
 
 		_isServerInitialized = true;
 		return ErrorCode::None;
@@ -66,6 +68,7 @@ namespace FPLogic
 		if (_isServerInitialized)
 		{
 			_matchMaker->CheckMatchMaked();
+			_gameRoomManager->UpdateRooms();
 		}
 	}
 

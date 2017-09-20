@@ -14,6 +14,7 @@
 #include "PacketProcess.h"
 #include "UserManager.h"
 #include "MatchMaker.h"
+#include "GameRoomManager.h"
 
 namespace FPLogic
 {
@@ -53,6 +54,7 @@ namespace FPLogic
 
 		std::unique_ptr<PacketProcess>    _packetProcess;
 		std::unique_ptr<UserManager>      _userManager;
+		std::unique_ptr<GameRoomManager>  _gameRoomManager;
 		std::unique_ptr<MatchMaker>		  _matchMaker;
 
 		bool _isServerInitialized = false;
