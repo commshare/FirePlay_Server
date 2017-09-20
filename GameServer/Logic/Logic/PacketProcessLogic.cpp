@@ -85,7 +85,7 @@ namespace FPLogic
 		// 요청한 유저가 INVALID하다면 로그를 찍고 무시한다.
 		if (reqUser == nullptr || reqUser->IsUserActivated() == false)
 		{
-			_logger->Write(LogType::LOG_WARN, "%s | Invalid Cancel Match Input, Session Idx(%d)", __FUNCTION__, packet->_sessionIdx);
+			_logger->Write(LogType::LOG_WARN, "%s | Invalid User Cancel Match Packet, Session Idx(%d)", __FUNCTION__, packet->_sessionIdx);
 			return;
 		}
 
@@ -106,11 +106,22 @@ namespace FPLogic
 	{
 		_logger->Write(LogType::LOG_DEBUG, "%s | Entry, Session(%d)", __FUNCTION__, packet->_sessionIdx);
 
+		// 패킷 정보를 얻는다.
+		Packet::MatchSuccessAck matchAck;
+		PacketUnpack(packet, &matchAck);
+
 		// 매치를 확인한 유저를 찾는다.
+		auto ackUser = _userManager->FindUserWithSessionIdx(packet->_sessionIdx);
 
 		// 유저가 INVALID하다면 로그를 찍고 무시한다.
+		if (ackUser == nullptr || ackUser->IsUserActivated() == false)
+		{
+			_logger->Write(LogType::LOG_WARN, "%s | Invalid User Match Ack Packet, Session Idx(%d)", __FUNCTION__, packet->_sessionIdx);
+			return;
+		}
 
 		// 매치를 확인한 유저를 게임 룸에 보내준다.
+
 
 		// 결과를 반환한다.
 	}

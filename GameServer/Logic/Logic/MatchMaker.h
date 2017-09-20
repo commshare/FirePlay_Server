@@ -40,7 +40,6 @@ namespace FPLogic
 				Packet::MatchSuccessNotify notifyPacketToPlayer1;
 				Packet::MatchSuccessNotify notifyPacketToPlayer2;
 
-
 			}
 		}
 
@@ -57,8 +56,7 @@ namespace FPLogic
 		void CancleMatch(const int sessionId)
 		{
 			std::lock_guard<std::mutex> lock(_mutex);
-			// 요청받은 세션을 찾아 삭제한다.
-			_matchingQueue.erase(std::remove_if(_matchingQueue.begin(), _matchingQueue.end(), [](int sessionId) {}), _matchingQueue.end());
+			// TODO :: 요청받은 세션을 찾아 삭제한다.
 		}
 
 	private :
