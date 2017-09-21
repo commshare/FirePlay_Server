@@ -43,9 +43,15 @@ namespace FPLogic
 				auto player2Idx = _matchingQueue.front();
 				_matchingQueue.pop_front();
 
+				// 두 사람이 같은 사람이라면 다시 매칭 큐에 집어넣는다.
+				if (player1Idx == player2Idx)
+				{
+					_matchingQueue.push_front(player1Idx);
+				}
+
 				auto gameRoomIdx = _gameRoomManager->GetEmptyRoom();
 
-				// 방이 없다면 매칭 큐에 다시 집어넣는다.
+				// 방이 없거나 같은 사람이라면 매칭 큐에 다시 집어넣는다.
 				if (gameRoomIdx == -1)
 				{
 					_matchingQueue.push_front(player2Idx);
