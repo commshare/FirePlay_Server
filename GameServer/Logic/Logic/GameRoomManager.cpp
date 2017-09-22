@@ -46,6 +46,11 @@ namespace FPLogic
 		return _gameRoomPool.GetTag();
 	}
 
+	GameRoom * GameRoomManager::GetRoom(const int roomNumber)
+	{
+		return &_gameRoomPool[roomNumber];
+	}
+
 	ErrorCode GameRoomManager::EnterUserToRoom(const int sessionId, const int gameRoomIdx)
 	{
 		auto& gameRoom = _gameRoomPool[gameRoomIdx];
@@ -112,6 +117,7 @@ namespace FPLogic
 
 		case RoomState::StartGame:
 			#pragma region START GAME
+		{
 
 			// 턴을 정한다.
 			auto turnCoin = Util::GetRandomNumber(0, 100);
@@ -140,20 +146,20 @@ namespace FPLogic
 			// 방 상태를 InGame으로 바꿔준다.
 			room->_state = RoomState::InGame;
 
+		}
 			#pragma endregion
+			break;
 
 		case RoomState::InGame:
 			#pragma region INGAME ROOM PROCESS
 
-			room->GameProcess();
+			// TODO :: 타이머 클래스 만든 후 시간 재서 턴 끝내기.
 
 			#pragma endregion
 			break;
 
 		case RoomState::EndGame:
 			#pragma region ENDGAME ROOM PROCESS
-
-			room->EndGame();
 
 			#pragma endregion
 			break;

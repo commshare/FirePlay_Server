@@ -176,6 +176,39 @@ namespace FPLogic
 	void PacketProcess::MoveNotify(std::shared_ptr<PacketInfo> packet)
 	{
 		_logger->Write(LogType::LOG_DEBUG, "%s | Entry, Session(%d)", __FUNCTION__, packet->_sessionIdx);
+
+		// 패킷 정보를 얻는다.
+		Packet::MoveNotify moveNtf;
+		PacketUnpack(packet, &moveNtf);
+
+		// 움직인 유저를 찾는다.
+		auto reqUser = _userManager->FindUserWithSessionIdx(packet->_sessionIdx);
+
+		// 유저가 INVALID하다면 로그를 찍고 무시한다.
+		if (reqUser == nullptr)
+		{
+			_logger->Write(LogType::LOG_WARN, "%s | Invalid Move Ntf Input, Session Idx(%d)", __FUNCTION__, packet->_sessionIdx);
+			return;
+		}
+
+		// 유저의 방을 찾는다.
+		auto room = _gameRoomManager->GetRoom(reqUser->GetGameIdx());
+		room->PlayerMove(reqUser->GetSessionIdx(), moveNtf._moveRange);
+
+		// 응답을 보내준다.
+		Packet::MoveAck moveAck;
+		moveAck._result = static_cast<int>(ErrorCode::None);
+
+		PushToSendQueue(Packet::PacketId::ID_MoveAck, reqUser->GetSessionIdx(), &moveAck);
+
+		// 상대편에게 움직임을 보내준다.
+		Packet::EnemyMoveNotify enemyMoveNotify;
+
+		enemyMoveNotify._moveRange = moveNtf._moveRange;
+		enemyMoveNotify._enemyPositionX = moveNtf._enemyPositionX;
+		enemyMoveNotify._enemyPositionY = moveNtf._enemyPositionY;
+
+		PushToSendQueue(Packet::PacketId::ID_EnemyMoveNotify, room->GetAnotherPlayerSession(reqUser->GetSessionIdx()), &enemyMoveNotify);
 	}
 
 	void PacketProcess::EnemyMoveAck(std::shared_ptr<PacketInfo> packet)

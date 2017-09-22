@@ -64,16 +64,6 @@ namespace FPLogic
 
 		int GetPlayerCount() const { return _playerCount; }
 
-		void GameProcess()
-		{
-
-		}
-
-		void EndGame()
-		{
-
-		}
-
 		void AckGameStart()
 		{
 			if (_ackCount >= 2)
@@ -84,6 +74,30 @@ namespace FPLogic
 			if (_ackCount >= 2)
 			{
 				_state = RoomState::StartGame;
+			}
+		}
+
+		void PlayerMove(const int ackPlayerSessionId, const int moveDist)
+		{
+			if (ackPlayerSessionId == _player1->GetSessionIdx())
+			{
+				_player1Pos += moveDist;
+			}
+			else
+			{
+				_player2Pos += moveDist;
+			}
+		}
+
+		int GetAnotherPlayerSession(const int sessionId)
+		{
+			if (sessionId == _player1->GetSessionIdx())
+			{
+				return _player2->GetSessionIdx();
+			}
+			else
+			{
+				return _player1->GetSessionIdx();
 			}
 		}
 

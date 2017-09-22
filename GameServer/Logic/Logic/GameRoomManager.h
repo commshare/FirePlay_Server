@@ -30,6 +30,8 @@ namespace FPLogic
 
 		int GetEmptyRoom();
 
+		GameRoom* GetRoom(const int roomNumber);
+
 		ErrorCode EnterUserToRoom(const int sessionId, const int gameRoomIdx);
 
 		ErrorCode GameStartAck(const int sessionId);
