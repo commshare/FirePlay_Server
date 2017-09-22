@@ -84,17 +84,17 @@ namespace FPLogic
 
 				// 패킷에 플레이어 정보 기록.
 				Packet::GameStartNotify notify1;
-				notify1._playerNumber = 1;
-				notify1._positionX = player1Pos;
+				notify1._playerNumber   = 1;
+				notify1._positionX      = player1Pos;
 				notify1._enemyPositionX = player2Pos;
-				notify1._positionY = 300;
+				notify1._positionY      = 300;
 				notify1._enemyPositionY = 300;
 
 				Packet::GameStartNotify notify2;
-				notify2._playerNumber = 2;
-				notify2._positionX = player2Pos;
+				notify2._playerNumber   = 2;
+				notify2._positionX      = player2Pos;
 				notify2._enemyPositionX = player1Pos;
-				notify2._positionY = 300;
+				notify2._positionY      = 300;
 				notify2._enemyPositionY = 300;
 
 				Util::PushToSendQueue(_sendQueue, Packet::PacketId::ID_GameStartNotify, room->_player1->GetSessionIdx(), &notify1);
@@ -109,6 +109,38 @@ namespace FPLogic
 
 			#pragma endregion
 			break;
+
+		case RoomState::StartGame:
+			#pragma region START GAME
+
+			// 턴을 정한다.
+			auto turnCoin = Util::GetRandomNumber(0, 100);
+
+			// 보낼 패킷을 만들어 놓는다.
+			// TODO :: 바람 만들어서 보내기.
+			Packet::TurnStartNotify turnStartNotify;
+			Packet::EnemyTurnStartNotify enemyTurnStartNotify;
+
+			// 정한 턴을 기록하고, 각자에게 패킷을 보내준다.
+			if (turnCoin >= 50)
+			{
+				room->_turnPlayer = 1;
+
+				Util::PushToSendQueue(_sendQueue, Packet::PacketId::ID_TurnStartNotify, room->_player1->GetSessionIdx(), &turnStartNotify);
+				Util::PushToSendQueue(_sendQueue, Packet::PacketId::ID_EnemyTurnStartNotify, room->_player2->GetSessionIdx(), &enemyTurnStartNotify);
+			}
+			else
+			{
+				room->_turnPlayer = 2;
+
+				Util::PushToSendQueue(_sendQueue, Packet::PacketId::ID_TurnStartNotify, room->_player2->GetSessionIdx(), &turnStartNotify);
+				Util::PushToSendQueue(_sendQueue, Packet::PacketId::ID_EnemyTurnStartNotify, room->_player1->GetSessionIdx(), &enemyTurnStartNotify);
+			}
+
+			// 방 상태를 InGame으로 바꿔준다.
+			room->_state = RoomState::InGame;
+
+			#pragma endregion
 
 		case RoomState::InGame:
 			#pragma region INGAME ROOM PROCESS
