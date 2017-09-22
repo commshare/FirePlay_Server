@@ -65,11 +65,14 @@ namespace FPCommon
 		// 의사 난수 생성기.
 		static int GetRandomNumber(int min, int max)
 		{
-			std::mt19937 rng(time(0));
+			auto curTime = std::chrono::system_clock::now();
+			auto duration = curTime.time_since_epoch();
+			auto millis = std::chrono::duration_cast<std::chrono::milliseconds>(duration).count();
+
+			std::mt19937 rng(millis);
 			std::uniform_int_distribution<int> dist(min, max);
 
 			return dist(rng);
 		}
-
 	};
 }

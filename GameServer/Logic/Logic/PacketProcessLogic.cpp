@@ -160,7 +160,7 @@ namespace FPLogic
 
 		// 게임 룸에 유저가 확인했다는 걸 알려준다.
 		// TODO :: 에러코드 받아서 잘 Ack 해주었는지 확인.
-		_gameRoomManager->GameStartAck(packet->_sessionIdx);
+		_gameRoomManager->GameStartAck(reqUser->GetGameIdx());
 	}
 
 	void PacketProcess::TurnStartAck(std::shared_ptr<PacketInfo> packet)

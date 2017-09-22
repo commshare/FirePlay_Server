@@ -59,18 +59,12 @@ namespace FPLogic
 		return gameRoom.EnterUser(enteringUser);
 	}
 
-	ErrorCode GameRoomManager::GameStartAck(const int sessionId)
+	ErrorCode GameRoomManager::GameStartAck(const int roomNumber)
 	{
-		for (auto i = 0; i < _gameRoomPool.GetSize(); ++i)
-		{
-			auto room = &_gameRoomPool[i];
-			if (room->_player1->GetSessionIdx() == sessionId
-				|| room->_player2->GetSessionIdx() == sessionId)
-			{
-				room->AckGameStart();
-				return ErrorCode::None;
-			}
-		}
+		auto room = &_gameRoomPool[roomNumber];
+
+		room->AckGameStart();
+
 		return ErrorCode::RoomAckFindError;
 	}
 
@@ -118,7 +112,6 @@ namespace FPLogic
 		case RoomState::StartGame:
 			#pragma region START GAME
 		{
-
 			// 턴을 정한다.
 			auto turnCoin = Util::GetRandomNumber(0, 100);
 
@@ -165,5 +158,4 @@ namespace FPLogic
 			break;
 		}
 	}
-
 }
