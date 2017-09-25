@@ -66,7 +66,7 @@ namespace FPLogic
 
 		void AckGameStart()
 		{
-			if (_ackCount >= 2)
+			if (_ackCount <= 2)
 			{
 				++_ackCount;
 			}

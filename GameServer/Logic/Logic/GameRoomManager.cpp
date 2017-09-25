@@ -64,8 +64,9 @@ namespace FPLogic
 		auto room = &_gameRoomPool[roomNumber];
 
 		room->AckGameStart();
+		_logger->Write(LogType::LOG_DEBUG, "%s | Room(%d) Ack Player Count(%d)", __FUNCTION__, roomNumber, room->_ackCount);
 
-		return ErrorCode::RoomAckFindError;
+		return ErrorCode::None;
 	}
 
 	void GameRoomManager::roomProcess(GameRoom * room)
@@ -74,6 +75,7 @@ namespace FPLogic
 		{
 		case RoomState::Waiting:
 			#pragma region WAITING ROOM PROCESS
+
 			// 방에 참가자가 다 차있다면, 게임을 시작을 알리는 패킷을 보낸다.
 			if (room->GetPlayerCount() >= 2 && room->_isGameStartPacketSended == false)
 			{
