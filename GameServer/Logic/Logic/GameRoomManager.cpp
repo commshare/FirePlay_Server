@@ -78,22 +78,24 @@ namespace FPLogic
 			if (room->GetPlayerCount() >= 2 && room->_isGameStartPacketSended == false)
 			{
 				// 플레이어 포지션 랜덤 생성.
-				auto player1Pos = Util::GetRandomNumber(-100, 100);
-				auto player2Pos = Util::GetRandomNumber(-100, 100);
+				//auto player1Pos = Util::GetRandomNumber(-100, 100);
+				//auto player2Pos = Util::GetRandomNumber(-100, 100);
+				auto player1Pos = 50;
+				auto player2Pos = -50;
 
 				// 패킷에 플레이어 정보 기록.
 				Packet::GameStartNotify notify1;
-				notify1._playerNumber   = 1;
-				notify1._positionX      = player1Pos;
+				notify1._playerNumber = 1;
+				notify1._positionX = player1Pos;
 				notify1._enemyPositionX = player2Pos;
-				notify1._positionY      = 300;
+				notify1._positionY = 300;
 				notify1._enemyPositionY = 300;
 
 				Packet::GameStartNotify notify2;
-				notify2._playerNumber   = 2;
-				notify2._positionX      = player2Pos;
+				notify2._playerNumber = 2;
+				notify2._positionX = player2Pos;
 				notify2._enemyPositionX = player1Pos;
-				notify2._positionY      = 300;
+				notify2._positionY = 300;
 				notify2._enemyPositionY = 300;
 
 				Util::PushToSendQueue(_sendQueue, Packet::PacketId::ID_GameStartNotify, room->_player1->GetSessionIdx(), &notify1);
@@ -104,6 +106,8 @@ namespace FPLogic
 				room->_player2Pos = player2Pos;
 
 				room->_isGameStartPacketSended = true;
+
+				_logger->Write(LogType::LOG_DEBUG, "%s | Player 1 Position(%d), 2 Position(%d)", __FUNCTION__, player1Pos, player2Pos);
 			}
 
 			#pragma endregion

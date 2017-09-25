@@ -15,6 +15,7 @@ namespace FPLogic
 	using ConsoleLogger = FPCommon::ConsoleLogger;
 	using PacketQueue = FPCommon::PacketQueue;
 	using ErrorCode = FPCommon::ErrorCode;
+	using LogType = FPCommon::LogType;
 
 	const int maxGameRoomNum = 200;
 
