@@ -37,6 +37,8 @@ namespace FPLogic
 
 		ErrorCode GameStartAck(const int roomNumber);
 
+		ErrorCode TurnChange(const int roomNumber);
+
 	private :
 
 		void roomProcess(GameRoom * room);

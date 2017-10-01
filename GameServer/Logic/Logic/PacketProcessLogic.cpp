@@ -235,4 +235,29 @@ namespace FPLogic
 	{
 		_logger->Write(LogType::LOG_DEBUG, "%s | Entry, Session(%d)", __FUNCTION__, packet->_sessionIdx);
 	}
+
+	void PacketProcess::TurnEndNofity(std::shared_ptr<PacketInfo> packet)
+	{
+		_logger->Write(LogType::LOG_DEBUG, "%s | Entry, Session(%d)", __FUNCTION__, packet->_sessionIdx);
+
+		// 패킷 정보를 얻는다.
+		Packet::TurnEndNotify endNotify;
+		PacketUnpack(packet, &endNotify);
+
+		// 턴을 종료한 유저를 찾는다.
+		auto notifyUser = _userManager->FindUserWithSessionIdx(packet->_sessionIdx);
+
+		if (notifyUser == nullptr)
+		{
+			_logger->Write(LogType::LOG_WARN, "%s | Invalid Turn End Ntf Input, Session Idx(%d)", __FUNCTION__, packet->_sessionIdx);
+			return;
+		}
+
+		// 응답을 보내준다.
+		Packet::TurnEndAck endAck;
+		PushToSendQueue(Packet::PacketId::ID_TurnEndAck, notifyUser->GetSessionIdx(), &endAck);
+
+		// 해당 방의 턴을 바꿔준다.
+		_gameRoomManager->TurnChange(notifyUser->GetGameIdx());
+	}
 }

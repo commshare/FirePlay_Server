@@ -158,6 +158,16 @@ EnemyFireAck
 	single integer _result
 }
 
+// 턴 종료 알림 패킷
+TurnEndNotify
+{
+}
+
+// 턴 종료 응답 패킷
+TurnEndAck
+{
+}
+
 // 게임 종료 알림 패킷
 GameSetNotify
 {

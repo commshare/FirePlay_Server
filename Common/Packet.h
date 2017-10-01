@@ -315,6 +315,28 @@ namespace Packet
 		int							_result;
 	};
 
+	// 턴 종료 알림 패킷
+	class TurnEndNotify : public IJsonSerializable
+	{
+	public:
+		TurnEndNotify( void ) {}
+		virtual ~TurnEndNotify( void ) {}
+		virtual void Serialize ( Json::Value& root );
+		virtual void Deserialize( Json::Value& root );
+
+	};
+
+	// 턴 종료 응답 패킷
+	class TurnEndAck : public IJsonSerializable
+	{
+	public:
+		TurnEndAck( void ) {}
+		virtual ~TurnEndAck( void ) {}
+		virtual void Serialize ( Json::Value& root );
+		virtual void Deserialize( Json::Value& root );
+
+	};
+
 	// 게임 종료 알림 패킷
 	class GameSetNotify : public IJsonSerializable
 	{
@@ -376,8 +398,10 @@ namespace Packet
 		ID_FireAck			= 120,
 		ID_EnemyFireNotify			= 121,
 		ID_EnemyFireAck			= 122,
-		ID_GameSetNotify			= 123,
-		ID_GameSetAck			= 124,
-		ID_CloseReq			= 125,
+		ID_TurnEndNotify			= 123,
+		ID_TurnEndAck			= 124,
+		ID_GameSetNotify			= 125,
+		ID_GameSetAck			= 126,
+		ID_CloseReq			= 127,
 	};
 }

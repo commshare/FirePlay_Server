@@ -15,6 +15,9 @@ namespace FPCommon
 		RoomAlreadyFull = 200,
 		RoomAckFindError = 210,
 
+		// 300번대는 Room 관련 에러 코드.
+		InvalidRoomNumber = 300,
+
 		// 600번대는 Login Server 에러 코드.
 		SignInInvalidId = 610,
 
@@ -34,6 +37,8 @@ namespace FPCommon
 		RedisInvalidToken = 811,
 
 		RedisTokenRegistError = 820,
-		RedisTokenDeleteError = 821
+		RedisTokenDeleteError = 821,
+
+		OtherError = 999
 	};
 }

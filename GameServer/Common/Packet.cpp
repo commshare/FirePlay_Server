@@ -304,6 +304,22 @@ namespace Packet
 		_result = root.get("_result", 0).asInt();
 	}
 
+	void TurnEndNotify::Serialize( Json::Value& root )
+	{
+	}
+
+	void TurnEndNotify::Deserialize( Json::Value& root )
+	{
+	}
+
+	void TurnEndAck::Serialize( Json::Value& root )
+	{
+	}
+
+	void TurnEndAck::Deserialize( Json::Value& root )
+	{
+	}
+
 	void GameSetNotify::Serialize( Json::Value& root )
 	{
 		root["_winPlayerNum"] = _winPlayerNum;

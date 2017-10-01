@@ -64,7 +64,37 @@ namespace FPLogic
 		auto room = &_gameRoomPool[roomNumber];
 
 		room->AckGameStart();
-		_logger->Write(LogType::LOG_DEBUG, "%s | Room(%d) Ack Player Count(%d)", __FUNCTION__, roomNumber, room->_ackCount);
+
+		return ErrorCode::None;
+	}
+
+	ErrorCode GameRoomManager::TurnChange(const int roomNumber)
+	{
+		auto room = &_gameRoomPool[roomNumber];
+
+		if (room == nullptr)
+		{
+			_logger->Write(LogType::LOG_ERROR, "%s | Invalid TurnChange Func call, Room Number(%d)", __FUNCTION__, roomNumber);
+			return ErrorCode::InvalidRoomNumber;
+		}
+
+		Packet::TurnStartNotify turnStartNotify;
+		Packet::EnemyTurnStartNotify enemyTurnStartNotify;
+
+		if (room->_turnPlayer == 1)
+		{
+			room->_turnPlayer = 2;
+
+			Util::PushToSendQueue(_sendQueue, Packet::PacketId::ID_TurnStartNotify, room->_player2->GetSessionIdx(), &turnStartNotify);
+			Util::PushToSendQueue(_sendQueue, Packet::PacketId::ID_EnemyTurnStartNotify, room->_player1->GetSessionIdx(), &enemyTurnStartNotify);
+		}
+		else
+		{
+			room->_turnPlayer = 1;
+
+			Util::PushToSendQueue(_sendQueue, Packet::PacketId::ID_TurnStartNotify, room->_player1->GetSessionIdx(), &turnStartNotify);
+			Util::PushToSendQueue(_sendQueue, Packet::PacketId::ID_EnemyTurnStartNotify, room->_player2->GetSessionIdx(), &enemyTurnStartNotify);
+		}
 
 		return ErrorCode::None;
 	}
