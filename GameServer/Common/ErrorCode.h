@@ -38,7 +38,5 @@ namespace FPCommon
 
 		RedisTokenRegistError = 820,
 		RedisTokenDeleteError = 821,
-
-		OtherError = 999
 	};
 }

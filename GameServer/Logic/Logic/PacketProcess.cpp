@@ -55,6 +55,7 @@ namespace FPLogic
 		subscribe(static_cast<short>(PacketId::ID_EnemyFireAck     ), std::bind(&PacketProcess::EnemyFireAck     , this, std::placeholders::_1));
 		subscribe(static_cast<short>(PacketId::ID_GameSetAck       ), std::bind(&PacketProcess::GameSetAck       , this, std::placeholders::_1));
 		subscribe(static_cast<short>(PacketId::ID_CloseReq         ), std::bind(&PacketProcess::CloseReq         , this, std::placeholders::_1));
+		subscribe(static_cast<short>(PacketId::ID_TurnEndNotify    ), std::bind(&PacketProcess::TurnEndNofity    , this, std::placeholders::_1));
 	}
 
 	void PacketProcess::process()

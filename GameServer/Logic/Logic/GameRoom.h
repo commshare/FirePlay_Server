@@ -101,25 +101,6 @@ namespace FPLogic
 			}
 		}
 
-		void TurnChange()
-		{
-			Packet::TurnStartNotify turnStartNotify;
-			Packet::EnemyTurnStartNotify;
-
-
-			if (_turnPlayer == 1)
-			{
-				_turnPlayer = 2;
-				
-				Util::PushToSendQueue();
-			}
-			else if (_turnPlayer == 2)
-			{
-
-				_turnPlayer = 1;
-			}
-		}
-
 		// RoomState
 		RoomState _state;
 		int _playerCount = 0;
