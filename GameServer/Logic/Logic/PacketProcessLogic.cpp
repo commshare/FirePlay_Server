@@ -219,6 +219,37 @@ namespace FPLogic
 	void PacketProcess::FireNotify(std::shared_ptr<PacketInfo> packet)
 	{
 		_logger->Write(LogType::LOG_DEBUG, "%s | Entry, Session(%d)", __FUNCTION__, packet->_sessionIdx);
+
+		// 패킷 정보를 얻는다.
+		Packet::FireNotify fireNtf;
+		PacketUnpack(packet, &fireNtf);
+
+		// 발사한 유저를 찾는다.
+		auto reqUser = _userManager->FindUserWithSessionIdx(packet->_sessionIdx);
+
+		// 유저가 INVALID하다면 로그를 찍고 무시한다.
+		if (reqUser == nullptr)
+		{
+			_logger->Write(LogType::LOG_WARN, "%s | Invalid Fire Ntf Input, Session Idx(%d)", __FUNCTION__, packet->_sessionIdx);
+			return;
+		}
+
+		// 응답을 보내준다.
+		Packet::FireAck fireAck;
+		fireAck._result = static_cast<int>(ErrorCode::None);
+
+		PushToSendQueue(Packet::PacketId::ID_FireAck, reqUser->GetSessionIdx(), &fireAck);
+
+		// 상대편에게 알려준다.
+		Packet::EnemyFireNotify enemyFireNotify;
+		enemyFireNotify._enemyPositionX = fireNtf._enemyPositionX;
+		enemyFireNotify._enemyPositionY = fireNtf._enemyPositionY;
+		enemyFireNotify._fireType = fireNtf._fireType;
+		enemyFireNotify._forceX = fireNtf._forceX;
+		enemyFireNotify._forceY = fireNtf._forceY;
+
+		// 해당 방의 턴을 바꿔준다.
+		_gameRoomManager->TurnChange(reqUser->GetGameIdx());
 	}
 
 	void PacketProcess::EnemyFireAck(std::shared_ptr<PacketInfo> packet)
