@@ -139,10 +139,8 @@ namespace Packet
 		virtual void Deserialize( Json::Value& root );
 
 		int							_playerNumber;
-		int							_positionX;
-		int							_positionY;
-		int							_enemyPositionX;
-		int							_enemyPositionY;
+		float						_positionX;
+		float						_enemyPositionX;
 	};
 
 	// 게임 시작 응답 패킷
@@ -166,8 +164,8 @@ namespace Packet
 		virtual void Serialize ( Json::Value& root );
 		virtual void Deserialize( Json::Value& root );
 
-		int							_windX;
-		int							_windY;
+		float						_windX;
+		float						_windY;
 	};
 
 	// 내 턴 시작 응답 패킷
@@ -191,8 +189,8 @@ namespace Packet
 		virtual void Serialize ( Json::Value& root );
 		virtual void Deserialize( Json::Value& root );
 
-		int							_windX;
-		int							_windY;
+		float						_windX;
+		float						_windY;
 	};
 
 	// 상대 턴 시작 응답 패킷
@@ -216,9 +214,7 @@ namespace Packet
 		virtual void Serialize ( Json::Value& root );
 		virtual void Deserialize( Json::Value& root );
 
-		int							_moveRange;
-		int							_enemyPositionX;
-		int							_enemyPositionY;
+		float						_enemyPositionX;
 	};
 
 	// 움직임 응답 패킷
@@ -242,9 +238,7 @@ namespace Packet
 		virtual void Serialize ( Json::Value& root );
 		virtual void Deserialize( Json::Value& root );
 
-		int							_moveRange;
-		int							_enemyPositionX;
-		int							_enemyPositionY;
+		float						_enemyPositionX;
 	};
 
 	// 상대 움직임 응답 패킷
@@ -269,10 +263,10 @@ namespace Packet
 		virtual void Deserialize( Json::Value& root );
 
 		int							_fireType;
-		int							_enemyPositionX;
-		int							_enemyPositionY;
-		int							_forceX;
-		int							_forceY;
+		float						_enemyPositionX;
+		float						_unitVecX;
+		float						_unitVecY;
+		float						_magnitude;
 	};
 
 	// 발사 응답 패킷
@@ -297,10 +291,10 @@ namespace Packet
 		virtual void Deserialize( Json::Value& root );
 
 		int							_fireType;
-		int							_enemyPositionX;
-		int							_enemyPositionY;
-		int							_forceX;
-		int							_forceY;
+		float						_enemyPositionX;
+		float						_unitVecX;
+		float						_unitVecY;
+		float						_magnitude;
 	};
 
 	// 상대 발사 응답 패킷

@@ -60,10 +60,8 @@ MatchSuccessAck
 GameStartNotify
 {
 	single integer _playerNumber
-	single integer _positionX
-	single integer _positionY
-	single integer _enemyPositionX
-	single integer _enemyPositionY
+	single float _positionX
+	single float _enemyPositionX
 }
 
 // 게임 시작 응답 패킷
@@ -75,8 +73,8 @@ GameStartAck
 // 내 턴 시작 패킷
 TurnStartNotify
 {
-	single integer _windX
-	single integer _windY
+	single float _windX
+	single float _windY
 }
 
 // 내 턴 시작 응답 패킷
@@ -88,8 +86,8 @@ TurnStartAck
 // 상대 턴 시작 패킷
 EnemyTurnStartNotify
 {
-	single integer _windX
-	single integer _windY
+	single float _windX
+	single float _windY
 }
 
 // 상대 턴 시작 응답 패킷
@@ -101,9 +99,7 @@ EnemyTurnStartAck
 // 움직임 전달 패킷
 MoveNotify
 {
-	single integer _moveRange
-	single integer _enemyPositionX
-	single integer _enemyPositionY
+	single float _enemyPositionX
 }
 
 // 움직임 응답 패킷
@@ -115,9 +111,7 @@ MoveAck
 // 상대 움직임 알림 패킷
 EnemyMoveNotify
 {
-	single integer _moveRange
-	single integer _enemyPositionX
-	single integer _enemyPositionY
+	single float _enemyPositionX
 }
 
 // 상대 움직임 응답 패킷
@@ -130,10 +124,10 @@ EnemyMoveAck
 FireNotify
 {
 	single integer _fireType
-	single integer _enemyPositionX
-	single integer _enemyPositionY
-	single integer _forceX
-	single integer _forceY
+	single float _enemyPositionX
+	single float _unitVecX
+	single float _unitVecY
+	single float _magnitude
 }
 
 // 발사 응답 패킷
@@ -146,10 +140,10 @@ FireAck
 EnemyFireNotify
 {
 	single integer _fireType
-	single integer _enemyPositionX
-	single integer _enemyPositionY
-	single integer _forceX
-	single integer _forceY
+	single float _enemyPositionX
+	single float _unitVecX
+	single float _unitVecY
+	single float _magnitude
 }
 
 // 상대 발사 응답 패킷

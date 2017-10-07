@@ -132,18 +132,14 @@ namespace Packet
 	{
 		root["_playerNumber"] = _playerNumber;
 		root["_positionX"] = _positionX;
-		root["_positionY"] = _positionY;
 		root["_enemyPositionX"] = _enemyPositionX;
-		root["_enemyPositionY"] = _enemyPositionY;
 	}
 
 	void GameStartNotify::Deserialize( Json::Value& root )
 	{
 		_playerNumber = root.get("_playerNumber", 0).asInt();
-		_positionX = root.get("_positionX", 0).asInt();
-		_positionY = root.get("_positionY", 0).asInt();
-		_enemyPositionX = root.get("_enemyPositionX", 0).asInt();
-		_enemyPositionY = root.get("_enemyPositionY", 0).asInt();
+		_positionX = root.get("_positionX", 0.0).asDouble();
+		_enemyPositionX = root.get("_enemyPositionX", 0.0).asDouble();
 	}
 
 	void GameStartAck::Serialize( Json::Value& root )
@@ -164,8 +160,8 @@ namespace Packet
 
 	void TurnStartNotify::Deserialize( Json::Value& root )
 	{
-		_windX = root.get("_windX", 0).asInt();
-		_windY = root.get("_windY", 0).asInt();
+		_windX = root.get("_windX", 0.0).asDouble();
+		_windY = root.get("_windY", 0.0).asDouble();
 	}
 
 	void TurnStartAck::Serialize( Json::Value& root )
@@ -186,8 +182,8 @@ namespace Packet
 
 	void EnemyTurnStartNotify::Deserialize( Json::Value& root )
 	{
-		_windX = root.get("_windX", 0).asInt();
-		_windY = root.get("_windY", 0).asInt();
+		_windX = root.get("_windX", 0.0).asDouble();
+		_windY = root.get("_windY", 0.0).asDouble();
 	}
 
 	void EnemyTurnStartAck::Serialize( Json::Value& root )
@@ -202,16 +198,12 @@ namespace Packet
 
 	void MoveNotify::Serialize( Json::Value& root )
 	{
-		root["_moveRange"] = _moveRange;
 		root["_enemyPositionX"] = _enemyPositionX;
-		root["_enemyPositionY"] = _enemyPositionY;
 	}
 
 	void MoveNotify::Deserialize( Json::Value& root )
 	{
-		_moveRange = root.get("_moveRange", 0).asInt();
-		_enemyPositionX = root.get("_enemyPositionX", 0).asInt();
-		_enemyPositionY = root.get("_enemyPositionY", 0).asInt();
+		_enemyPositionX = root.get("_enemyPositionX", 0.0).asDouble();
 	}
 
 	void MoveAck::Serialize( Json::Value& root )
@@ -226,16 +218,12 @@ namespace Packet
 
 	void EnemyMoveNotify::Serialize( Json::Value& root )
 	{
-		root["_moveRange"] = _moveRange;
 		root["_enemyPositionX"] = _enemyPositionX;
-		root["_enemyPositionY"] = _enemyPositionY;
 	}
 
 	void EnemyMoveNotify::Deserialize( Json::Value& root )
 	{
-		_moveRange = root.get("_moveRange", 0).asInt();
-		_enemyPositionX = root.get("_enemyPositionX", 0).asInt();
-		_enemyPositionY = root.get("_enemyPositionY", 0).asInt();
+		_enemyPositionX = root.get("_enemyPositionX", 0.0).asDouble();
 	}
 
 	void EnemyMoveAck::Serialize( Json::Value& root )
@@ -252,18 +240,18 @@ namespace Packet
 	{
 		root["_fireType"] = _fireType;
 		root["_enemyPositionX"] = _enemyPositionX;
-		root["_enemyPositionY"] = _enemyPositionY;
-		root["_forceX"] = _forceX;
-		root["_forceY"] = _forceY;
+		root["_unitVecX"] = _unitVecX;
+		root["_unitVecY"] = _unitVecY;
+		root["_magnitude"] = _magnitude;
 	}
 
 	void FireNotify::Deserialize( Json::Value& root )
 	{
 		_fireType = root.get("_fireType", 0).asInt();
-		_enemyPositionX = root.get("_enemyPositionX", 0).asInt();
-		_enemyPositionY = root.get("_enemyPositionY", 0).asInt();
-		_forceX = root.get("_forceX", 0).asInt();
-		_forceY = root.get("_forceY", 0).asInt();
+		_enemyPositionX = root.get("_enemyPositionX", 0.0).asDouble();
+		_unitVecX = root.get("_unitVecX", 0.0).asDouble();
+		_unitVecY = root.get("_unitVecY", 0.0).asDouble();
+		_magnitude = root.get("_magnitude", 0.0).asDouble();
 	}
 
 	void FireAck::Serialize( Json::Value& root )
@@ -280,18 +268,18 @@ namespace Packet
 	{
 		root["_fireType"] = _fireType;
 		root["_enemyPositionX"] = _enemyPositionX;
-		root["_enemyPositionY"] = _enemyPositionY;
-		root["_forceX"] = _forceX;
-		root["_forceY"] = _forceY;
+		root["_unitVecX"] = _unitVecX;
+		root["_unitVecY"] = _unitVecY;
+		root["_magnitude"] = _magnitude;
 	}
 
 	void EnemyFireNotify::Deserialize( Json::Value& root )
 	{
 		_fireType = root.get("_fireType", 0).asInt();
-		_enemyPositionX = root.get("_enemyPositionX", 0).asInt();
-		_enemyPositionY = root.get("_enemyPositionY", 0).asInt();
-		_forceX = root.get("_forceX", 0).asInt();
-		_forceY = root.get("_forceY", 0).asInt();
+		_enemyPositionX = root.get("_enemyPositionX", 0.0).asDouble();
+		_unitVecX = root.get("_unitVecX", 0.0).asDouble();
+		_unitVecY = root.get("_unitVecY", 0.0).asDouble();
+		_magnitude = root.get("_magnitude", 0.0).asDouble();
 	}
 
 	void EnemyFireAck::Serialize( Json::Value& root )
