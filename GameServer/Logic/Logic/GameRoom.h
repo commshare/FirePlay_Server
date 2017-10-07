@@ -77,15 +77,15 @@ namespace FPLogic
 			}
 		}
 
-		void PlayerMove(const int ackPlayerSessionId, const int moveDist)
+		void PlayerMove(const int ackPlayerSessionId, const float movedPosition)
 		{
 			if (ackPlayerSessionId == _player1->GetSessionIdx())
 			{
-				_player1Pos += moveDist;
+				_player1Pos = movedPosition;
 			}
 			else
 			{
-				_player2Pos += moveDist;
+				_player2Pos = movedPosition;
 			}
 		}
 

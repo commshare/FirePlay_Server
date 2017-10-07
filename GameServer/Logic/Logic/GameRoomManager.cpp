@@ -120,15 +120,11 @@ namespace FPLogic
 				notify1._playerNumber = 1;
 				notify1._positionX = player1Pos;
 				notify1._enemyPositionX = player2Pos;
-				notify1._positionY = 300;
-				notify1._enemyPositionY = 300;
 
 				Packet::GameStartNotify notify2;
 				notify2._playerNumber = 2;
 				notify2._positionX = player2Pos;
 				notify2._enemyPositionX = player1Pos;
-				notify2._positionY = 300;
-				notify2._enemyPositionY = 300;
 
 				Util::PushToSendQueue(_sendQueue, Packet::PacketId::ID_GameStartNotify, room->_player1->GetSessionIdx(), &notify1);
 				Util::PushToSendQueue(_sendQueue, Packet::PacketId::ID_GameStartNotify, room->_player2->GetSessionIdx(), &notify2);
