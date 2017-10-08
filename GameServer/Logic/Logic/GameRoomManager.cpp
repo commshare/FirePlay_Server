@@ -112,8 +112,8 @@ namespace FPLogic
 				// 플레이어 포지션 랜덤 생성.
 				//auto player1Pos = Util::GetRandomNumber(-100, 100);
 				//auto player2Pos = Util::GetRandomNumber(-100, 100);
-				auto player1Pos = 50;
-				auto player2Pos = -50;
+				auto player1Pos = 10;
+				auto player2Pos = -10;
 
 				// 패킷에 플레이어 정보 기록.
 				Packet::GameStartNotify notify1;

@@ -100,6 +100,7 @@ EnemyTurnStartAck
 MoveNotify
 {
 	single float _enemyPositionX
+	single float _enemyPositionY
 }
 
 // 움직임 응답 패킷
@@ -112,6 +113,7 @@ MoveAck
 EnemyMoveNotify
 {
 	single float _enemyPositionX
+	single float _enemyPositionY
 }
 
 // 상대 움직임 응답 패킷
@@ -124,7 +126,9 @@ EnemyMoveAck
 FireNotify
 {
 	single integer _fireType
+	single integer _damage
 	single float _enemyPositionX
+	single float _enemyPositionY
 	single float _unitVecX
 	single float _unitVecY
 	single float _magnitude
@@ -140,7 +144,9 @@ FireAck
 EnemyFireNotify
 {
 	single integer _fireType
+	single integer _damage
 	single float _enemyPositionX
+	single float _enemyPositionY
 	single float _unitVecX
 	single float _unitVecY
 	single float _magnitude

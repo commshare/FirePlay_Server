@@ -215,6 +215,7 @@ namespace Packet
 		virtual void Deserialize( Json::Value& root );
 
 		float						_enemyPositionX;
+		float						_enemyPositionY;
 	};
 
 	// 움직임 응답 패킷
@@ -239,6 +240,7 @@ namespace Packet
 		virtual void Deserialize( Json::Value& root );
 
 		float						_enemyPositionX;
+		float						_enemyPositionY;
 	};
 
 	// 상대 움직임 응답 패킷
@@ -263,7 +265,9 @@ namespace Packet
 		virtual void Deserialize( Json::Value& root );
 
 		int							_fireType;
+		int							_damage;
 		float						_enemyPositionX;
+		float						_enemyPositionY;
 		float						_unitVecX;
 		float						_unitVecY;
 		float						_magnitude;
@@ -291,7 +295,9 @@ namespace Packet
 		virtual void Deserialize( Json::Value& root );
 
 		int							_fireType;
+		int							_damage;
 		float						_enemyPositionX;
+		float						_enemyPositionY;
 		float						_unitVecX;
 		float						_unitVecY;
 		float						_magnitude;

@@ -205,6 +205,9 @@ namespace FPLogic
 		Packet::EnemyMoveNotify enemyMoveNotify;
 
 		enemyMoveNotify._enemyPositionX = moveNtf._enemyPositionX;
+		enemyMoveNotify._enemyPositionY = moveNtf._enemyPositionY;
+
+		_logger->Write(LogType::LOG_DEBUG, "%s | Pos X : %d, Y : %d", __FUNCTION__, enemyMoveNotify._enemyPositionX, enemyMoveNotify._enemyPositionY);
 
 		PushToSendQueue(Packet::PacketId::ID_EnemyMoveNotify, room->GetAnotherPlayerSession(reqUser->GetSessionIdx()), &enemyMoveNotify);
 	}
@@ -232,6 +235,9 @@ namespace FPLogic
 			return;
 		}
 
+		// 유저의 방을 찾는다.
+		auto room = _gameRoomManager->GetRoom(reqUser->GetGameIdx());
+
 		// 응답을 보내준다.
 		Packet::FireAck fireAck;
 		fireAck._result = static_cast<int>(ErrorCode::None);
@@ -242,9 +248,12 @@ namespace FPLogic
 		Packet::EnemyFireNotify enemyFireNotify;
 		enemyFireNotify._enemyPositionX = fireNotify._enemyPositionX;
 		enemyFireNotify._fireType = fireNotify._fireType;
+		enemyFireNotify._damage = fireNotify._damage;
 		enemyFireNotify._magnitude = fireNotify._magnitude;
 		enemyFireNotify._unitVecX = fireNotify._unitVecX;
 		enemyFireNotify._unitVecY = fireNotify._unitVecY;
+
+		PushToSendQueue(Packet::PacketId::ID_EnemyFireNotify, room->GetAnotherPlayerSession(reqUser->GetSessionIdx()), &enemyFireNotify);
 
 		// 해당 방의 턴을 바꿔준다.
 		_gameRoomManager->TurnChange(reqUser->GetGameIdx());

@@ -199,11 +199,13 @@ namespace Packet
 	void MoveNotify::Serialize( Json::Value& root )
 	{
 		root["_enemyPositionX"] = _enemyPositionX;
+		root["_enemyPositionY"] = _enemyPositionY;
 	}
 
 	void MoveNotify::Deserialize( Json::Value& root )
 	{
 		_enemyPositionX = root.get("_enemyPositionX", 0.0).asDouble();
+		_enemyPositionY = root.get("_enemyPositionY", 0.0).asDouble();
 	}
 
 	void MoveAck::Serialize( Json::Value& root )
@@ -219,11 +221,13 @@ namespace Packet
 	void EnemyMoveNotify::Serialize( Json::Value& root )
 	{
 		root["_enemyPositionX"] = _enemyPositionX;
+		root["_enemyPositionY"] = _enemyPositionY;
 	}
 
 	void EnemyMoveNotify::Deserialize( Json::Value& root )
 	{
 		_enemyPositionX = root.get("_enemyPositionX", 0.0).asDouble();
+		_enemyPositionY = root.get("_enemyPositionY", 0.0).asDouble();
 	}
 
 	void EnemyMoveAck::Serialize( Json::Value& root )
@@ -239,7 +243,9 @@ namespace Packet
 	void FireNotify::Serialize( Json::Value& root )
 	{
 		root["_fireType"] = _fireType;
+		root["_damage"] = _damage;
 		root["_enemyPositionX"] = _enemyPositionX;
+		root["_enemyPositionY"] = _enemyPositionY;
 		root["_unitVecX"] = _unitVecX;
 		root["_unitVecY"] = _unitVecY;
 		root["_magnitude"] = _magnitude;
@@ -248,7 +254,9 @@ namespace Packet
 	void FireNotify::Deserialize( Json::Value& root )
 	{
 		_fireType = root.get("_fireType", 0).asInt();
+		_damage = root.get("_damage", 0).asInt();
 		_enemyPositionX = root.get("_enemyPositionX", 0.0).asDouble();
+		_enemyPositionY = root.get("_enemyPositionY", 0.0).asDouble();
 		_unitVecX = root.get("_unitVecX", 0.0).asDouble();
 		_unitVecY = root.get("_unitVecY", 0.0).asDouble();
 		_magnitude = root.get("_magnitude", 0.0).asDouble();
@@ -267,7 +275,9 @@ namespace Packet
 	void EnemyFireNotify::Serialize( Json::Value& root )
 	{
 		root["_fireType"] = _fireType;
+		root["_damage"] = _damage;
 		root["_enemyPositionX"] = _enemyPositionX;
+		root["_enemyPositionY"] = _enemyPositionY;
 		root["_unitVecX"] = _unitVecX;
 		root["_unitVecY"] = _unitVecY;
 		root["_magnitude"] = _magnitude;
@@ -276,7 +286,9 @@ namespace Packet
 	void EnemyFireNotify::Deserialize( Json::Value& root )
 	{
 		_fireType = root.get("_fireType", 0).asInt();
+		_damage = root.get("_damage", 0).asInt();
 		_enemyPositionX = root.get("_enemyPositionX", 0.0).asDouble();
+		_enemyPositionY = root.get("_enemyPositionY", 0.0).asDouble();
 		_unitVecX = root.get("_unitVecX", 0.0).asDouble();
 		_unitVecY = root.get("_unitVecY", 0.0).asDouble();
 		_magnitude = root.get("_magnitude", 0.0).asDouble();
