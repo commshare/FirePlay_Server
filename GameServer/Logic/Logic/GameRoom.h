@@ -32,8 +32,8 @@ namespace FPLogic
 			_state = RoomState::None;
 			_player1 = nullptr;
 			_player2 = nullptr;
-			_player1Pos = 0;
-			_player2Pos = 0;
+			_player1Hp = 0;
+			_player2Hp = 0;
 			_playerCount = 0;
 			_ackCount = 0;
 
@@ -77,18 +77,6 @@ namespace FPLogic
 			}
 		}
 
-		void PlayerMove(const int ackPlayerSessionId, const float movedPosition)
-		{
-			if (ackPlayerSessionId == _player1->GetSessionIdx())
-			{
-				_player1Pos = movedPosition;
-			}
-			else
-			{
-				_player2Pos = movedPosition;
-			}
-		}
-
 		int GetAnotherPlayerSession(const int sessionId)
 		{
 			if (sessionId == _player1->GetSessionIdx())
@@ -112,8 +100,8 @@ namespace FPLogic
 		// Player
 		User * _player1 = nullptr;
 		User * _player2 = nullptr;
-		int _player1Pos = 0;
-		int _player2Pos = 0;
+		int _player1Hp = 0;
+		int _player2Hp = 0;
 
 		// For Logic
 		int _turnPlayer = 0;
