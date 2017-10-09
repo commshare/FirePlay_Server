@@ -168,27 +168,12 @@ TurnEndAck
 {
 }
 
-// 게임 종료 신청 패킷
-GameSetRequest
+// 데미지가 발생할때 보내는 패킷
+DamageOccur
 {
-	single integer _winPlayerNum
 	single integer _player1Hp
 	single integer _player2Hp
 }
-
-// 게임 종료 확인 패킷
-GameSetAsk
-{
-	single integer _winPlayerNum
-}
-
-// 게임 종료 확인 응답 패킷
-GameSetAnswer
-{
-	single integer _answer
-	single integer _player1Hp
-	single integer _player2Hp
-}	
 
 // 게임 종료 알림 패킷
 GameSetNotify

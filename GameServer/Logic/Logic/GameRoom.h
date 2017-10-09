@@ -40,6 +40,7 @@ namespace FPLogic
 			_isGameStartPacketSended = false;
 			_isGameStartReadyed = false;
 			_turnPlayer = 0;
+			_winPlayer = 0;
 		}
 
 		ErrorCode EnterUser(User * enteringUser)
@@ -89,6 +90,37 @@ namespace FPLogic
 			}
 		}
 
+		void InitializePlayer()
+		{
+			// TODO :: 좋지 못한 코드임.
+			// 추후에 무조건 고쳐야 함.
+			if (_player1->GetCharacterType() == CharacterType::Archer1)
+			{
+				_player1Hp = 80;
+			}
+			else if (_player1->GetCharacterType() == CharacterType::Archer2)
+			{
+				_player1Hp = 100;
+			}
+			else
+			{
+				_player1Hp = 120;
+			}
+
+			if (_player2->GetCharacterType() == CharacterType::Archer1)
+			{
+				_player2Hp = 80;
+			}
+			else if (_player2->GetCharacterType() == CharacterType::Archer2)
+			{
+				_player2Hp = 100;
+			}
+			else
+			{
+				_player2Hp = 120;
+			}
+		}
+
 		// RoomState
 		RoomState _state;
 		int _playerCount = 0;
@@ -105,5 +137,6 @@ namespace FPLogic
 
 		// For Logic
 		int _turnPlayer = 0;
+		int _winPlayer = 0;
 	};
 }

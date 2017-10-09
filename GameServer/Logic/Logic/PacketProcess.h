@@ -73,8 +73,7 @@ namespace FPLogic
 		void GameSetAck       (std::shared_ptr<PacketInfo> packet);
 		void CloseReq         (std::shared_ptr<PacketInfo> packet);
 		void TurnEndNofity	  (std::shared_ptr<PacketInfo> packet);
-		void GameSetRequest	  (std::shared_ptr<PacketInfo> packet);
-		void GameSetAnswer	  (std::shared_ptr<PacketInfo> packet);
+		void DamageOccur	  (std::shared_ptr<PacketInfo> packet);
 		
 		// 패킷 처리를 도와줄 메소드.
 		void PacketUnpack(std::shared_ptr<PacketInfo> packet, Packet::IJsonSerializable * outSturct);

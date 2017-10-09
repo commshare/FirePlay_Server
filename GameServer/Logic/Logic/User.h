@@ -37,8 +37,9 @@ namespace FPLogic
 		CharacterType GetCharacterType() const { return _selectedCharacterType; }
 		std::string   GetId()                  { return _id;                    }
 		bool		  IsUserActivated()  const { return _isUserActivated;       }
-		int           GetRating()        const { return _rating;                }
 		UserState     GetUserState()     const { return _state;                 }
+		int           GetWins()          const { return _wins;                  }
+		int           GetLoses()         const { return _loses;                 }
 
 	private :
 
@@ -56,6 +57,7 @@ namespace FPLogic
 
 		UserState _state = UserState::None;
 
-		int _rating = 0;
+		int _wins = 0;
+		int _loses = 0;
 	};
 }

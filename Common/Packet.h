@@ -337,42 +337,15 @@ namespace Packet
 
 	};
 
-	// 게임 종료 신청 패킷
-	class GameSetRequest : public IJsonSerializable
+	// 데미지가 발생할때 보내는 패킷
+	class DamageOccur : public IJsonSerializable
 	{
 	public:
-		GameSetRequest( void ) {}
-		virtual ~GameSetRequest( void ) {}
+		DamageOccur( void ) {}
+		virtual ~DamageOccur( void ) {}
 		virtual void Serialize ( Json::Value& root );
 		virtual void Deserialize( Json::Value& root );
 
-		int							_winPlayerNum;
-		int							_player1Hp;
-		int							_player2Hp;
-	};
-
-	// 게임 종료 확인 패킷
-	class GameSetAsk : public IJsonSerializable
-	{
-	public:
-		GameSetAsk( void ) {}
-		virtual ~GameSetAsk( void ) {}
-		virtual void Serialize ( Json::Value& root );
-		virtual void Deserialize( Json::Value& root );
-
-		int							_winPlayerNum;
-	};
-
-	// 게임 종료 확인 응답 패킷
-	class GameSetAnswer : public IJsonSerializable
-	{
-	public:
-		GameSetAnswer( void ) {}
-		virtual ~GameSetAnswer( void ) {}
-		virtual void Serialize ( Json::Value& root );
-		virtual void Deserialize( Json::Value& root );
-
-		int							_answer;
 		int							_player1Hp;
 		int							_player2Hp;
 	};
@@ -443,11 +416,9 @@ namespace Packet
 		ID_EnemyFireAck			= 122,
 		ID_TurnEndNotify			= 123,
 		ID_TurnEndAck			= 124,
-		ID_GameSetRequest			= 125,
-		ID_GameSetAsk			= 126,
-		ID_GameSetAnswer			= 127,
-		ID_GameSetNotify			= 128,
-		ID_GameSetAck			= 129,
-		ID_CloseReq			= 130,
+		ID_DamageOccur			= 125,
+		ID_GameSetNotify			= 126,
+		ID_GameSetAck			= 127,
+		ID_CloseReq			= 128,
 	};
 }

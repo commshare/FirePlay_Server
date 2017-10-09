@@ -298,11 +298,14 @@ namespace FPLogic
 		_gameRoomManager->TurnChange(notifyUser->GetGameIdx());
 	}
 
-	void PacketProcess::GameSetRequest(std::shared_ptr<PacketInfo> packet)
+	void PacketProcess::DamageOccur(std::shared_ptr<PacketInfo> packet)
 	{
+		_logger->Write(LogType::LOG_DEBUG, "%s | Entry, Session(%d)", __FUNCTION__, packet->_sessionIdx);
+
+		// 패킷 정보를 얻는다.
+		Packet::DamageOccur healthInfo;
+		PacketUnpack(packet, &healthInfo);
+			
 	}
 
-	void PacketProcess::GameSetAnswer(std::shared_ptr<PacketInfo> packet)
-	{
-	}
 }

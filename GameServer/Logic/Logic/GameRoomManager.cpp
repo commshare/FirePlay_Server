@@ -110,10 +110,8 @@ namespace FPLogic
 			if (room->GetPlayerCount() >= 2 && room->_isGameStartPacketSended == false)
 			{
 				// 플레이어 포지션 랜덤 생성.
-				//auto player1Pos = Util::GetRandomNumber(-100, 100);
-				//auto player2Pos = Util::GetRandomNumber(-100, 100);
-				auto player1Pos = 10;
-				auto player2Pos = -10;
+				auto player1Pos = Util::GetRandomNumber(-15, 15);
+				auto player2Pos = Util::GetRandomNumber(-15, 15);
 
 				// 패킷에 플레이어 정보 기록.
 				Packet::GameStartNotify notify1;
@@ -164,9 +162,11 @@ namespace FPLogic
 				Util::PushToSendQueue(_sendQueue, Packet::PacketId::ID_EnemyTurnStartNotify, room->_player1->GetSessionIdx(), &enemyTurnStartNotify);
 			}
 
+			// 각 유저의 상태를 게임에 맞도록 세팅.
+			room->InitializePlayer();
+
 			// 방 상태를 InGame으로 바꿔준다.
 			room->_state = RoomState::InGame;
-
 		}
 			#pragma endregion
 			break;

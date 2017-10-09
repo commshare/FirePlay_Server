@@ -320,40 +320,14 @@ namespace Packet
 	{
 	}
 
-	void GameSetRequest::Serialize( Json::Value& root )
+	void DamageOccur::Serialize( Json::Value& root )
 	{
-		root["_winPlayerNum"] = _winPlayerNum;
 		root["_player1Hp"] = _player1Hp;
 		root["_player2Hp"] = _player2Hp;
 	}
 
-	void GameSetRequest::Deserialize( Json::Value& root )
+	void DamageOccur::Deserialize( Json::Value& root )
 	{
-		_winPlayerNum = root.get("_winPlayerNum", 0).asInt();
-		_player1Hp = root.get("_player1Hp", 0).asInt();
-		_player2Hp = root.get("_player2Hp", 0).asInt();
-	}
-
-	void GameSetAsk::Serialize( Json::Value& root )
-	{
-		root["_winPlayerNum"] = _winPlayerNum;
-	}
-
-	void GameSetAsk::Deserialize( Json::Value& root )
-	{
-		_winPlayerNum = root.get("_winPlayerNum", 0).asInt();
-	}
-
-	void GameSetAnswer::Serialize( Json::Value& root )
-	{
-		root["_answer"] = _answer;
-		root["_player1Hp"] = _player1Hp;
-		root["_player2Hp"] = _player2Hp;
-	}
-
-	void GameSetAnswer::Deserialize( Json::Value& root )
-	{
-		_answer = root.get("_answer", 0).asInt();
 		_player1Hp = root.get("_player1Hp", 0).asInt();
 		_player2Hp = root.get("_player2Hp", 0).asInt();
 	}
