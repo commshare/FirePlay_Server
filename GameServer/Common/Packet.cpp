@@ -334,17 +334,11 @@ namespace Packet
 
 	void GameSetNotify::Serialize( Json::Value& root )
 	{
-		root["_isGameSet"] = _isGameSet;
-		root["_player1Hp"] = _player1Hp;
-		root["_player2Hp"] = _player2Hp;
 		root["_winPlayerNum"] = _winPlayerNum;
 	}
 
 	void GameSetNotify::Deserialize( Json::Value& root )
 	{
-		_isGameSet = root.get("_isGameSet", 0).asInt();
-		_player1Hp = root.get("_player1Hp", 0).asInt();
-		_player2Hp = root.get("_player2Hp", 0).asInt();
 		_winPlayerNum = root.get("_winPlayerNum", 0).asInt();
 	}
 

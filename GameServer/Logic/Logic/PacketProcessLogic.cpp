@@ -193,6 +193,10 @@ namespace FPLogic
 
 		// 유저의 방을 찾는다.
 		auto room = _gameRoomManager->GetRoom(reqUser->GetGameIdx());
+		if (room == nullptr || room->GetState() != RoomState::InGame)
+		{
+			return;
+		}
 
 		// 응답을 보내준다.
 		Packet::MoveAck moveAck;
@@ -236,6 +240,10 @@ namespace FPLogic
 
 		// 유저의 방을 찾는다.
 		auto room = _gameRoomManager->GetRoom(reqUser->GetGameIdx());
+		if (room == nullptr || room->GetState() != RoomState::InGame)
+		{
+			return;
+		}
 
 		// 응답을 보내준다.
 		Packet::FireAck fireAck;
@@ -287,6 +295,13 @@ namespace FPLogic
 		if (notifyUser == nullptr)
 		{
 			_logger->Write(LogType::LOG_WARN, "%s | Invalid Turn End Ntf Input, Session Idx(%d)", __FUNCTION__, packet->_sessionIdx);
+			return;
+		}
+
+		// 해당 게임 방을 찾는다.
+		auto room = _gameRoomManager->GetRoom(notifyUser->GetGameIdx());
+		if (room == nullptr || room->GetState() != RoomState::InGame)
+		{
 			return;
 		}
 

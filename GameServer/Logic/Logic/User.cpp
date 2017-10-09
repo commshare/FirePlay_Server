@@ -25,7 +25,9 @@ namespace FPLogic
 
 		_state = UserState::None;
 
-		_rating = 0;
+		_wins = 0;
+
+		_loses = 0;
 	}
 
 	void User::Login(const int sessionIdx, const char * id)

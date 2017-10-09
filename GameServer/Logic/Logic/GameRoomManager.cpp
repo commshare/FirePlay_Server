@@ -105,7 +105,6 @@ namespace FPLogic
 
 		if (room == nullptr || room->_state != RoomState::InGame)
 		{
-			_logger->Write(LogType::LOG_ERROR, "%s | Invalid Room Number Access! Room State is Not RoomState::InGame. Room Number(%d)", __FUNCTION__, roomNumber);
 			return;
 		}
 
@@ -128,13 +127,16 @@ namespace FPLogic
 		{
 			gameSetNotify._winPlayerNum = 1;
 		}
+		else
+		{
+			return;
+		}
 
 		// 게임이 끝났다는 패킷을 보내준다.
 		Util::PushToSendQueue(_sendQueue, Packet::PacketId::ID_GameSetNotify, room->_player1->GetSessionIdx(), &gameSetNotify);
 		Util::PushToSendQueue(_sendQueue, Packet::PacketId::ID_GameSetNotify, room->_player2->GetSessionIdx(), &gameSetNotify);
 
 		// TODO :: 전적 갱신.
-
 		room->Clear();
 	}
 
