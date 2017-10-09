@@ -193,7 +193,6 @@ namespace FPLogic
 
 		// 유저의 방을 찾는다.
 		auto room = _gameRoomManager->GetRoom(reqUser->GetGameIdx());
-		room->PlayerMove(reqUser->GetSessionIdx(), moveNtf._enemyPositionX);
 
 		// 응답을 보내준다.
 		Packet::MoveAck moveAck;
@@ -297,5 +296,13 @@ namespace FPLogic
 
 		// 해당 방의 턴을 바꿔준다.
 		_gameRoomManager->TurnChange(notifyUser->GetGameIdx());
+	}
+
+	void PacketProcess::GameSetRequest(std::shared_ptr<PacketInfo> packet)
+	{
+	}
+
+	void PacketProcess::GameSetAnswer(std::shared_ptr<PacketInfo> packet)
+	{
 	}
 }

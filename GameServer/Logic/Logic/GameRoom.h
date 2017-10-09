@@ -32,8 +32,8 @@ namespace FPLogic
 			_state = RoomState::None;
 			_player1 = nullptr;
 			_player2 = nullptr;
-			_player1Hp = 0;
-			_player2Hp = 0;
+			_player1Hp = -1;
+			_player2Hp = -1;
 			_playerCount = 0;
 			_ackCount = 0;
 
@@ -100,8 +100,8 @@ namespace FPLogic
 		// Player
 		User * _player1 = nullptr;
 		User * _player2 = nullptr;
-		int _player1Hp = 0;
-		int _player2Hp = 0;
+		int _player1Hp = -1;
+		int _player2Hp = -1;
 
 		// For Logic
 		int _turnPlayer = 0;

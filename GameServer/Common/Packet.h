@@ -337,6 +337,46 @@ namespace Packet
 
 	};
 
+	// 게임 종료 신청 패킷
+	class GameSetRequest : public IJsonSerializable
+	{
+	public:
+		GameSetRequest( void ) {}
+		virtual ~GameSetRequest( void ) {}
+		virtual void Serialize ( Json::Value& root );
+		virtual void Deserialize( Json::Value& root );
+
+		int							_winPlayerNum;
+		int							_player1Hp;
+		int							_player2Hp;
+	};
+
+	// 게임 종료 확인 패킷
+	class GameSetAsk : public IJsonSerializable
+	{
+	public:
+		GameSetAsk( void ) {}
+		virtual ~GameSetAsk( void ) {}
+		virtual void Serialize ( Json::Value& root );
+		virtual void Deserialize( Json::Value& root );
+
+		int							_winPlayerNum;
+	};
+
+	// 게임 종료 확인 응답 패킷
+	class GameSetAnswer : public IJsonSerializable
+	{
+	public:
+		GameSetAnswer( void ) {}
+		virtual ~GameSetAnswer( void ) {}
+		virtual void Serialize ( Json::Value& root );
+		virtual void Deserialize( Json::Value& root );
+
+		int							_answer;
+		int							_player1Hp;
+		int							_player2Hp;
+	};
+
 	// 게임 종료 알림 패킷
 	class GameSetNotify : public IJsonSerializable
 	{
@@ -346,6 +386,9 @@ namespace Packet
 		virtual void Serialize ( Json::Value& root );
 		virtual void Deserialize( Json::Value& root );
 
+		int							_isGameSet;
+		int							_player1Hp;
+		int							_player2Hp;
 		int							_winPlayerNum;
 	};
 
@@ -400,8 +443,11 @@ namespace Packet
 		ID_EnemyFireAck			= 122,
 		ID_TurnEndNotify			= 123,
 		ID_TurnEndAck			= 124,
-		ID_GameSetNotify			= 125,
-		ID_GameSetAck			= 126,
-		ID_CloseReq			= 127,
+		ID_GameSetRequest			= 125,
+		ID_GameSetAsk			= 126,
+		ID_GameSetAnswer			= 127,
+		ID_GameSetNotify			= 128,
+		ID_GameSetAck			= 129,
+		ID_CloseReq			= 130,
 	};
 }

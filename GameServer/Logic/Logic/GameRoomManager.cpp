@@ -129,10 +129,6 @@ namespace FPLogic
 				Util::PushToSendQueue(_sendQueue, Packet::PacketId::ID_GameStartNotify, room->_player1->GetSessionIdx(), &notify1);
 				Util::PushToSendQueue(_sendQueue, Packet::PacketId::ID_GameStartNotify, room->_player2->GetSessionIdx(), &notify2);
 
-				// 생성한 정보를 방에 기록.
-				room->_player1Pos = player1Pos;
-				room->_player2Pos = player2Pos;
-
 				room->_isGameStartPacketSended = true;
 
 				_logger->Write(LogType::LOG_DEBUG, "%s | Player 1 Position(%d), 2 Position(%d)", __FUNCTION__, player1Pos, player2Pos);
@@ -178,7 +174,7 @@ namespace FPLogic
 		case RoomState::InGame:
 			#pragma region INGAME ROOM PROCESS
 
-			// TODO :: 타이머 클래스 만든 후 시간 재서 턴 끝내기.
+
 
 			#pragma endregion
 			break;
