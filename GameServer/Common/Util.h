@@ -3,6 +3,7 @@
 #include <string>
 #include <type_traits>
 #include <random>
+#include <stdlib.h>
 
 #include "../include/json/json.h"
 
@@ -62,17 +63,15 @@ namespace FPCommon
 			sendQueue->Push(sendPacket);
 		}
 
-		// 의사 난수 생성기.
+		// 난수 생성기.
+		// TODO :: 난수 생성이 좀 허술해짐.
 		static int GetRandomNumber(int min, int max)
 		{
-			auto curTime = std::chrono::system_clock::now();
-			auto duration = curTime.time_since_epoch();
-			auto millis = std::chrono::duration_cast<std::chrono::milliseconds>(duration).count();
+			int initVal = rand();
 
-			std::mt19937 rng(millis);
-			std::uniform_int_distribution<int> dist(min, max);
+			auto remainValue = min + (initVal % (max - min));
 
-			return dist(rng);
+			return remainValue;
 		}
 	};
 }
