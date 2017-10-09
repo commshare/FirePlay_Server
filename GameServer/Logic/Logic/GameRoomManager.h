@@ -39,6 +39,8 @@ namespace FPLogic
 
 		ErrorCode TurnChange(const int roomNumber);
 
+		void SetDamageInfo(const int roomNumber, const int player1Hp, const int player2Hp);
+
 	private :
 
 		void roomProcess(GameRoom * room);

@@ -305,7 +305,18 @@ namespace FPLogic
 		// 패킷 정보를 얻는다.
 		Packet::DamageOccur healthInfo;
 		PacketUnpack(packet, &healthInfo);
-			
+		
+		// 패킷을 보낸 유저를 찾는다.
+		auto notifyUser = _userManager->FindUserWithSessionIdx(packet->_sessionIdx);
+
+		if (notifyUser == nullptr)
+		{
+			_logger->Write(LogType::LOG_WARN, "%s | Invalid Damage Occur Ntf Input, Session Idx(%d)", __FUNCTION__, packet->_sessionIdx);
+			return;
+		}
+
+		// 게임 룸 관리자에게 정보를 넘겨준다.
+		_gameRoomManager->SetDamageInfo(notifyUser->GetGameIdx(), healthInfo._player1Hp, healthInfo._player2Hp);
 	}
 
 }

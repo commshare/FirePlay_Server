@@ -99,6 +99,45 @@ namespace FPLogic
 		return ErrorCode::None;
 	}
 
+	void GameRoomManager::SetDamageInfo(const int roomNumber, const int player1Hp, const int player2Hp)
+	{
+		auto room = &_gameRoomPool[roomNumber];
+
+		if (room == nullptr || room->_state != RoomState::InGame)
+		{
+			_logger->Write(LogType::LOG_ERROR, "%s | Invalid Room Number Access! Room State is Not RoomState::InGame. Room Number(%d)", __FUNCTION__, roomNumber);
+			return;
+		}
+
+		if (room->_player1Hp > player1Hp)
+		{
+			room->_player1Hp = player1Hp;
+		}
+		if (room->_player2Hp > player2Hp)
+		{
+			room->_player2Hp = player2Hp;
+		}
+
+		// 만약 게임이 끝났다면,
+		Packet::GameSetNotify gameSetNotify;
+		if (player1Hp <= 0)
+		{
+			gameSetNotify._winPlayerNum = 2;
+		}
+		else if (player2Hp <= 0)
+		{
+			gameSetNotify._winPlayerNum = 1;
+		}
+
+		// 게임이 끝났다는 패킷을 보내준다.
+		Util::PushToSendQueue(_sendQueue, Packet::PacketId::ID_GameSetNotify, room->_player1->GetSessionIdx(), &gameSetNotify);
+		Util::PushToSendQueue(_sendQueue, Packet::PacketId::ID_GameSetNotify, room->_player2->GetSessionIdx(), &gameSetNotify);
+
+		// TODO :: 전적 갱신.
+
+		room->Clear();
+	}
+
 	void GameRoomManager::roomProcess(GameRoom * room)
 	{
 		switch (room->GetState())
@@ -173,7 +212,6 @@ namespace FPLogic
 
 		case RoomState::InGame:
 			#pragma region INGAME ROOM PROCESS
-
 
 
 			#pragma endregion
