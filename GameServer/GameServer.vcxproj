@@ -119,6 +119,7 @@
     <ClCompile Include="Common\Packet.cpp" />
     <ClCompile Include="gameserver\ServerMain.cpp" />
     <ClCompile Include="include\jsoncpp.cpp" />
+    <ClCompile Include="Minidump.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="common\ConsoleLogger.h" />
@@ -129,6 +130,7 @@
     <ClInclude Include="common\Packet.h" />
     <ClInclude Include="common\PacketQueue.h" />
     <ClInclude Include="Common\Util.h" />
+    <ClInclude Include="Minidump.h" />
     <ClInclude Include="network\network\IOInfo.h" />
     <ClInclude Include="network\network\SessionInfo.h" />
   </ItemGroup>
