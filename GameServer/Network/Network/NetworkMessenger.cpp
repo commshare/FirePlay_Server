@@ -53,6 +53,7 @@ namespace FPNetwork
 			return false;
 		}
 
+		_sendBuffer = new char[FPNetwork::packetHeaderSize + FPNetwork::maxPacketBodySize];
 
 		_logger = logger;
 		_recvQueue = recvQueue;
@@ -383,23 +384,16 @@ namespace FPNetwork
 			auto destSession = _sessionPool[sendPacket->_sessionIdx];
 			auto sendHeader = PacketHeader{ sendPacket->_packetId, sendPacket->_bodySize };
 
-			// TODO :: 우선 이렇게 동적할당 해놓았지만 NetworkMessenger에서 sendbuffer를 하나 가지고 있어야 함. 
-			char * sendByte = new char[FPNetwork::packetHeaderSize + sendPacket->_bodySize];
+			memcpy_s(_sendBuffer, FPNetwork::packetHeaderSize + sendPacket->_bodySize, &sendHeader, FPNetwork::packetHeaderSize);
+			strcpy_s(_sendBuffer + FPNetwork::packetHeaderSize, sendPacket->_bodySize, sendPacket->_body);
 
-			memcpy_s(sendByte, FPNetwork::packetHeaderSize + sendPacket->_bodySize, &sendHeader, FPNetwork::packetHeaderSize);
-			strcpy_s(sendByte + FPNetwork::packetHeaderSize, sendPacket->_bodySize, sendPacket->_body);
-
-			//memcpy_s(sendByte + FPNetwork::packetHeaderSize, sendPacket->_bodySize, &sendPacket->_body, FPNetwork::packetHeaderSize);
-
-			auto sendByteSize = send(destSession._socket, sendByte, FPNetwork::packetHeaderSize + sendPacket->_bodySize, 0);
+			auto sendByteSize = send(destSession._socket, _sendBuffer, FPNetwork::packetHeaderSize + sendPacket->_bodySize, 0);
 			if (sendByteSize < 0)
 			{
 				_logger->Write(LogType::LOG_ERROR, "%s | Socket Send has Problem.", __FUNCTION__);
 			}
 
 			_sendQueue->Pop();
-
-			delete[] sendByte;
 
 			_logger->Write(LogType::LOG_DEBUG, "%s | Send Packet, To Socket(%I64u), Session(%d), Packet ID(%d), BodySize(%d)", __FUNCTION__, destSession._socket, destSession._tag, static_cast<int>(sendPacket->_packetId), sendPacket->_bodySize);
 		}

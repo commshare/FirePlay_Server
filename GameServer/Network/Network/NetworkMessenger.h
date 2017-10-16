@@ -69,5 +69,7 @@ namespace FPNetwork
 		PacketQueue * _sendQueue = nullptr;
 
 		std::unique_ptr<HttpNetwork> _httpNetwork;
+
+		char * _sendBuffer = nullptr;
 	};
 }
