@@ -5,7 +5,6 @@
 
 - - -
 
-# 명세
 ## GameServer
 C++, IOCP 사용.  </br>
 
@@ -21,14 +20,14 @@ MySQL : 사용자 전적 및 정보 저장. </br>
 
 - - -
 
-# 구현된 기능
+## 구현된 기능
  DBServer, LoginServer와의 통신 (HappyHttp 라이브러리 이용) </br>
  Unity Client와의 통신 (IOCP 사용) </br>
 
-# 고쳐야 될 부분
+## 고쳐야 될 부분
  Network의 Send부분을 비동기가 아닌 동기로 하고 있음. </br>
 
-# 미구현 기능
+## 미구현 기능
  현재 전적을 저장하지 않음. </br>
  매치 메이커에 랭킹 시스템을 넣었으면 좋겠음. </br>
  현재 빠른 매치만 가능하고 Number Match는 진행되지 않음. </br>
