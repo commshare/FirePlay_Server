@@ -9,8 +9,8 @@ namespace FPCommon
 {
 	/*
 	 * ObjectPool
-	 * 钢萍胶饭靛 券版俊辑 倒酒哎 荐 乐档废 搂 ObjectPool努贰胶.
-	 * Session狼 沥焊甫 扁废窍扁 困窍咯 快急 埃窜窍霸 力累.
+	 ObjectPool 类编织在多线程环境中工作。
+	 * 要记录会话的信息，首先要简单。
 	 */
 	template<class T>
 	class ObjectPool
@@ -44,7 +44,7 @@ namespace FPCommon
 		std::deque<int> _poolIndex;
 	};
 
-	// 坷宏璃飘 钱 荤捞令狼 农扁甫 捞侩窍咯 檬扁拳甫 秦林绢具 茄促.
+	// 使用对象池大小初始化。
 	template<class T>
 	inline void ObjectPool<T>::Init(const int poolSize)
 	{
@@ -63,8 +63,9 @@ namespace FPCommon
 	inline void ObjectPool<T>::Release()
 	{
 		_isInitialized = false;
-
+		//多线程
 		std::lock_guard<std::mutex> releaseLock(_poolMutex);
+		//清理vector
 		_pool.clear();
 		_pool.shrink_to_fit();
 

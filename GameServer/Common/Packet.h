@@ -24,8 +24,8 @@ namespace Packet
 		CJsonSerializer( void ) {};
 	};
 
-	// C++ IOCP辑滚客 Unity C#捞 烹脚窍扁 困茄 菩哦 沥狼 颇老涝聪促.
-	// 肺弊牢 夸没 菩哦
+	//C ++ IOCP服务器和与Unity C＃通信的数据包定义文件。
+		//登录请求包
 	class LoginReq : public IJsonSerializable
 	{
 	public:
@@ -38,7 +38,7 @@ namespace Packet
 		std::string					_token;
 	};
 
-	// 肺弊牢 翠函 菩哦
+		//登录回复包
 	class LoginRes : public IJsonSerializable
 	{
 	public:
@@ -50,7 +50,8 @@ namespace Packet
 		int							_result;
 	};
 
-	// 狐弗 概摹 夸没 菩哦
+
+	//快速匹配请求包
 	class FastMatchReq : public IJsonSerializable
 	{
 	public:
@@ -64,7 +65,7 @@ namespace Packet
 		std::string					_token;
 	};
 
-	// 概摹 夸没 翠函 菩哦
+	//匹配请求回复包
 	class FastMatchRes : public IJsonSerializable
 	{
 	public:
@@ -76,7 +77,7 @@ namespace Packet
 		int							_result;
 	};
 
-	// 概摹 秒家 菩哦
+	//匹配取消包
 	class MatchCancelReq : public IJsonSerializable
 	{
 	public:
@@ -89,7 +90,7 @@ namespace Packet
 		std::string					_token;
 	};
 
-	// 概摹 秒家 翠函 菩哦
+	//非评估效果
 	class MatchCancelRes : public IJsonSerializable
 	{
 	public:
@@ -101,7 +102,7 @@ namespace Packet
 		int							_result;
 	};
 
-	// 概莫 己荤 舅覆 菩哦
+	//匹配通知包
 	class MatchSuccessNotify : public IJsonSerializable
 	{
 	public:
@@ -117,7 +118,7 @@ namespace Packet
 		int							_enemyType;
 	};
 
-	// 概莫 己荤 览翠 菩哦
+	//匹配响应数据包
 	class MatchSuccessAck : public IJsonSerializable
 	{
 	public:
@@ -129,7 +130,7 @@ namespace Packet
 		int							_result;
 	};
 
-	// 霸烙 矫累 舅覆 菩哦
+	//游戏开始通知包
 	class GameStartNotify : public IJsonSerializable
 	{
 	public:
@@ -143,7 +144,7 @@ namespace Packet
 		float						_enemyPositionX;
 	};
 
-	// 霸烙 矫累 览翠 菩哦
+	//游戏开始响应包
 	class GameStartAck : public IJsonSerializable
 	{
 	public:
@@ -155,7 +156,7 @@ namespace Packet
 		int							_result;
 	};
 
-	// 郴 畔 矫累 菩哦
+	//我的回合开始包
 	class TurnStartNotify : public IJsonSerializable
 	{
 	public:
@@ -168,7 +169,7 @@ namespace Packet
 		float						_windY;
 	};
 
-	// 郴 畔 矫累 览翠 菩哦
+	//我的回合开始响应包
 	class TurnStartAck : public IJsonSerializable
 	{
 	public:
@@ -180,7 +181,7 @@ namespace Packet
 		int							_result;
 	};
 
-	// 惑措 畔 矫累 菩哦
+	//中继转弯开始数据包
 	class EnemyTurnStartNotify : public IJsonSerializable
 	{
 	public:
@@ -193,7 +194,7 @@ namespace Packet
 		float						_windY;
 	};
 
-	// 惑措 畔 矫累 览翠 菩哦
+	//中继转启开始响应包
 	class EnemyTurnStartAck : public IJsonSerializable
 	{
 	public:
@@ -205,7 +206,7 @@ namespace Packet
 		int							_result;
 	};
 
-	// 框流烙 傈崔 菩哦
+	//中继转启开始响应包
 	class MoveNotify : public IJsonSerializable
 	{
 	public:
@@ -218,7 +219,7 @@ namespace Packet
 		float						_enemyPositionY;
 	};
 
-	// 框流烙 览翠 菩哦
+	//动作响应包
 	class MoveAck : public IJsonSerializable
 	{
 	public:
@@ -230,7 +231,7 @@ namespace Packet
 		int							_result;
 	};
 
-	// 惑措 框流烙 舅覆 菩哦
+	//相对动作通知包
 	class EnemyMoveNotify : public IJsonSerializable
 	{
 	public:
@@ -243,7 +244,7 @@ namespace Packet
 		float						_enemyPositionY;
 	};
 
-	// 惑措 框流烙 览翠 菩哦
+	//相对运动响应包
 	class EnemyMoveAck : public IJsonSerializable
 	{
 	public:
@@ -255,7 +256,7 @@ namespace Packet
 		int							_result;
 	};
 
-	// 惯荤 菩哦
+	//火包
 	class FireNotify : public IJsonSerializable
 	{
 	public:
@@ -273,7 +274,7 @@ namespace Packet
 		float						_magnitude;
 	};
 
-	// 惯荤 览翠 菩哦
+	//火灾响应包
 	class FireAck : public IJsonSerializable
 	{
 	public:
@@ -285,7 +286,7 @@ namespace Packet
 		int							_result;
 	};
 
-	// 惑措 惯荤 菩哦
+	//相对火包
 	class EnemyFireNotify : public IJsonSerializable
 	{
 	public:
@@ -303,7 +304,7 @@ namespace Packet
 		float						_magnitude;
 	};
 
-	// 惑措 惯荤 览翠 菩哦
+	//相对火灾响应包
 	class EnemyFireAck : public IJsonSerializable
 	{
 	public:
@@ -315,7 +316,7 @@ namespace Packet
 		int							_result;
 	};
 
-	// 畔 辆丰 舅覆 菩哦
+	//关闭通知包
 	class TurnEndNotify : public IJsonSerializable
 	{
 	public:
@@ -326,7 +327,7 @@ namespace Packet
 
 	};
 
-	// 畔 辆丰 览翠 菩哦
+	//关闭响应数据包
 	class TurnEndAck : public IJsonSerializable
 	{
 	public:
@@ -337,7 +338,7 @@ namespace Packet
 
 	};
 
-	// 单固瘤啊 惯积且锭 焊郴绰 菩哦
+	//发生损坏时发送的数据包
 	class DamageOccur : public IJsonSerializable
 	{
 	public:
@@ -350,7 +351,7 @@ namespace Packet
 		int							_player2Hp;
 	};
 
-	// 霸烙 辆丰 舅覆 菩哦
+	//游戏结束通知包
 	class GameSetNotify : public IJsonSerializable
 	{
 	public:
@@ -362,7 +363,7 @@ namespace Packet
 		int							_winPlayerNum;
 	};
 
-	// 霸烙 辆丰 览翠 菩哦
+	//游戏结束响应包
 	class GameSetAck : public IJsonSerializable
 	{
 	public:
@@ -374,7 +375,7 @@ namespace Packet
 		int							_result;
 	};
 
-	// 立加 摧扁 菩哦
+	//关闭连接数据包
 	class CloseReq : public IJsonSerializable
 	{
 	public:

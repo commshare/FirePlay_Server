@@ -11,7 +11,7 @@ namespace FPCommon
 {
 	/*
 	 * PacketQueue
-	 * 钢萍静饭靛 券版俊辑 倒酒啊绰 钮甫 瘤盔窍扁 困窍咯 父电 努贰胶.
+	 * *创建的类，用于支持在多线程环境中运行的队列。
 	 */
 	class PacketQueue
 	{

@@ -19,7 +19,7 @@ namespace FPNetwork
 
 	void NetworkMessenger::Stop()
 	{
-		// 技记 钱 努贰胶甫 且寸 秦力.
+		//取消分配会话池类。
 		_sessionPool.Release();
 
 		WSACleanup();
@@ -27,7 +27,7 @@ namespace FPNetwork
 
 	void NetworkMessenger::ForcingClose(const int sessionIdx)
 	{
-		// 摧栏妨绰 技记捞 劝己拳 登绢 乐瘤 臼篮 惑怕搁 弊成 府畔茄促.
+		// 如果要关闭的会话未激活，则只返回。
 		if (_sessionPool[sessionIdx].IsConnected() == false)
 		{
 			return;
@@ -63,7 +63,7 @@ namespace FPNetwork
 
 		memcpy(&_serverConfig, serverConfig, sizeof(ServerConfig));
 
-		// 努扼捞攫飘 技记 钱 檬扁拳.
+		//初始化客户端会话池。
 		_sessionPool.Init(_serverConfig._maxClientCount);
 		for (auto i = 0; i < _serverConfig._maxClientCount; ++i)
 		{
@@ -71,7 +71,7 @@ namespace FPNetwork
 			_sessionPool[i]._recvBuffer = new char[_serverConfig._maxClientRecvSize];
 		}
 
-		// 家南 橇肺弊贰怪 荤侩 急攫.
+		//声明套接字编程使用。
 		WSADATA wsaData;
 		if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0)
 		{
@@ -79,7 +79,7 @@ namespace FPNetwork
 			return false;
 		}
 
-		// IOCP甫 积己茄促.
+		//创建IOCP。
 		_iocpHandle = CreateIoCompletionPort(INVALID_HANDLE_VALUE, nullptr, 0, 0);
 		if (_iocpHandle == INVALID_HANDLE_VALUE)
 		{
@@ -87,7 +87,7 @@ namespace FPNetwork
 			return false;
 		}
 
-		// 辑滚 家南阑 劝己拳茄促.
+		//激活服务器套接字。
 		_serverSocket = WSASocket(AF_INET, SOCK_STREAM, 0, nullptr, 0, WSA_FLAG_OVERLAPPED);
 		if (_serverSocket == INVALID_SOCKET)
 		{
@@ -95,7 +95,7 @@ namespace FPNetwork
 			return false;
 		}
 
-		// 家南苞 IOCP 器飘甫 楷搬秦霖促.
+		//连接套接字和IOCP端口。
 		HANDLE hResult = CreateIoCompletionPort((HANDLE)_serverSocket, _iocpHandle, 0, 0);
 		if (hResult != _iocpHandle)
 		{
@@ -103,7 +103,7 @@ namespace FPNetwork
 			return false;
 		}
 
-		// 辑滚 家南俊 汲沥 蔼阑 官牢爹 茄促.
+		// 将设置绑定到服务器套接字。
 		sockaddr_in socketAddr;
 		ZeroMemory(&socketAddr, sizeof(socketAddr));
 		socketAddr.sin_family = AF_INET;
@@ -118,7 +118,7 @@ namespace FPNetwork
 
 		_logger->Write(LogType::LOG_INFO, "NetworkMessenger Create :: Port(%d), Backlog(%d)", _serverConfig._port, _serverConfig._backlog);
 
-		// 技泼等 家南阑 listen秦霖促.
+		//列出设置的套接字。
 		result = listen(_serverSocket, _serverConfig._backlog);
 		//result = listen(_serverSocket, SOMAXCONN);
 		if (result != 0)
@@ -129,57 +129,57 @@ namespace FPNetwork
 		_logger->Write(LogType::LOG_INFO, "%s | Listen Start. ServerSocketFD(%I64u), BackLog(%d)", __FUNCTION__, _serverSocket, _serverConfig._backlog);
 
 
-		// Listen 静饭靛甫 劝己拳 茄促.
+		//激活Listen线程。
 		auto listenThread = std::thread(std::bind(&NetworkMessenger::listenThreadFunc, this));
 		listenThread.detach();
 
-		// 矫胶袍 沥焊甫 舅酒柯促.
+		//获取系统信息
 		SYSTEM_INFO si;
 		GetSystemInfo(&si);
 		int workerNum = static_cast<int>(si.dwNumberOfProcessors * 2);
 
-		// 内绢 荐狼 滴 硅 父怒 worker 静饭靛甫 劝己拳茄促.
+		//激活工作线程两次核心数。
 		for (auto i = 0; i < workerNum; ++i)
 		{
 			auto workerThread = std::thread(std::bind(&NetworkMessenger::workerThreadFunc, this));
 			workerThread.detach();
 		}
 
-		// send 静饭靛甫 劝己拳 茄促. 
+		// //激活发送线程。
 		auto sendThread = std::thread(std::bind(&NetworkMessenger::sendThreadFunc, this));
 		sendThread.detach();
 
 		return true;
 	}
 
-	// 瘤沥茄 技记阑 摧酒林绰 窃荐.
+	//关闭指定会话的功能。
 	void NetworkMessenger::closeSession(const SessionCloseCase closeCase, const SOCKET socket, const int sessionIdx)
 	{
-		// 技记 钱捞 厚绢辑 辆丰窍绰 版快俊绰 Session阑 蝶肺 汲沥秦 临 鞘夸 绝捞 closesocket父 龋免.
+		//如果会话池为空，则只需调用closesocket而无需设置Session。
 		if (closeCase == SessionCloseCase::SessionPoolEmpty)
 		{
 			closesocket(socket);
 			return;
 		}
 
-		// 瘤沥茄 技记捞 劝己拳 惑怕啊 酒聪扼搁 涝仿蔼 坷幅肺 焊绊 官肺 府畔.
+		//如果指定的会话未处于活动状态，则会将其报告为输入错误并立即返回。
 		if (_sessionPool[sessionIdx].IsConnected() == false)
 		{
 			return;
 		}
 
-		// 抗寇 贸府 饶俊绰 老馆利牢 socket close
+		//异常处理后，正常套接字关闭
 		closesocket(socket);
 
-		// 技记 钱俊 包访茄 贸府甫 秦霖促.
+		//处理会话池。
 		_sessionPool[sessionIdx].Clear();
 		_sessionPool.ReleaseTag(sessionIdx);
 
-		// 场车澜阑 菩哦钮俊 持绢 舅妨霖促.
+		//告诉数据包队列的结束。
 		addToPacketQueue(sessionIdx, (short)NetworkErrorCode::NotifyCloseSession, 0, nullptr);
 	}
 
-	// 府矫宏 菩哦 钮俊 瘤沥茄 沥焊狼 菩哦阑 持绢林绰 窃荐.
+	//接收数据包放置队列中指定的信息包的功能。
 	void NetworkMessenger::addToPacketQueue(const int sessionIdx, const short pktId, const short bodySize, char * body)
 	{
 		auto packetInfo = std::make_shared<PacketInfo>();
@@ -196,7 +196,7 @@ namespace FPNetwork
 		HANDLE ioCompletionPort = _iocpHandle;
 		DWORD transferredByte = 0;
 		IOInfo * ioInfo = nullptr;
-		// Key啊 逞绢 柯促绊 窍绰单, 购瘤 葛福摆绊 救靖. 唱吝俊 八祸秦毫具隆. :)
+		// Key说已经结束了，但我不知道是什么。请稍后搜索。:)// Key说已经结束了，但我不知道是什么。请稍后搜索。:)
 		SessionInfo * key = nullptr;
 
 		while (true)
@@ -215,7 +215,7 @@ namespace FPNetwork
 
 			if (ioInfo->Status == IOInfoStatus::READ)
 			{
-				// 辆丰 八荤.
+				//退出检查
 				if (transferredByte == 0)
 				{
 					_logger->Write(LogType::LOG_INFO, "Socket FD(%I64u), Session(%d) connect ended", session._socket, sessionTag);
@@ -233,23 +233,23 @@ namespace FPNetwork
 				auto headerPosition = session._recvBuffer;
 				auto receivePosition = ioInfo->Wsabuf.buf;
 
-				// 贸府救等 单捞磐狼 醚 樊
+				//未处理数据的总量
 				auto totalDataSize = receivePosition + transferredByte - session._recvBuffer;
 
-				// 菩哦栏肺 父甸绢瘤辨 扁促府绰 单捞磐狼 荤捞令
+				//等待进入数据包的数据大小
 				auto remainDataSize = totalDataSize;
 
 				const auto packetHeaderSize = FPNetwork::packetHeaderSize;
 				while (remainDataSize >= packetHeaderSize)
 				{
-					// 庆歹甫 甸咯促 焊扁俊 面盒茄 单捞磐啊 乐促搁 庆歹甫 甸咯促夯促.
+					//如果有足够的数据来查看标题，请查看标题内部。
 					auto header = (PacketHeader*)headerPosition;
 					auto bodySize = header->_bodySize;
 
 					long long requiredSize = packetHeaderSize + bodySize;
 					if (requiredSize <= remainDataSize)
 					{
-						// 菩哦阑 父甸绢霖促.
+						///创建一个数据包。
 						std::shared_ptr<PacketInfo> newPacket = std::make_shared<PacketInfo>();
 						newPacket->_packetId = header->_id;
 						newPacket->_bodySize = bodySize;
@@ -263,7 +263,7 @@ namespace FPNetwork
 							bodySize,
 							ioInfo->SessionTag);
 
-						// 菩哦阑 父电 饶, 促澜 锅 庆歹 磊府甫 瘤沥窍绊, 巢篮 单捞磐 荤捞令甫 盎脚茄促.
+						//创建数据包后，指定下一个标题位置并更新剩余数据大小。
 						headerPosition += packetHeaderSize + bodySize;
 						remainDataSize -= packetHeaderSize + bodySize;
 					}
@@ -273,13 +273,13 @@ namespace FPNetwork
 					}
 				}
 
-				// 巢篮 单捞磐甫 滚欺狼 盖 菊栏肺 寸败霖促.
+				//将剩余数据拉到缓冲区的前面。
 				memcpy_s(session._recvBuffer, _serverConfig._maxClientRecvSize, headerPosition, remainDataSize);
 
-				// 父甸 荐 乐绰 菩哦篮 促 父甸菌栏骨肺, Recv甫 扒促.
+				//我们创建了所有可以创建的数据包，因此我们通过了Recv。
 				ZeroMemory(&ioInfo->Overlapped, sizeof(OVERLAPPED));
 
-				// remainDataSize父怒篮 剁绊 罐绰促.
+				//将生成retainDataSize。
 				ioInfo->Wsabuf.buf = session._recvBuffer + remainDataSize;
 				ioInfo->Wsabuf.len = _serverConfig._maxClientRecvSize - remainDataSize;
 				ioInfo->Status = IOInfoStatus::READ;
@@ -311,7 +311,7 @@ namespace FPNetwork
 
 			_logger->Write(LogType::LOG_DEBUG, "%s | Waiting For Other Client...", __FUNCTION__);
 
-			// 咯扁辑 Blocking登绢 促弗 努扼捞攫飘狼 accept甫 扁促赴促.
+			//阻止这里等待另一个客户的接受。
 			SOCKET newClient = accept(_serverSocket, (SOCKADDR*)&clientAddr, &addrlen);
 			if (newClient == INVALID_SOCKET)
 			{
@@ -319,18 +319,19 @@ namespace FPNetwork
 				continue;
 			}
 
-			// 钱俊辑 Session 窍唱甫 罐酒 沥焊甫 扁涝秦霖促.
+
+			//从池中获取会话并填写信息。
 			auto newTag = _sessionPool.GetTag();
 			if (newTag < 0)
 			{
 				_logger->Write(LogType::LOG_WARN, "%s | Client Session Pool Full", __FUNCTION__);
-				// TODO :: 咯扁辑 continue富绊 悼立磊 弥措老 版快 贸府秦林绢具 窃.
+				// TODO ::如果是最大联系人数，则必须处理它，而不是继续。
 				continue;
 			}
 
 			_logger->Write(LogType::LOG_INFO, "%s | Client Accept, Socket FD(%I64u) Session(%d)", __FUNCTION__, _serverSocket, newTag);
 
-			// 技记 钱俊 秦寸 沥焊 扁涝.
+			//使用此信息填写会话池。
 			auto& newSession = _sessionPool[newTag];
 			newSession._tag = newTag;
 			newSession._socket = newClient;
@@ -343,13 +344,13 @@ namespace FPNetwork
 			newIOCPInfo->Status = IOInfoStatus::READ;
 			newIOCPInfo->SessionTag = newTag;
 
-			// IOCP俊 货肺款 技记阑 殿废秦霖促.
+			//使用IOCP注册新会话。
 			CreateIoCompletionPort((HANDLE)newSession._socket, _iocpHandle, (DWORD)newSession._socket, 0);
 
 			DWORD recvSize = 0;
 			DWORD flags = 0;
 
-			// 府矫宏甫 吧绢初绰促.
+			//挂断接收器
 			auto retval = WSARecv(
 				newSession._socket,
 				&newIOCPInfo->Wsabuf,
@@ -372,10 +373,10 @@ namespace FPNetwork
 	{
 		while (true)
 		{
-			// 焊尘 菩哦捞 绝促搁,
+			//如果没有要发送的数据包，
 			if (_sendQueue->IsEmpty())
 			{
-				// 剧焊茄促.
+				//放弃
 				std::this_thread::sleep_for(std::chrono::milliseconds(0));
 				continue;
 			}

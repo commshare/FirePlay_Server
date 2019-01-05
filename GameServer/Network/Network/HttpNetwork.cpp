@@ -15,7 +15,7 @@
 
 namespace FPNetwork
 {
-	// WARN :: HappyHttp 扼捞宏矾府啊 窃荐 屈怕甫 捞犯霸 沥狼秦 初绊 乐绢辑 糕滚 窃荐 妮归栏肺 荤侩窍扁啊 铂利瘤辟窃.
+	// WARN :: HappyHttp库定义了这样的函数类型，因此将它用作成员函数回调非常有用。
 	void OnBegin(const happyhttp::Response* r, void* userdata)
 	{
 	}
@@ -68,7 +68,7 @@ namespace FPNetwork
 		};
 
 		happyhttp::Connection conn(_config->_dbServerUrl.c_str(), _config->_dbServerPort);
-		// 搬苞 蔼捞 妮归 窃荐 龋免矫俊 牢磊肺 甸绢啊档废 殿废.
+		// 在调用回调函数时将结果值注册为参数。
 		std::string result;
 		conn.setcallbacks(OnBegin, OnData, OnComplete, static_cast<void*>(&result));
 		conn.request("POST",

@@ -23,7 +23,7 @@
     <ProjectGuid>{1298102F-7C9E-42E0-95AD-2092A66FFBE9}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>Logic</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

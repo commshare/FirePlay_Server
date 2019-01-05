@@ -30,11 +30,16 @@ namespace FPLogic
 		_sendQueue   = sendQueue;
 		_gameRoomManager = gameRoomManager;
 
-		// 菩哦 包访 窃荐 殿废窍扁.
+		//注册与数据包相关的功能。
 		RegistPacketFunctions();
 
-		// 诀单捞飘 静饭靛 倒妨林扁.
+		//返回更新线程。
 		auto processThread = std::thread(std::bind(&PacketProcess::process, this));
+		/*
+		detach是用来和线程对象分离的，这样线程可以独立地执行，不过这样由于没有thread对象指向该线程而失去了对它的控制，
+		当对象析构时线程会继续在后台执行，但是当主程序退出时并不能保证线程能执行完。
+		如果没有良好的控制机制或者这种后台线程比较重要，最好不用detach而应该使用join。
+		*/
 		processThread.detach();
 	}
 
@@ -65,17 +70,17 @@ namespace FPLogic
 		{
 			auto packet = _recvQueue->Peek();
 
-			// 罐篮 菩哦捞 绝促搁
+			//如果没有收到的数据包
 			if (packet == nullptr)
 			{
-				// 促弗 静饭靛俊霸 剧焊茄促.
+				// 放弃另一个帖子。
 				std::this_thread::sleep_for(std::chrono::milliseconds(0));
 				continue;
 			}
 
 			_logger->Write(LogType::LOG_INFO, "%s | Packet Process Id(%d)", __FUNCTION__, packet->_packetId);
 
-			// 罐篮 菩哦捞 乐促搁 宏肺靛 某胶飘.
+			//如果收到数据包，则广播。
 			broadCast(packet);
 			_recvQueue->Pop();
 		}
@@ -83,40 +88,40 @@ namespace FPLogic
 
 	void PacketProcess::subscribe(short interestedPacketId, PacketFunction registFunction)
 	{
-		// 殿废窍妨绰 菩哦 酒捞叼肺 捞固 促弗 府胶飘啊 殿废登绢乐绰瘤 犬牢.
+		//检查是否已在注册的数据包ID中注册了另一个列表。
 		auto findListResult = _packetFunctionMap.find(interestedPacketId);
 
-		// 殿废捞 救登绢乐促搁 货肺 府胶飘 积己.
+		//如果未注册，请创建新列表。
 		if (findListResult == _packetFunctionMap.end())
 		{
 			PacketFunctionList newList;
 			_packetFunctionMap.emplace(interestedPacketId, newList);
 		}
 			
-		// 窃荐 殿废.
+		//注册功能。
 		_packetFunctionMap.find(interestedPacketId)->second.emplace_back(std::move(registFunction));
 	}
 
 	void PacketProcess::broadCast(std::shared_ptr<PacketInfo> recvPacket)
 	{
-		// 甸绢柯 菩哦俊 秦寸窍绰 窃荐 格废阑 茫绰促.
+		//查找与传入数据包对应的功能列表。
 		auto subscribedFunctions = _packetFunctionMap.find(recvPacket->_packetId);
 
-		// 措览登绰 窃荐啊 绝促搁 况醋阑 剁款促.
+		//如果没有相应的功能，则引发警告。
 		if (subscribedFunctions == _packetFunctionMap.end())
 		{
 			_logger->Write(LogType::LOG_WARN, "%s | Unregisted packet id arrived Id(%d)", __FUNCTION__, recvPacket->_packetId);
 			return;
 		}
 
-		// 措览登绰 窃荐 格废甸阑 逻 角青矫挪促.
+		//始终执行相应的功能列表。
 		for (auto& function : subscribedFunctions->second)
 		{
 			function(recvPacket);
 		}
 	}
 
-	// 菩哦 单捞磐 贸府甫 档客林绰 皋家靛甸.
+	//帮助处理分组数据的方法。
 	void PacketProcess::PacketUnpack(std::shared_ptr<PacketInfo> packet, Packet::IJsonSerializable * outSturct)
 	{
 		auto rawJson = std::string(packet->_body);
@@ -132,6 +137,7 @@ namespace FPLogic
 	{
 		auto jsonBody = std::string();
 		Packet::CJsonSerializer::Serialize(packetToSend, jsonBody);
+		//使用strcpy需要多一个+1
 		auto bodySize = static_cast<int>(strlen(jsonBody.c_str())) + 1;
 		auto sendPacket = std::make_shared<PacketInfo>();
 		sendPacket->SetPacketInfo(packetId, sessionIdx, bodySize, jsonBody.c_str());

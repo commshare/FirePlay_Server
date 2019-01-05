@@ -17,18 +17,18 @@ namespace FPLogic
 	{
 		_logger->Write(LogType::LOG_DEBUG, "%s | Entry, Session(%d)", __FUNCTION__, packet->_sessionIdx);
 
-		// 夸没 菩哦 沥焊甫 掘绰促.
+		//获取请求包信息。
 		Packet::LoginReq loginReq;
 		PacketUnpack(packet, &loginReq);
 
-		// Http客 烹脚窍咯 Validation茄瘤 犬牢.
+		// 在HTTP与通信验证验证。 
 		auto result = _network->GetHttp()->PostTokenValidationRequest(loginReq._id, loginReq._token);
 
-		// 焊尘 菩哦阑 霖厚.
+		// 在交付设备期间。
 		Packet::LoginRes loginRes;
 		loginRes._result = static_cast<int>(result);
 
-		// 蜡瓤茄 夸没捞菌促搁 秦寸 技记阑 UserManager俊 眠啊.
+		// 如果会话是有效请求，则将会话添加到UserManager。
 		if (result == ErrorCode::None)
 		{
 			auto isLoginSuccessd = _userManager->LoginUser(packet->_sessionIdx, loginReq._id, loginReq._token);
@@ -38,9 +38,9 @@ namespace FPLogic
 			}
 		}
 
-		// TODO :: User狼 傈利阑 DB俊辑 罐酒客辑 盎脚秦林绢具 窃.
+		// TODO :: 从DB 获取 TODO :: User 的总数并更新它们。
 
-		// 翠函 傈崔.
+		//传递答案
 		PushToSendQueue(Packet::PacketId::ID_LoginRes, packet->_sessionIdx, &loginRes);
 	}
 
@@ -48,24 +48,24 @@ namespace FPLogic
 	{
 		_logger->Write(LogType::LOG_DEBUG, "%s | Entry, Session(%d)", __FUNCTION__, packet->_sessionIdx);
 
-		// 菩哦 沥焊甫 掘绰促.
+		//获取数据包信息。
 		Packet::FastMatchReq fastMatchReq;
 		PacketUnpack(packet, &fastMatchReq);
 
-		// 夸没茄 蜡历狼 惑怕甫 函版秦霖促.
+		// 更改请求用户的状态。
 		auto reqUser = _userManager->FindUserWithSessionIdx(packet->_sessionIdx);
 		if (reqUser == nullptr || reqUser->IsUserActivated() == false)
 		{
-			// 捞惑茄 夸没捞 甸绢吭促绊 积阿窍绊 公矫茄促.
+			// 我认为奇怪的请求进来并忽略它们。
 			_logger->Write(LogType::LOG_WARN, "%s | Invalid Match Req Input, Session Idx(%d)", __FUNCTION__, packet->_sessionIdx);
 			return;
 		}
 		reqUser->JoinMatching(static_cast<CharacterType>(fastMatchReq._type), MatchingType::FastMatch);
 
-		// 夸没茄 沥焊甫 官帕栏肺 概摹 皋捞目俊 持绢霖促.
+		// 根据请求的信息将其放入matchmaker中。
 		_matchMaker->RequestMatch(packet->_sessionIdx);
 
-		// 搬苞甫 馆券茄促.
+		// 返回结果
 		Packet::FastMatchRes matchRes;
 		matchRes._result = static_cast<int>(ErrorCode::None);
 
@@ -75,29 +75,29 @@ namespace FPLogic
 	void PacketProcess::MatchCancelReq(std::shared_ptr<PacketInfo> packet)
 	{
 		_logger->Write(LogType::LOG_DEBUG, "%s | Entry, Session(%d)", __FUNCTION__, packet->_sessionIdx);
-		// 菩哦 沥焊甫 掘绰促.
+		// 获取数据包信息。
 		Packet::MatchCancelReq matchCancelReq;
 		PacketUnpack(packet, &matchCancelReq);
 
-		// 夸没茄 蜡历甫 茫绰促.
+		//找到请求的用户。
 		auto reqUser = _userManager->FindUserWithSessionIdx(packet->_sessionIdx);
 		if (reqUser == nullptr)
 		{
-			// 夸没茄 蜡历啊 绝促搁 捞惑茄 夸没捞 甸绢吭促绊 积阿窍绊 公矫茄促.
+			//如果没有用户请求，则假定接收并忽略了一个奇怪的请求。
 			_logger->Write(LogType::LOG_WARN, "%s | Invalid Match Cancel Input, Session Idx(%d)", __FUNCTION__, packet->_sessionIdx);
 			return;
 		}
 
-		// 夸没茄 蜡历啊 概莫钮俊 乐促搁 概莫钮俊辑 哗霖促.
+		// 如果请求用户在匹配队列中，则从匹配队列中减去它。
 		if (_matchMaker->isUserIsInMatching(packet->_sessionIdx))
 		{
 			_matchMaker->CancleMatch(packet->_sessionIdx);
 		}
 
-		// 夸没茄 蜡历狼 惑怕甫 函拳矫挪促.
+		// 更改请求用户的状态。
 		reqUser->CancelMatching();
 
-		// 搬苞甫 馆券茄促.
+		// 返回结果
 		Packet::MatchCancelRes cancelMatchRes;
 		cancelMatchRes._result = static_cast<int>(ErrorCode::None);
 
@@ -108,28 +108,28 @@ namespace FPLogic
 	{
 		_logger->Write(LogType::LOG_DEBUG, "%s | Entry, Session(%d)", __FUNCTION__, packet->_sessionIdx);
 
-		// 菩哦 沥焊甫 掘绰促.
+		//获取数据包信息。促.
 		Packet::MatchSuccessAck matchAck;
 		PacketUnpack(packet, &matchAck);
 
-		// 概摹甫 犬牢茄 蜡历甫 茫绰促.
+		// 获取数据包信息。
 		auto reqUser = _userManager->FindUserWithSessionIdx(packet->_sessionIdx);
 
-		// 蜡历啊 INVALID窍促搁 肺弊甫 嘛绊 公矫茄促.
+		// 如果用户是INVALID，请记录并忽略。
 		if (reqUser == nullptr)
 		{
 			_logger->Write(LogType::LOG_WARN, "%s | Invalid Match Ack Input, Session Idx(%d)", __FUNCTION__, packet->_sessionIdx);
 			return;
 		}
 
-		// 蜡历啊 GameRoom俊 乐绰 惑怕牢瘤 犬牢茄促.
+		// 确保用户在GameRoom中。
 		if (reqUser->GetUserState() != UserState::InGame)
 		{
 			_logger->Write(LogType::LOG_WARN, "%s | Invalid User Matching Process, User is not in GameRoom, Session Idx(%d)", __FUNCTION__, packet->_sessionIdx);
 			return;
 		}
 
-		// 蜡历甫 霸烙 冯俊 涝厘矫难霖促.		
+		// 允许用户进入游戏室。			
 		_gameRoomManager->EnterUserToRoom(reqUser->GetSessionIdx(), reqUser->GetGameIdx());
 	}
 
@@ -137,29 +137,29 @@ namespace FPLogic
 	{
 		_logger->Write(LogType::LOG_DEBUG, "%s | Entry, Session(%d)", __FUNCTION__, packet->_sessionIdx);
 
-		// 菩哦 沥焊甫 掘绰促.
+		// 获取数据包信息。
 		Packet::GameStartAck gameAck;
 		PacketUnpack(packet, &gameAck);
 
-		// 霸烙 矫累阑 犬牢茄 蜡历甫 茫绰促.
+		// 找到确认游戏开始的用户。
 		auto reqUser = _userManager->FindUserWithSessionIdx(packet->_sessionIdx);
 
-		// 蜡历啊 INVALID窍促搁 肺弊甫 嘛绊 公矫茄促.
+		// 如果用户是INVALID，请记录并忽略。
 		if (reqUser == nullptr)
 		{
 			_logger->Write(LogType::LOG_WARN, "%s | Invalid Game Start Ack Input, Session Idx(%d)", __FUNCTION__, packet->_sessionIdx);
 			return;
 		}
 
-		// 蜡历啊 GameRoom俊 乐绰 惑怕牢瘤 犬牢茄促.
+		// 确保用户在GameRoom中。
 		if (reqUser->GetUserState() != UserState::InGame)
 		{
 			_logger->Write(LogType::LOG_WARN, "%s | Invalid User Matching Process, User is not in GameRoom, Session Idx(%d)", __FUNCTION__, packet->_sessionIdx);
 			return;
 		}
 
-		// 霸烙 冯俊 蜡历啊 犬牢沁促绰 吧 舅妨霖促.
-		// TODO :: 俊矾内靛 罐酒辑 肋 Ack 秦林菌绰瘤 犬牢.
+		// 告诉用户游戏已经在游戏室中进行了检查。
+		//TODO ::检查您是否收到错误代码并且没问题。
 		_gameRoomManager->GameStartAck(reqUser->GetGameIdx());
 	}
 
@@ -177,34 +177,34 @@ namespace FPLogic
 	{
 		_logger->Write(LogType::LOG_DEBUG, "%s | Entry, Session(%d)", __FUNCTION__, packet->_sessionIdx);
 
-		// 菩哦 沥焊甫 掘绰促.
+		// 获取数据包信息。
 		Packet::MoveNotify moveNtf;
 		PacketUnpack(packet, &moveNtf);
 
-		// 框流牢 蜡历甫 茫绰促.
+		// 找到移动的用户。
 		auto reqUser = _userManager->FindUserWithSessionIdx(packet->_sessionIdx);
 
-		// 蜡历啊 INVALID窍促搁 肺弊甫 嘛绊 公矫茄促.
+		// 如果用户是INVALID，请记录并忽略。
 		if (reqUser == nullptr)
 		{
 			_logger->Write(LogType::LOG_WARN, "%s | Invalid Move Ntf Input, Session Idx(%d)", __FUNCTION__, packet->_sessionIdx);
 			return;
 		}
 
-		// 蜡历狼 规阑 茫绰促.
+		// 找到用户的房间
 		auto room = _gameRoomManager->GetRoom(reqUser->GetGameIdx());
 		if (room == nullptr || room->GetState() != RoomState::InGame)
 		{
 			return;
 		}
 
-		// 览翠阑 焊郴霖促.
+		// 发送回复。
 		Packet::MoveAck moveAck;
 		moveAck._result = static_cast<int>(ErrorCode::None);
 
 		PushToSendQueue(Packet::PacketId::ID_MoveAck, reqUser->GetSessionIdx(), &moveAck);
 
-		// 惑措祈俊霸 框流烙阑 焊郴霖促.
+		// 将移动发送给对手。
 		Packet::EnemyMoveNotify enemyMoveNotify;
 
 		enemyMoveNotify._enemyPositionX = moveNtf._enemyPositionX;
@@ -224,34 +224,34 @@ namespace FPLogic
 	{
 		_logger->Write(LogType::LOG_DEBUG, "%s | Entry, Session(%d)", __FUNCTION__, packet->_sessionIdx);
 
-		// 菩哦 沥焊甫 掘绰促.
+		//收购数量。
 		Packet::FireNotify fireNotify;
 		PacketUnpack(packet, &fireNotify);
 
-		// 惯荤茄 蜡历甫 茫绰促.
+		// 找到被解雇的用户。
 		auto reqUser = _userManager->FindUserWithSessionIdx(packet->_sessionIdx);
 
-		// 蜡历啊 INVALID窍促搁 肺弊甫 嘛绊 公矫茄促.
+		//用户是INVALID，请记录并忽略。
 		if (reqUser == nullptr)
 		{
 			_logger->Write(LogType::LOG_WARN, "%s | Invalid Fire Ntf Input, Session Idx(%d)", __FUNCTION__, packet->_sessionIdx);
 			return;
 		}
 
-		// 蜡历狼 规阑 茫绰促.
+		// 找到用户的房间。
 		auto room = _gameRoomManager->GetRoom(reqUser->GetGameIdx());
 		if (room == nullptr || room->GetState() != RoomState::InGame)
 		{
 			return;
 		}
 
-		// 览翠阑 焊郴霖促.
+		// 发送回复。
 		Packet::FireAck fireAck;
 		fireAck._result = static_cast<int>(ErrorCode::None);
 
 		PushToSendQueue(Packet::PacketId::ID_FireAck, reqUser->GetSessionIdx(), &fireAck);
 
-		// 惑措祈俊霸 舅妨霖促.
+		// 告诉对方
 		Packet::EnemyFireNotify enemyFireNotify;
 		enemyFireNotify._enemyPositionX = fireNotify._enemyPositionX;
 		enemyFireNotify._fireType = fireNotify._fireType;
@@ -262,7 +262,7 @@ namespace FPLogic
 
 		PushToSendQueue(Packet::PacketId::ID_EnemyFireNotify, room->GetAnotherPlayerSession(reqUser->GetSessionIdx()), &enemyFireNotify);
 
-		// 秦寸 规狼 畔阑 官层霖促.
+		//改变房间的转弯。
 		_gameRoomManager->TurnChange(reqUser->GetGameIdx());
 	}
 
@@ -285,11 +285,11 @@ namespace FPLogic
 	{
 		_logger->Write(LogType::LOG_DEBUG, "%s | Entry, Session(%d)", __FUNCTION__, packet->_sessionIdx);
 
-		// 菩哦 沥焊甫 掘绰促.
+		// 获取数据包信息。
 		Packet::TurnEndNotify endNotify;
 		PacketUnpack(packet, &endNotify);
 
-		// 畔阑 辆丰茄 蜡历甫 茫绰促.
+		// 找到完成转弯的用户。
 		auto notifyUser = _userManager->FindUserWithSessionIdx(packet->_sessionIdx);
 
 		if (notifyUser == nullptr)
@@ -298,18 +298,18 @@ namespace FPLogic
 			return;
 		}
 
-		// 秦寸 霸烙 规阑 茫绰促.
+		// 找到合适的游戏室。
 		auto room = _gameRoomManager->GetRoom(notifyUser->GetGameIdx());
 		if (room == nullptr || room->GetState() != RoomState::InGame)
 		{
 			return;
 		}
 
-		// 览翠阑 焊郴霖促.
+		// 发送回复。
 		Packet::TurnEndAck endAck;
 		PushToSendQueue(Packet::PacketId::ID_TurnEndAck, notifyUser->GetSessionIdx(), &endAck);
 
-		// 秦寸 规狼 畔阑 官层霖促.
+		// 改变房间的转弯。
 		_gameRoomManager->TurnChange(notifyUser->GetGameIdx());
 	}
 
@@ -317,11 +317,11 @@ namespace FPLogic
 	{
 		_logger->Write(LogType::LOG_DEBUG, "%s | Entry, Session(%d)", __FUNCTION__, packet->_sessionIdx);
 
-		// 菩哦 沥焊甫 掘绰促.
+		//获取数据包信息。
 		Packet::DamageOccur healthInfo;
 		PacketUnpack(packet, &healthInfo);
 		
-		// 菩哦阑 焊辰 蜡历甫 茫绰促.
+		// 找到发送数据包的用户。
 		auto notifyUser = _userManager->FindUserWithSessionIdx(packet->_sessionIdx);
 
 		if (notifyUser == nullptr)
@@ -330,7 +330,7 @@ namespace FPLogic
 			return;
 		}
 
-		// 霸烙 冯 包府磊俊霸 沥焊甫 逞败霖促.
+		// 将信息传递给游戏室管理员。
 		_gameRoomManager->SetDamageInfo(notifyUser->GetGameIdx(), healthInfo._player1Hp, healthInfo._player2Hp);
 	}
 

@@ -32,9 +32,9 @@ namespace FPLogic
 
 	class PacketProcess
 	{
-		// 菩哦阑 贸府窍绰 窃荐 屈怕 沥狼.
+		//功能类型定义。
 		using PacketFunction     = std::function<void(std::shared_ptr<PacketInfo>)>;
-		// 菩哦 贸府 窃荐 府胶飘 沥狼.
+		//数字处理函数定义表。
 		using PacketFunctionList = std::list<PacketFunction>;
 		using UserState = User::UserState;
 
@@ -47,18 +47,18 @@ namespace FPLogic
 
 	private :
 
-		// 荤侩且 窃荐甸阑 檬扁俊 殿废秦林绰 皋家靛.
+		//使用该寄存器的初始功能的方法。
 		void RegistPacketFunctions();
 
 		void process();
 
-		// 菩哦 贸府 窃荐 殿废 皋家靛.
+		//包处理功能注册方法。
 		void subscribe(short interestedPacketId, PacketFunction registFunction);
 
-		// 殿废等 皋家靛甸阑 龋免秦林绰 皋家靛.
+		//调用已注册方法的方法。
 		void broadCast(std::shared_ptr<PacketInfo> recvPacket);
 
-		// 菩哦 包访 窃荐甸.
+		//包相关的功能。
 		void LoginReq         (std::shared_ptr<PacketInfo> packet);
 		void FastMatchReq     (std::shared_ptr<PacketInfo> packet);
 		void MatchCancelReq   (std::shared_ptr<PacketInfo> packet);
@@ -89,7 +89,7 @@ namespace FPLogic
 		MatchMaker       * _matchMaker      = nullptr;
 		GameRoomManager  * _gameRoomManager = nullptr;
 
-		// 菩哦 锅龋客 殿废等 菩哦 贸府 窃荐 府胶飘甫 历厘窍绰 磊丰备炼.
+		//存储包号和注册包处理功能列表的数据结构。
 		std::unordered_map<short, PacketFunctionList> _packetFunctionMap;
 	};
 }
